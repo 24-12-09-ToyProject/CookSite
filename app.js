@@ -30,6 +30,10 @@ app.listen(port, () =>{
     console.log("서버가 정상적으로 실행 되었습니다");
 });
 
+//body 파싱 하기위한 미들웨어 설정
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 //http:/localhost:8888 / 경로로 접근 시
 app.get("/" , (request,response)=>{
     response.send("수정 되었습니다.");
@@ -39,4 +43,14 @@ app.get("/login", (request,response)=>
     response.render("Test.html")
 }
 )
+app.post("/gologin",(req,res)=>
+{
+    const memberId = req.body.memberId;
+    const memberPw = req.body.memberPw;
+
+    res.render("Test2.html",{
+        id:memberId,
+        pw:memberPw
+    });
+});
 
