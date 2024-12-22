@@ -53,4 +53,8 @@ app.post("/gologin",(req,res)=>
         pw:memberPw
     });
 });
+app.get("/searchClass",(req,res)=>
+{
+    res.render("searchClass.html")
+});
 
