@@ -32,6 +32,7 @@ function getAllSubfolders(directory) {
         .filter(file => fs.statSync(path.join(directory, file)).isDirectory())
         .map(folder => path.join(directory, folder));
 }
+
 //view 하위 폴더 설정 2
 const viewPaths = [path.join(__dirname, 'views'), ...getAllSubfolders(path.join(__dirname, 'views'))];
 
@@ -47,6 +48,16 @@ app.listen(port, () =>{
     console.log("서버가 정상적으로 실행 되었습니다");
 });
 
+// css 파일 미들웨어 설정
+// app.use(express.static(path.join(__dirname, 'static'), {
+//     setHeaders: (res, path) => {
+//         if (path.endsWith('.css')) {
+//             res.setHeader('Content-Type', 'text/css');
+//         }
+//     }
+// }));
+
+app.use('/static', express.static(path.join(__dirname, 'static')));
 
 //DB 테스트 
 pool.getConnection((err, conn)=>{
