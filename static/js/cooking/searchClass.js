@@ -21,7 +21,7 @@ regions.forEach(region => {
     item.addEventListener('click', () => {
         span.textContent = region;
         console.log('Selected:' . region);
-
+        // 메뉴 클릭 시 드롭다운 사라짐
         dropdownContent.classList.remove('show');
         arrow.classList.remove('up');
     });
