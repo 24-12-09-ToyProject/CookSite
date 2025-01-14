@@ -223,4 +223,3 @@ $RECYCLE.BIN/
 
 # config 파일
 config/.env
-config/db.js
