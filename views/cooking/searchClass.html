@@ -32,7 +32,7 @@
                 </div>
                 <!-- 두번째 옵션 -->
                 <div class="option2">
-                    <span class="firstType" value="oneDay">원데이</span><span class="secondType" value="regular">정기</span>
+                    <span class="oneDay" value="oneDay">원데이</span><span class="regular" value="regular">정기</span>
                 </div>
                 <!-- 세번째 옵션 -->
                 <div class="option3">
@@ -52,15 +52,27 @@
                 </div>
                 <!-- 다섯번째 옵션 -->
                 <div class="option5">
-                    <button>평일</button><button>토요일</button><button>일요일</button>
+                    <span class="weekdays">평일</span>
+                    <span class="saturday">토요일</span>
+                    <span class="sunday">일요일</span>
                 </div>
                 <!-- 여섯번째 옵션 -->
                 <div class="option6">
-                    00:00 <span class="time-rail"></span> 24:00
+                    <div class="slider-container">
+                        <div class="slider-track"></div>
+                        <div class="slider-range"></div>
+                        <div class="thumb" id="thumbMin"></div>
+                        <div class="thumb" id="thumbMax"></div>
+                    </div>
+                    <div class="time-label">
+                        <span id="timeMin">00:00</span> - <span id="timeMax">23:59</span>
+                    </div>
                 </div>
                 <!-- 일곱번째 옵션 -->
                 <div class="option7">
-                    <button>입문</button><button>중급</button><button>고급</button>
+                    <span class="basic">입문</span>
+                    <span class="middle">중급</span>
+                    <span class="hard">고급</span>
                 </div>
                 <!-- 여덟번째 옵션 -->
                 <div class="option8">
@@ -71,5 +83,8 @@
         
         
     </div>
+
+
+
 </body>
 </html>
