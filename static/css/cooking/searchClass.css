@@ -5,13 +5,13 @@
     display: flex;
     flex-wrap: wrap;
 }
-.option1 {
+.option1,.option3 {
     position: relative;
     width: 200px;
 }
 /*-----------------------옵션----------------------*/
 /* 지역 */
-.dropdown-header {
+.dropdown-header,.dropdown-header2{
     padding: 10px;
     background: white;
     border: 1px solid #ddd;
@@ -21,7 +21,7 @@
     align-items: center;
 }
 
-.dropdown-content {
+.dropdown-content ,.dropdown-content2{
     display: none;
     position: absolute;
     width: 100%;
@@ -32,16 +32,16 @@
     overflow-y: auto;
 }
 
-.dropdown-content.show {
+.dropdown-content.show ,.dropdown-content2.show{
     display: block;
 }
 
-.dropdown-item {
+.dropdown-item ,.dropdown-items{
     padding: 10px;
     cursor: pointer;
 }
 
-.dropdown-item:hover {
+.dropdown-item:hover,.dropdown-item:hover {
     background: #f5f5f5;
 }
 
