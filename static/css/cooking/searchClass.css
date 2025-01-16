@@ -51,16 +51,16 @@
 }
 
 .arrow {
-    /* border: solid #666;
+    border: solid #666;
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
     transform: rotate(45deg);
-    transition: transform 0.2s; */
+    transition: transform 0.2s;
 }
 
 .arrow.up {
-    /* transform: rotate(-135deg); */
+    transform: rotate(-135deg);
 }
 /* 유형 */
 .oneDay,.regular{
@@ -89,7 +89,7 @@
     transform: translateY(-50%);
 }
 
-.slider-range {
+.slider-range,.price-slider-range {
     position: absolute;
     height: 6px;
     background: orange;

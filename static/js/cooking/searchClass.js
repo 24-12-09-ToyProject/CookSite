@@ -161,66 +161,72 @@ function createChangeColortoDay(item) {
 classDayForm.forEach(button => createChangeColortoForm(button));
 Days.forEach(button => createChangeColortoDay(button));
 
-//슬라이더 변수 설정
-const sliderContainer = document.querySelector('.slider-container');
-const sliderTrack = document.querySelector('.slider-track');
-const sliderRange = document.querySelector('.slider-range');
-const thumbMin = document.getElementById('thumbMin');
-const thumbMax = document.getElementById('thumbMax');
-const timeMinLabel = document.getElementById('timeMin');
-const timeMaxLabel = document.getElementById('timeMax');
+// 슬라이더 변수 설정
+const sliders = {
+    time: {
+        valueMin: 540, // 초기 최소 시간 (540분 = 9:00 AM)
+        valueMax: 1080, // 초기 최대 시간 (1080분 = 6:00 PM)
+        total: 1440, // 하루 총 분 (24시간 * 60분)
+        minLabel: document.getElementById('timeMin'),
+        maxLabel: document.getElementById('timeMax'),
+        thumbMin: document.getElementById('thumbMin'),
+        thumbMax: document.getElementById('thumbMax'),
+        range: document.querySelector('.slider-range'),
+        format: (value) => {
+            const hours = Math.floor(value / 60);
+            const mins = value % 60;
+            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+        },
+    },
+    price: {
+        valueMin: 0, // 초기 최소 가격
+        valueMax: 1000000, // 초기 최대 가격
+        total: 1000000, // 총 가격 범위
+        minLabel: document.getElementById('priceMin'),
+        maxLabel: document.getElementById('priceMax'),
+        thumbMin: document.getElementById('priceThumbMin'),
+        thumbMax: document.getElementById('priceThumbMax'),
+        range: document.querySelector('.price-slider-range'),
+        format: (value) => `${value}원`, // 가격 표시 형식
+    },
+};
 
-// 슬라이더 시간 설정
-const startHour = 0; // Start time in hours
-const endHour = 24; // End time in hours
-const totalMinutes = (endHour - startHour) * 60; // Total minutes in range
+// 슬라이더 업데이트 함수
+function updateSlider(slider) {
+    const { valueMin, valueMax, total, minLabel, maxLabel, thumbMin, thumbMax, range, format } = slider;
 
-// 슬라이더 최소 최대 시간 설정
-let valueMin = 540; // 9:00 AM 540분
-let valueMax = 1080; // 6:00 PM 1080분
-
-// 시간 변환 
-function formatTime(minutes) {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-}
-
-// 슬라이더의 값을 퍼센트로 변환
-const getPercentage = (value) => (value / totalMinutes) * 100;
-
-// thumb 위치와 퍼센트 업데이트
-function updateSlider() {
-    const minPercent = getPercentage(valueMin);
-    const maxPercent = getPercentage(valueMax);
+    const minPercent = (valueMin / total) * 100;
+    const maxPercent = (valueMax / total) * 100;
 
     thumbMin.style.left = `${minPercent}%`;
     thumbMax.style.left = `${maxPercent}%`;
-    sliderRange.style.left = `${minPercent}%`;
-    sliderRange.style.width = `${maxPercent - minPercent}%`;
+    range.style.left = `${minPercent}%`;
+    range.style.width = `${maxPercent - minPercent}%`;
 
-    // span태그 시간 업데이트
-    timeMinLabel.textContent = formatTime(valueMin);
-    timeMaxLabel.textContent = formatTime(valueMax);
+    // 라벨 업데이트
+    minLabel.textContent = format(valueMin);
+    maxLabel.textContent = format(valueMax);
 }
 
-// 막대 조정 이벤트 발생 함수
-function startDrag(e, thumb) {
+// 드래그 동작 처리 함수
+function startDrag(e, slider, thumbType) {
     e.preventDefault();
 
+    const { thumbMin, thumbMax, total } = slider;
+    const rect = thumbMin.parentNode.getBoundingClientRect();
+
     const onMove = (moveEvent) => {
-        const rect = sliderContainer.getBoundingClientRect();
         const offsetX = moveEvent.clientX - rect.left;
         const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1);
-        const newValue = Math.round(percentage * totalMinutes);
+        const newValue = Math.round(percentage * total);
 
-        if (thumb === thumbMin) {
-            valueMin = Math.min(newValue, valueMax - 1); // Prevent overlap
-        } else if (thumb === thumbMax) {
-            valueMax = Math.max(newValue, valueMin + 1); // Prevent overlap
+        if (thumbType === 'min') {
+            slider.valueMin = Math.min(newValue, slider.valueMax - 1); // 겹치지 않도록 설정
+        } else if (thumbType === 'max') {
+            slider.valueMax = Math.max(newValue, slider.valueMin + 1); // 겹치지 않도록 설정
         }
 
-        updateSlider();
+        updateSlider(slider);
     };
 
     const onStop = () => {
@@ -232,11 +238,16 @@ function startDrag(e, thumb) {
     window.addEventListener('mouseup', onStop);
 }
 
-thumbMin.addEventListener('mousedown', (e) => startDrag(e, thumbMin));
-thumbMax.addEventListener('mousedown', (e) => startDrag(e, thumbMax));
+// 각 슬라이더에 이벤트 리스너 추가
+Object.values(sliders).forEach((slider) => {
+    const { thumbMin, thumbMax } = slider;
 
-// Initialize slider
-updateSlider();
+    thumbMin.addEventListener('mousedown', (e) => startDrag(e, slider, 'min'));
+    thumbMax.addEventListener('mousedown', (e) => startDrag(e, slider, 'max'));
+
+    // 초기 슬라이더 업데이트
+    updateSlider(slider);
+});
 
 // 난이도 설정
 const level =[
@@ -252,4 +263,10 @@ function createChangeColortoLevel(item){
     })
 }
 level.forEach(button => createChangeColortoLevel(button));
+
+// 가격 설정
+let minPrice = 0;
+let maxPrice = 1000000;
+
+
 
