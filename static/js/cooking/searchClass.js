@@ -1,3 +1,14 @@
+// 클래스 설정
+const statusOfClasses = [
+document.querySelector('.offline'),
+document.querySelector('.online')
+];
+function createChangeColortoOnOffLine(item){
+    item.addEventListener('click', () => {
+        statusOfClasses.forEach(button => statusOfclass)
+    })
+}
+
 // 지역 나열
 const regions = [
 '서울','경기도','인천','대구','울산','광주',
