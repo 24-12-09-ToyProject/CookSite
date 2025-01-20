@@ -266,18 +266,31 @@ const level =[
     document.querySelector('.middle'),
     document.querySelector('.hard')
 ]
-
+// 난이도 선택 시 색깔 변경
 function createChangeColortoLevel(item){
     item.addEventListener('click',()=>{
         level.forEach(button => button.style.backgroundColor ="");
         item.style.backgroundColor ="red";
     })
 }
+// 함수 실행
 level.forEach(button => createChangeColortoLevel(button));
 
-// 가격 설정
-let minPrice = 0;
-let maxPrice = 1000000;
+// 온/오프라인 클래스 설정
+const classType = [
+    document.querySelector('.offline'),
+    document.querySelector('.online')
+]
+
+// 클래스 클릭 시 색깔 변경
+function createChangeColortoClass(item){
+    item.addEventListener('click' , () => {
+        classType.forEach(button => button.style.backgroundColor ="");
+        item.style.backgroundColor = "red";
+    })
+}
+// 함수 실행
+classType.forEach(button => createChangeColortoClass(button));
 
 
 
