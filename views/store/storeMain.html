@@ -9,12 +9,14 @@
         <ul>
         {% for product in tables %}
             <li>
-                <strong>상품명:</strong> {{ product.PRODUCT_NAME }}<br>
                 <strong>카테고리:</strong> {{ product.PRODUCT_CATEGORY }}<br>
-                <strong>가격:</strong> {{ product.PRODUCT_PRICE }} 원<br>
-                <strong>재고:</strong> {{ product.PRODCUT_STOCK }} 개<br>
                 <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}" width="200"><br>
-                <img src="{{ product.PPODUCT_SUB_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}" width="200">
+                <strong>상품명:</strong> {{ product.PRODUCT_NAME }}<br>
+                <strong>가격:</strong> {{ product.PRODUCT_PRICE }} 원<br>
+                옵션: <select>
+                    <option>{{ product.OPTION_NAME }} {{ product.PRODUCT_PRICE }}+{{ product.OPTION_PRICE }}원  (재고수량 : {{ product.OPTION_STOCK }})</option><br>
+                </select>
+
             </li>
         {% endfor %}
         </ul>
