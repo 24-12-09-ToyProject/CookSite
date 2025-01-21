@@ -1,14 +1,3 @@
-// 클래스 설정
-const statusOfClasses = [
-document.querySelector('.offline'),
-document.querySelector('.online')
-];
-function createChangeColortoOnOffLine(item){
-    item.addEventListener('click', () => {
-        statusOfClasses.forEach(button => statusOfclass)
-    })
-}
-
 // 지역 나열
 const regions = [
 '서울','경기도','인천','대구','울산','광주',
@@ -93,6 +82,7 @@ function createDropdown(items, dropdownHeader, dropdownContent, arrowElement,spa
         div.addEventListener('click', () => {
             spanElement.textContent = item;
             console.log('selected: ' + item);
+            spanElement.classList.add("selected");
             // 드롭다운 닫기
             dropdownContent.classList.remove('show');
             arrowElement.classList.remove('up');
@@ -153,9 +143,13 @@ const Days = [
 function createChangeColortoForm(item) {
     item.addEventListener('click', () => {
         // 모든 버튼의 배경색 초기화
-        classDayForm.forEach(button => button.style.backgroundColor = "");
+        classDayForm.forEach(button => {
+            button.style.backgroundColor = "";
+            button.classList.remove('selected');
+        });
         // 클릭된 버튼의 배경색 변경
         item.style.backgroundColor = "red";
+        item.classList.add('selected');
     });
 }
 
@@ -163,9 +157,13 @@ function createChangeColortoForm(item) {
 function createChangeColortoDay(item) {
     item.addEventListener('click', () => {
         // 모든 버튼의 배경색 초기화
-        Days.forEach(button => button.style.backgroundColor ="");
+        Days.forEach(button => {
+            button.style.backgroundColor ="";
+            button.classList.remove('selected');
+        });
         // 클릭된 버튼의 배경색 변경
         item.style.backgroundColor = "red";
+        item.classList.add('selected');
     });
 }
 
@@ -267,11 +265,17 @@ const level =[
     document.querySelector('.hard')
 ]
 // 난이도 선택 시 색깔 변경
-function createChangeColortoLevel(item){
-    item.addEventListener('click',()=>{
-        level.forEach(button => button.style.backgroundColor ="");
-        item.style.backgroundColor ="red";
-    })
+function createChangeColortoLevel(item) {
+    item.addEventListener('click', () => {
+      // 모든 span의 selected 클래스 제거 및 원래 배경색 복원
+    level.forEach(button => {
+        button.classList.remove('selected');
+        button.style.backgroundColor = ""; // 기본 배경색
+    });
+    // 현재 클릭한 span에만 selected 클래스 추가 및 색상 변경
+    item.classList.add('selected');
+    item.style.backgroundColor = "red"; // 선택된 배경색
+    });
 }
 // 함수 실행
 level.forEach(button => createChangeColortoLevel(button));
@@ -285,12 +289,66 @@ const classType = [
 // 클래스 클릭 시 색깔 변경
 function createChangeColortoClass(item){
     item.addEventListener('click' , () => {
-        classType.forEach(button => button.style.backgroundColor ="");
+        classType.forEach(button => {
+            button.style.backgroundColor ="";
+            button.classList.remove=('selected');
+        });
+        item.classList.add('selected');
         item.style.backgroundColor = "red";
-    })
+        
+    });
 }
 // 함수 실행
 classType.forEach(button => createChangeColortoClass(button));
+
+// 카드 데이터를 로드하는 함수
+async function loadCards() {
+    try {
+        // API에서 JSON 데이터 가져오기
+        const response = await fetch("/api/cooking");
+        const cardData = await response.json();
+
+        // DOM에 카드 추가
+        const container = document.getElementById("card-container");
+        const template = document.getElementById("card-template");
+
+        //카드 개수 슬라이스
+        const show_count = 9;
+        let currentCount = 0;
+
+        function renderCards(count){
+            const cardsToShow = cardData.slice(currentCount, currentCount + count);
+            cardsToShow.forEach((data) => {
+                const card = template.content.cloneNode(true); 
+                card.querySelector(".class-img").src = data.img;
+                card.querySelector(".class-Tag").textContent = data.category;
+                card.querySelector(".class-Name").textContent= data.title;
+                
+                 // a 태그 설정
+                const cardLink = card.querySelector("a"); // 템플릿 내 a 태그를 선택
+                cardLink.href = data.link;
+                container.appendChild(card);
+            });
+            currentCount += count;
+            // 모든 카드가 표시되면 "더보기" 버튼 숨김
+    if (currentCount >= cardData.length) {
+        document.getElementById("load-more").style.display = "none";
+    }
+    }
+    // 초기 카드 렌더링
+    renderCards(show_count);
+
+    // 더보기 버튼 클릭 이벤트
+    document.getElementById("load-more").addEventListener("click", () => {
+      renderCards(show_count); // 추가로 카드 렌더링
+    });
+    } catch (error) {
+        console.error("카드 데이터를 불러오는 중 오류 발생:", error);
+    }
+}
+
+// 페이지 로드 시 카드 데이터를 불러옴
+document.addEventListener("DOMContentLoaded", loadCards);
 
 
 

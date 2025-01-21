@@ -151,18 +151,24 @@ a {
 }
 
 /* 바디 - 바디 */
-
-.cookinglist-body{
+#card-container {
+    margin-left:20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap : 30% 30px;
+}
+/* .cookinglist-body{
     display: flex;
     justify-content: space-evenly;
-}
+}*/
 .cookinglist-head {
     display: flex;
     justify-content: space-between;
-}
-.cookinglist-list {
+} 
+.cookinglist-content {
+    margin-bottom:20px;
     width: 300px;
-    height: 200px;
+    height: 250px;
 }
 .list-head {
     width:100%;
@@ -172,6 +178,6 @@ a {
     height: 100%;
 }
 
-.classTag p {
+.class-content p {
     margin: 0; 
 }
