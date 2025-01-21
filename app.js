@@ -21,9 +21,11 @@ app.use(express.json());
 
 //라우터 불러오기 
 const cookingRouter = require('./routes/cooking/cookingRoute.js');
+const storeRouter = require('./routes/store/storeRoute.js');
 
 // 라우터 미들웨어 등록
 app.use('/' , cookingRouter);
+app.use('/' , storeRouter);
 
 
 // view 모든 하위 폴더 설정
@@ -56,13 +58,13 @@ pool.getConnection((err, conn)=>{
 
         (err, rows)=>{
             conn.release();
-            console.log("실행된 SQL query : " + exec.sql);
+            // console.log("실행된 SQL query : " + exec.sql);
             
 
             // rows에 내장된 속성들이 있음
             if(rows.length > 0){
-                console.log("데이터 하나 이상 있음");
-                console.log(rows[0]);
+                // console.log("데이터 하나 이상 있음");
+                // console.log(rows[0]);
                 
                 return;
                 

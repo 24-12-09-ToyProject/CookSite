@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Store Main</title>
+</head>
+<body>
+    <h1>상품 목록</h1>
+    {% if tables and tables.length > 0 %}
+        <ul>
+        {% for product in tables %}
+            <li>
+                <strong>상품명:</strong> {{ product.PRODUCT_NAME }}<br>
+                <strong>카테고리:</strong> {{ product.PRODUCT_CATEGORY }}<br>
+                <strong>가격:</strong> {{ product.PRODUCT_PRICE }} 원<br>
+                <strong>재고:</strong> {{ product.PRODCUT_STOCK }} 개<br>
+                <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}" width="200"><br>
+                <img src="{{ product.PPODUCT_SUB_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}" width="200">
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>상품이 없습니다.</p>
+    {% endif %}
+</body>
+</html>
