@@ -155,50 +155,80 @@ router.get("/api/cooking",(req,res)=>{
 
 //검색 조건
 router.post("/api/cooking/filter", async (req, res) => {
-    const { region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax } = req.body;
+    const { classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax } = req.body;
 
-    let query = `SELECT CLASS_IMAGE_URL , CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
 
     if (region) {
-        query += ` AND CLASS_LOCATION = ? OR ? IS NULL`;
+        query += ` AND CLASS_LOCATION = ? `;
         params.push(region);
     }
-    if (classType) {
-        query += ` AND CLASS_TYPE = ? OR ? IS NULL`;
-        params.push(classType);
-    }
-    if (category) {
-        query += ` AND CLASS_CATEGORY = ? OR ? IS NULL`;
-        params.push(category);
-    }
-    if (visitor) {
-        query += ` AND CLASS_PEOPLE_RECRUITED = ? OR ? IS NULL`;
-        params.push(visitor);
-    }
-    if (weekdays && weekdays.length > 0) {
-        query += ` AND CLASS_DATE = ? OR ? IS NULL`;
-        params.push(weekdays);
-    }
-    if (difficulty && difficulty.length > 0) {
-        query += ` AND CLASS_DIFFICULTY_LEVEL = ?  OR ? IS NULL`;
-        params.push(difficulty);
-    }
-    if (timeMin && timeMax) {
-        query += ` AND CLASS_START_TIME >= ? AND CLASS_END_TIME <= ?`;
-        params.push(timeMin, timeMax);
-    }
+
     if (priceMin !== undefined && priceMax !== undefined) {
         query += ` AND CLASS_PRICE BETWEEN ? AND ?`;
         params.push(priceMin, priceMax);
     }
-    console.log ("파라미터 확인하기 : " + params);
+
+    if (difficulty) {
+        query += ` AND CLASS_DIFFICULTY_LEVEL = ?`; // 단일 값 처리
+        params.push(difficulty);
+    }
+
+    if (visitor) {
+        query += ` AND CLASS_PEOPLE_RECRUITED = ?`;
+        params.push(visitor);
+    }
+
+    if (classType) {
+        query += ` AND CLASS_TYPE = ?`;
+        params.push(classType);
+    }
+
+    if (timeMin && timeMax) {
+        query += ` AND CLASS_START_TIME >= ? AND CLASS_END_TIME <= ?`;
+        params.push(timeMin, timeMax);
+    }
+
+    if (category) {
+        query += ` AND CLASS_CATEGORY = ?`;
+        params.push(category);
+    }
+
+    if (weekdays) {
+        query += ` AND CLASS_DATE = ?`; // 단일 값 처리
+        params.push(weekdays);
+    }
+
+    if (classForm) {
+        query += ` AND CLASS_FORM = ?`;
+        params.push(classForm);
+    }
+
+    console.log("받은 필터:", req.body);
+    console.log("실행될 쿼리:", query);
+    console.log("바인딩될 파라미터:", params);
+
     try {
-        const [results] = await pool.execute(query, params);
-        res.json(results);
+        // 디버깅을 위한 로그
+        console.log('Request Body:', req.body);
+        console.log('Query:', query);
+        console.log('Parameters:', params);
+
+        const connection = await pool.getConnection();
+        try {
+            const [results] = await connection.execute(query, params);
+            console.log('Query Results:', results);
+            res.json(results || []);
+        } finally {
+            connection.release();
+        }
     } catch (error) {
-        console.error("쿼리 실행 오류:", error);
-        res.status(500).send("서버 오류");
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Database error',
+            message: error.message
+        });
     }
 });
 

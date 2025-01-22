@@ -25,7 +25,6 @@ const cookingRouter = require('./routes/cooking/cookingRoute.js');
 // 라우터 미들웨어 등록
 app.use('/' , cookingRouter);
 
-
 // view 모든 하위 폴더 설정
 function getAllSubfolders(directory) {
     return fs.readdirSync(directory)

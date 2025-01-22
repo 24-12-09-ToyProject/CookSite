@@ -385,30 +385,9 @@ document.addEventListener("DOMContentLoaded", loadCards);
 //     return { timeMin, timeMax, priceMin, priceMax, selectedClasses };
 // }
 // 검색 조건 필터
-// 필터 API 호출 함수
-async function fetchFilteredCards(filters) {
-    try {
-        const response = await fetch("/api/cooking/filter", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(filters),
-        });
-
-        if (!response.ok) {
-            throw new Error("API 요청 실패");
-        }
-
-        return await response.json()|| []; // 결과 데이터를 반환
-        
-    } catch (error) {
-        console.error("필터 API 호출 오류:", error);
-    }
-}
-
-
 function getSearchFilters() {
+    // 온/오프라인 클래스 선택
+    const classForm = document.querySelector(".select-class .selected")?.textContent.trim()|| null;
     // 지역 선택
     const region = document.querySelector(".region.selected")?.textContent.trim() || null;
 
@@ -422,10 +401,10 @@ function getSearchFilters() {
     const visitor = document.querySelector(".visitor.selected")?.textContent.trim() || null;
 
     // 요일 선택 (평일, 토요일, 일요일)
-    const weekdays = [...document.querySelectorAll(".day .selected")].map(el => el.textContent.trim());
+    const weekdays = document.querySelector(".day .selected")?.textContent.trim() || null;
 
     // 난이도 (입문, 중급, 고급)
-    const difficulty = [...document.querySelectorAll(".difficulty .selected")].map(el => el.textContent.trim());
+    const difficulty = document.querySelector(".difficulty .selected")?.textContent.trim() || null;
 
     // 시간 범위
     const timeMin = document.getElementById("timeMin").textContent;
@@ -435,8 +414,14 @@ function getSearchFilters() {
     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
 
+    console.log("classForm:", classForm);
+    console.log("classType:", classType);
+    console.log("difficulty:", difficulty);
+    console.log("weekdays:", weekdays);
+
     // 반환 객체
     return {
+        classForm,
         region,
         classType,
         category,
@@ -449,10 +434,56 @@ function getSearchFilters() {
         priceMax,
     };
 }
+// 검색 버튼 클릭 이벤트
+document.getElementById("searchButton").addEventListener("click", async () => {
+    // 1. 검색 조건 수집
+    const filters = getSearchFilters();
+    console.log("디버깅 - 검색 필터 데이터:", filters);
+
+    // 2. API 호출 및 결과 반환
+    const filteredCards = await fetchFilteredCards(filters);
+    console.log("디버깅 - 서버 응답 데이터:", filteredCards);
+
+    // 3. 결과 렌더링
+    if (!Array.isArray(filteredCards)) {
+        console.error("API 응답 데이터가 배열이 아닙니다:", filteredCards);
+        return;
+    }
+
+    if (filteredCards.length === 0) {
+        console.log("검색 결과가 없습니다.");
+    } else {
+        renderCards(filteredCards);
+    }
+});
+
+// 필터 API 호출 함수
+async function fetchFilteredCards(filters) {
+    try {
+        const response = await fetch("/api/cooking/filter", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(filters),
+        });
+
+        if (!response.ok) {
+            throw new Error(`API 요청 실패 - 상태 코드: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("디버깅 - 서버 응답 데이터:", data);
+        return data || [];
+    } catch (error) {
+        console.error("필터 API 호출 오류:", error);
+        return [];
+    }
+}
 
 
 // DOM에 카드 렌더링
-function renderCards(cards) {
+function renderCards(filteredCards) {
     const container = document.getElementById("card-container");
     const template = document.getElementById("card-template");
 
@@ -460,11 +491,11 @@ function renderCards(cards) {
     container.innerHTML = "";
 
     // 새 카드 추가
-    cards.forEach((data) => {
+    filteredCards.forEach((data) => {
         const card = template.content.cloneNode(true);
-        card.querySelector(".class-img").src = data.img;
-        card.querySelector(".class-Tag").textContent = data.category;
-        card.querySelector(".class-Name").textContent = data.title;
+        card.querySelector(".class-img").src = data.CLASS_IMAGE_URL;
+        card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
+        card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
 
         // const cardLink = card.querySelector("a");
         // cardLink.href = data.link;
@@ -473,16 +504,9 @@ function renderCards(cards) {
     });
 
         // 카드가 없는 경우 메시지 표시
-        if (cards.length === 0) {
+        if (filteredCards.length === 0) {
             container.innerHTML = "<p>검색 결과가 없습니다.</p>";
         }
-}
+};
 
-// 검색 버튼 클릭 이벤트
-document.getElementById("searchButton").addEventListener("click", async () => {
-    const filters = getSearchFilters(); // 필터 데이터 수집
-    const filteredCards = await fetchFilteredCards(filters); // 필터 API 호출
-    renderCards(filteredCards); // 카드 렌더링
-    document.addEventListener("DOMContentLoaded", fetchFilteredCards);
-});
 
