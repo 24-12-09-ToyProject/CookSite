@@ -82,7 +82,7 @@ function createDropdown(items, dropdownHeader, dropdownContent, arrowElement,spa
         div.addEventListener('click', () => {
             spanElement.textContent = item;
             console.log('selected: ' + item);
-            spanElement.classList.add("selected");
+            spanElement.classList.add('selected');
             // 드롭다운 닫기
             dropdownContent.classList.remove('show');
             arrowElement.classList.remove('up');
@@ -149,6 +149,7 @@ function createChangeColortoForm(item) {
         });
         // 클릭된 버튼의 배경색 변경
         item.style.backgroundColor = "red";
+        // item.className ='selected';
         item.classList.add('selected');
     });
 }
@@ -163,6 +164,7 @@ function createChangeColortoDay(item) {
         });
         // 클릭된 버튼의 배경색 변경
         item.style.backgroundColor = "red";
+        // item.className ="selected";
         item.classList.add('selected');
     });
 }
@@ -274,6 +276,8 @@ function createChangeColortoLevel(item) {
     });
     // 현재 클릭한 span에만 selected 클래스 추가 및 색상 변경
     item.classList.add('selected');
+    // item.className="selected";
+    
     item.style.backgroundColor = "red"; // 선택된 배경색
     });
 }
@@ -294,6 +298,7 @@ function createChangeColortoClass(item){
             button.classList.remove=('selected');
         });
         item.classList.add('selected');
+        // item.className ="selected";
         item.style.backgroundColor = "red";
         
     });
@@ -351,4 +356,133 @@ async function loadCards() {
 document.addEventListener("DOMContentLoaded", loadCards);
 
 
+
+// //검색 조건 필터
+// function getSearchFilters() {
+//     // 선택된 클래스
+//     const selectedClasses = Array.from(document.querySelectorAll(".selected"))
+//         .map((el) => el.textContent.trim());
+
+//     // 시간 범위
+//     const timeMin = document.getElementById("timeMin").textContent;
+//     const timeMax = document.getElementById("timeMax").textContent;
+
+//     // 가격 범위
+//     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
+//     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
+
+//     return { selectedClasses, timeMin, timeMax, priceMin, priceMax };
+// }
+
+// function getSearchFilters() {
+//     const timeMin = document.getElementById("timeMin").textContent;
+//     const timeMax = document.getElementById("timeMax").textContent;
+//     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
+//     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
+
+//     const selectedClasses = [...document.querySelectorAll(".selected")].map((el) => el.dataset.value);
+
+//     return { timeMin, timeMax, priceMin, priceMax, selectedClasses };
+// }
+// 검색 조건 필터
+// 필터 API 호출 함수
+async function fetchFilteredCards(filters) {
+    try {
+        const response = await fetch("/api/cooking/filter", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(filters),
+        });
+
+        if (!response.ok) {
+            throw new Error("API 요청 실패");
+        }
+
+        return await response.json()|| []; // 결과 데이터를 반환
+        
+    } catch (error) {
+        console.error("필터 API 호출 오류:", error);
+    }
+}
+
+
+function getSearchFilters() {
+    // 지역 선택
+    const region = document.querySelector(".region.selected")?.textContent.trim() || null;
+
+    // 클래스 타입 (원데이, 정기)
+    const classType = document.querySelector(".class .selected")?.textContent.trim() || null;
+
+    // 카테고리
+    const category = document.querySelector(".category.selected")?.textContent.trim() || null;
+
+    // 방문자 수
+    const visitor = document.querySelector(".visitor.selected")?.textContent.trim() || null;
+
+    // 요일 선택 (평일, 토요일, 일요일)
+    const weekdays = [...document.querySelectorAll(".day .selected")].map(el => el.textContent.trim());
+
+    // 난이도 (입문, 중급, 고급)
+    const difficulty = [...document.querySelectorAll(".difficulty .selected")].map(el => el.textContent.trim());
+
+    // 시간 범위
+    const timeMin = document.getElementById("timeMin").textContent;
+    const timeMax = document.getElementById("timeMax").textContent;
+
+    // 가격 범위
+    const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
+    const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
+
+    // 반환 객체
+    return {
+        region,
+        classType,
+        category,
+        visitor,
+        weekdays,
+        difficulty,
+        timeMin,
+        timeMax,
+        priceMin,
+        priceMax,
+    };
+}
+
+
+// DOM에 카드 렌더링
+function renderCards(cards) {
+    const container = document.getElementById("card-container");
+    const template = document.getElementById("card-template");
+
+    // 기존 카드 삭제
+    container.innerHTML = "";
+
+    // 새 카드 추가
+    cards.forEach((data) => {
+        const card = template.content.cloneNode(true);
+        card.querySelector(".class-img").src = data.img;
+        card.querySelector(".class-Tag").textContent = data.category;
+        card.querySelector(".class-Name").textContent = data.title;
+
+        // const cardLink = card.querySelector("a");
+        // cardLink.href = data.link;
+
+        container.appendChild(card);
+    });
+
+        // 카드가 없는 경우 메시지 표시
+        if (cards.length === 0) {
+            container.innerHTML = "<p>검색 결과가 없습니다.</p>";
+        }
+}
+
+// 검색 버튼 클릭 이벤트
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const filters = getSearchFilters(); // 필터 데이터 수집
+    const filteredCards = await fetchFilteredCards(filters); // 필터 API 호출
+    renderCards(filteredCards); // 카드 렌더링
+    document.addEventListener("DOMContentLoaded", fetchFilteredCards);
+});
 
