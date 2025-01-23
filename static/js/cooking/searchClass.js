@@ -175,8 +175,8 @@ Days.forEach(button => createChangeColortoDay(button));
 // 슬라이더 변수 설정
 const sliders = {
     time: {
-        valueMin: 540, // 초기 최소 시간 (540분 = 9:00 AM)
-        valueMax: 1080, // 초기 최대 시간 (1080분 = 6:00 PM)
+        valueMin: 0, // 초기 최소 시간 (540분 = 9:00 AM)
+        valueMax: 1440, // 초기 최대 시간 (1080분 = 6:00 PM)
         total: 1440, // 하루 총 분 (24시간 * 60분)
         minLabel: document.getElementById('timeMin'),
         maxLabel: document.getElementById('timeMax'),
@@ -386,6 +386,8 @@ document.addEventListener("DOMContentLoaded", loadCards);
 // }
 // 검색 조건 필터
 function getSearchFilters() {
+    // 제목 검색
+    const classTitle = document.getElementById("class-input").value.trim();
     // 온/오프라인 클래스 선택
     const classForm = document.querySelector(".select-class .selected")?.textContent.trim()|| null;
     // 지역 선택
@@ -421,6 +423,7 @@ function getSearchFilters() {
 
     // 반환 객체
     return {
+        classTitle,
         classForm,
         region,
         classType,
@@ -452,6 +455,7 @@ document.getElementById("searchButton").addEventListener("click", async () => {
 
     if (filteredCards.length === 0) {
         console.log("검색 결과가 없습니다.");
+        document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다</p>";
     } else {
         renderCards(filteredCards);
     }
@@ -496,7 +500,8 @@ function renderCards(filteredCards) {
         card.querySelector(".class-img").src = data.CLASS_IMAGE_URL;
         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
-
+        const resultCount = filteredCards.length;
+        document.querySelector(".cookinglist-searchresult").textContent = resultCount + "개의 결과";       
         // const cardLink = card.querySelector("a");
         // cardLink.href = data.link;
 

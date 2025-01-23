@@ -142,8 +142,15 @@ a {
 .recommandKeyword-keywordType a > p{
     margin-right: 20px;
 }
-.recommandKeyword-keywordType {
-    display:flex;
+.recommandKeyword-keywordType ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Optional: adds space between items */
+    list-style-type: none; /* Optional: removes bullet points */
+    padding: 0; /* Optional: removes default padding */
+}
+.recommandKeyword-keywordType ul li {
+    cursor: pointer;
 }
 .ghost {
     display: flex;

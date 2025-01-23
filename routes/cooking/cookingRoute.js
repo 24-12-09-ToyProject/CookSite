@@ -155,11 +155,14 @@ router.get("/api/cooking",(req,res)=>{
 
 //검색 조건
 router.post("/api/cooking/filter", async (req, res) => {
-    const { classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax } = req.body;
+    const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax } = req.body;
 
     let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
-
+    if(classTitle){
+        query += ` AND CLASS_TITLE LIKE ?`;
+        params.push(`%${classTitle}%`);
+    }
     if (region) {
         query += ` AND CLASS_LOCATION = ? `;
         params.push(region);
