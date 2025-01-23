@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>register</title>
+	<link rel="stylesheet" href="/css/member/register.css">
+	<!-- daum kakao  -->
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+	<!-- sweetalert2 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+	<script>
+		const searchAddress = () => {
+			cancelAddress();
+			let width = 400;
+			let height = 500;
+			new daum.Postcode({
+				width: width,
+				height: height,
+        oncomplete: function(data) {
+            document.querySelector('#zonecode').value = data.zonecode;
+            document.querySelector('#default-address').value = data.address;
+        }
+    }).open({
+			left: (window.screen.width / 2) - (width / 2),
+			top: (window.screen.height / 2) - (height / 2)
+});
+		}
+
+		const cancelAddress = () => {
+			document.querySelector('#zonecode').value = "";
+			document.querySelector('#default-address').value = "";
+		}
+    
+</script>
+</head>
+<body>
+	<h2>가입을 시작합니다!</h2>
+	<form id="signUp-form" action="/member/signUp" method="post">
+		<div id="basic-info">
+			<div class="basic-info-header">
+				<div>기본정보</div>
+				<div class="essential"><span class="essential-mark">*</span> 필수</div>
+			</div>
+			<div class="small-container id-container">
+				<div class="container-head">아이디<span class="essential-mark"> *</span></div>
+				<div>
+					<input type="text" class="required" id="memberId" name="memberId" autocomplete="off" onkeyup="checkValid('id');">
+					<span id="check-duplicate-btn" class="disabled" data-valid="" onclick="checkDuplicate();">중복확인</span>
+					<div class="notice id-notice success-message hide">사용할 수 있는 아이디입니다</div>
+					<div class="notice id-notice failure-message-data hide">아이디를 입력해주세요</div>
+					<div class="notice id-notice failure-message-length hide">아이디는 6~12글자이어야 합니다</div>
+					<div class="notice id-notice failure-message-type hide">영어, 숫자를 포함하며 영어로 시작해야 합니다 (특수문자 X)</div>
+					<div class="notice id-notice faliure-message-duplicate hide">이미 사용중인 아이디입니다</div>
+				</div>
+			</div>
+			<div class="small-container pw-container">
+				<div class="container-head">비밀번호<span class="essential-mark"> *</span></div>
+				<div>
+					<input type="password" name="memberPw" class="required" id="memberPw" autocomplete="off" onkeyup="checkValid('pw');">
+					<div class="notice pw-notice success-message hide">사용할 수 있는 비밀번호입니다</div>
+					<div class="notice pw-notice failure-message-data hide">비밀번호를 입력해주세요</div>
+					<div class="notice pw-notice failure-message-length hide">비밀번호는 8글자 이상이어야 합니다</div>
+					<div class="notice pw-notice failure-message-type hide">최소 하나의 문자, 숫자 및 특수 문자를 포함해야 합니다</div>
+				</div>
+			</div>
+			<div class="small-container confirm-container">
+				<div class="container-head">비밀번호 확인<span class="essential-mark"> *</span></div>
+				<div>
+					<input type="password" class="required" id="confirmPw" onkeyup="checkPasswordRetype();">
+					<div class="notice confirm-notice failure-message-data hide">비밀번호를 확인해주세요</div>
+					<div class="notice confirm-notice failure-message-mismatch hide">비밀번호가 일치하지 않습니다</div>
+					<div class="notice confirm-notice success-message hide">비밀번호가 일치합니다</div>
+				</div>
+			</div>
+			<div class="small-container name-container">
+				<div class="container-head">이름<span class="essential-mark"> *</span></div>
+				<div>
+					<input type="text" class="required" name="memberName" autocomplete="off">
+				</div>
+			</div>
+			<div class="small-container address-container">
+				<div class="container-head">주소</div>
+				<div class="address-container-inputBox">
+					<input id="zonecode" type="text" placeholder="우편번호" name="zonecode" readonly><button type="button" id="address-search-btn" onclick="searchAddress();">주소검색</button><br>
+					<input id="default-address" type="text" placeholder="기본주소" name="defaultAddress" readonly><br>
+					<input id="detail-address" type="text" placeholder="나머지 주소(선택 입력 가능)" name="detailAddress">
+				</div>
+			</div>
+			<div class="small-container phone-container">
+				<div class="container-head">휴대전화<span class="essential-mark"> *</span></div>
+				<div class="phone-flexBox">
+					<input type="text" class="required" name="phone" value="010" readonly>
+					<div> - </div>
+					<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
+					<div> - </div>
+					<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
+				</div>
+			</div>
+			<div class="small-container email-container">
+				<div class="container-head">이메일<span class="essential-mark"> *</span></div>
+				<div>
+					<input type="email" class="required" name="email" autocomplete="off">
+				</div>
+			</div>
+		</div>
+		
+		<div id="add-info">
+			<div class="add-info-header">
+				<div>추가정보</div>
+			</div>
+			<div class="small-container gender-container">
+				<div class="container-head">성별</div>
+				<input id="male-radio" type="radio" name="gender" value="male">
+				<label for="male-radio">
+					남자
+				</label>
+				<input id="female-radio" type="radio" name="gender" value="female">
+				<label for="female-radio">
+					여자
+				</label>
+			</div>
+			<div class="small-container year-container">
+				<div class="container-head">생년월일</div>
+				<div>
+					<div class="select-box">
+						<input id="solar-radio" type="radio" name="calenderType" value="solar">
+						<label for="solar-radio">
+							양력
+						</label>
+						<input id="lunar-radio" type="radio" name="calenderType" value="lunar">
+						<label for="lunar-radio">
+							음력
+						</label>
+					</div>
+					<div class="date-input-box">
+						<input name="dateOfBirth" type="number" id="year" min="1900" autocomplete="off">년
+						<input name="dateOfBirth" type="number" id="month" min="1" max="12" autocomplete="off">월
+						<input name="dateOfBirth" type="number" id="day" min="1" max="31" autocomplete="off">일
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<button id="signUp-btn" type="button" onclick="finalSignUp();">가입하기</button>
+	</form>
+
+
+	<script>
+		// 성공 메시지 정보 가져오기
+		let idSuccessMessage = document.querySelector('.id-notice.success-message');
+		let pwSuccessMessage = document.querySelector('.pw-notice.success-message');
+		// 실패 메시지 정보 가져오기 (글자수 제한)
+		let idFailureMessageLength = document.querySelector('.id-notice.failure-message-length');
+		let pwFailureMessageLength = document.querySelector('.pw-notice.failure-message-length');
+		// 실패 메시지2 정보 가져오기 (영어 또는 숫자)
+		let idFailureMessageType = document.querySelector('.id-notice.failure-message-type');
+		let pwFailureMessageType = document.querySelector('.pw-notice.failure-message-type');
+		// 실패 메시지3 정보 가져오기 (필수입력)
+		let idFailureMessageData = document.querySelector('.id-notice.failure-message-data');
+		let pwFailureMessageData = document.querySelector('.pw-notice.failure-message-data');
+		// 실패 메시지3 정보 가져오기 (중복된 아이디)
+		let idFailureMessageDuplicate = document.querySelector('.id-notice.faliure-message-duplicate');
+
+		// 길이 체크
+		function checkLength(idPw, value) {
+			if(idPw === 'id'){
+				return value.length >= 6 && value.length <= 12
+			}else if(idPw === 'pw'){
+				return value.length >= 8
+			}
+		}
+
+		// 정규표현식 체크
+		function checkRegex(idPw, str) {
+			// return /^[A-Za-z0-9][A-Za-z0-9]*$/.test(str);
+			if(idPw === 'id'){
+				return /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z][a-zA-Z0-9]{3,11}$/.test(str);
+			}else if(idPw === 'pw'){
+				return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/.test(str);
+			}
+		}
+
+		// 값 공란 유무 확인
+		function checkEmpty (value) {
+			return value !== '';
+		}
+
+		// 비밀번호 확인
+		function isMatch (password1, password2) {
+			return password1 === password2;
+		}
+
+		// id, pw 유효성 체크 이벤트
+		function checkValid(idPw){
+			// 아이디, 비밀번호 입력창 정보 가져오기
+			let valMemberId = document.querySelector('#memberId').value;
+			let valMemberPw = document.querySelector('#memberPw').value;
+
+			if(idPw === 'id'){
+
+				// id 수정 시 중복체크 결과 초기화
+				duplicateCheckBtn.setAttribute('data-valid', 'false');
+
+				if(!checkEmpty(valMemberId)){
+					idSuccessMessage.classList.add('hide');
+					idFailureMessageLength.classList.add('hide');
+					idFailureMessageType.classList.add('hide');
+					idFailureMessageData.classList.remove('hide');
+					idFailureMessageDuplicate.classList.add('hide');
+					// 유효성 체크 후 중복체크 버튼 비활성화
+					deactivateButton();
+				}else if(!checkLength('id', valMemberId)){
+					idSuccessMessage.classList.add('hide');
+					idFailureMessageLength.classList.remove('hide');
+					idFailureMessageType.classList.add('hide');
+					idFailureMessageData.classList.add('hide');
+					idFailureMessageDuplicate.classList.add('hide');
+					// 유효성 체크 후 중복체크 버튼 비활성화
+					deactivateButton();
+				}else if(!checkRegex('id', valMemberId)){
+					idSuccessMessage.classList.add('hide');
+					idFailureMessageLength.classList.add('hide');
+					idFailureMessageType.classList.remove('hide');
+					idFailureMessageData.classList.add('hide');
+					idFailureMessageDuplicate.classList.add('hide');
+					// 유효성 체크 후 중복체크 버튼 비활성화
+					deactivateButton();
+				}else{
+					// 성공
+					idSuccessMessage.classList.remove('hide');
+					idFailureMessageLength.classList.add('hide');
+					idFailureMessageType.classList.add('hide');
+					idFailureMessageData.classList.add('hide');
+					idFailureMessageDuplicate.classList.add('hide');
+
+					// 유효성 체크 후 중복체크 버튼 활성화
+					activateButton();
+				}
+			}else if(idPw === 'pw'){
+				if(!checkEmpty(valMemberPw)){
+					pwSuccessMessage.classList.add('hide');
+					pwFailureMessageLength.classList.add('hide');
+					pwFailureMessageType.classList.add('hide');
+					pwFailureMessageData.classList.remove('hide');
+				}else if(!checkLength('pw', valMemberPw)){
+					pwSuccessMessage.classList.add('hide');
+					pwFailureMessageLength.classList.remove('hide');
+					pwFailureMessageType.classList.add('hide');
+					pwFailureMessageData.classList.add('hide');
+				}else if(!checkRegex('pw', valMemberPw)){
+					pwSuccessMessage.classList.add('hide');
+					pwFailureMessageLength.classList.add('hide');
+					pwFailureMessageType.classList.remove('hide');
+					pwFailureMessageData.classList.add('hide');
+				}else{
+					pwSuccessMessage.classList.remove('hide');
+					pwFailureMessageLength.classList.add('hide');
+					pwFailureMessageType.classList.add('hide');
+					pwFailureMessageData.classList.add('hide');
+				}
+			}
+			
+		}
+
+		// 비밀번호 확인 정보 가져오기
+		let elEmptyMessage = document.querySelector('.confirm-notice.failure-message-data');
+		let elMismatchMessage = document.querySelector('.confirm-notice.failure-message-mismatch');
+		let elMatchSuccessMessage = document.querySelector('.confirm-notice.success-message');
+
+		// pw 확인 
+		function checkPasswordRetype(){
+			let elInputPasswordRetype = document.querySelector('#confirmPw').value;
+			let valMemberPw = document.querySelector('#memberPw').value;
+
+			if(!elInputPasswordRetype === ''){
+				elEmptyMessage.classList.remove('hide');
+				elMismatchMessage.classList.add('hide');
+				elMatchSuccessMessage.classList.add('hide');
+			}else if(!isMatch(valMemberPw, elInputPasswordRetype)){
+				elEmptyMessage.classList.add('hide');
+				elMismatchMessage.classList.remove('hide');
+				elMatchSuccessMessage.classList.add('hide');
+			}else{
+				elEmptyMessage.classList.add('hide');
+				elMismatchMessage.classList.add('hide');
+				elMatchSuccessMessage.classList.remove('hide');
+			}
+		}
+		
+		// 최종 검사
+		function finalSignUp(){
+			let elForm = document.querySelector('#signUp-form');
+			let el = document.querySelectorAll('.success-message');
+			let essenialArr = document.querySelectorAll('.required');
+
+			// required 목록 공란 확인
+			let noDataCount = 0;
+			essenialArr.forEach(item => {
+				if(item.value === ''){
+					noDataCount++;
+				}
+			})
+			
+			// 유효성 검사 성공 유무 확인
+			let count = 0;
+			el.forEach(item => {
+				if(item.classList.contains("hide")){
+					count++;
+				}
+				
+			})
+
+			// 아이디 중복확인 
+			let isValid =	duplicateCheckBtn.getAttribute('data-valid');
+				
+
+			// 공란 highlight 처리
+			showEmptyFieldWarnings();
+			
+			if(noDataCount > 0){
+				Swal.fire({
+						icon: 'warning',
+						title: 'Alert가 실행되었습니다.',
+						text: '필수 입력란을 채워주세요.',
+					});
+			}else if(count > 0){
+				Swal.fire({
+						icon: 'warning',
+						title: 'Alert가 실행되었습니다.',
+						text: '아이디 / 비밀번호를 확인해주세요',
+					});
+			}else if(isValid === 'false'){
+				Swal.fire({
+						icon: 'warning',
+						title: 'Alert가 실행되었습니다.',
+						text: '아이디 중복 확인을 해주세요',
+					});
+			}else{
+				
+					
+					// html 기본 유효성검사 통과 시 submit
+					if(elForm.checkValidity()){
+						Swal.fire({
+							title: '정말로 그렇게 하시겠습니까?',
+							text: '다시 되돌릴 수 없습니다. 신중하세요.',
+							icon: 'warning',
+							
+							showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+							confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+							cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+							confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+							cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+							
+							reverseButtons: true, // 버튼 순서 거꾸로
+							
+						}).then(result => {
+							// 만약 Promise리턴을 받으면,
+							if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+								Swal.fire({
+										title: '승인이 완료되었습니다.',
+										text: '회원가입 진행중',
+										icon: 'success',
+										confirmButtonText: '확인'
+								}).then((result) => {
+										// 확인 버튼 클릭 후 동작
+										if (result.isConfirmed) {
+											elForm.submit(); // 폼 제출
+										}
+    });
+							}
+						});
+					}else{
+						Swal.fire({
+							icon: 'warning',
+							title: 'Alert가 실행되었습니다.',
+							text: '생년월일, 휴대전화 또는 이메일을 확인해주세요',
+						});
+
+						const invalidElements = elForm.querySelectorAll(':invalid');
+						const validElements = elForm.querySelectorAll(':valid');
+
+						invalidElements.forEach(item => {
+							console.log(item);  // 유효성 검사에 실패한 요소들을 출력
+							item.style.borderColor = 'red';  // 실패한 입력 요소를 빨간색으로 표시
+							item.style.borderWidth = '2px';
+						});
+
+					}
+			}
+
+			
+		}
+
+		// 필수 입력란 공란일 시 input css 적용
+		function showEmptyFieldWarnings(){
+			let el = document.querySelectorAll('.required');
+			console.log(el);
+			
+			el.forEach(item => {
+				if(item.value === ''){
+					item.style.borderColor = 'red';
+					item.style.borderWidth = '2px';
+				}else{
+					item.style.borderColor = '#e9e9e9';
+					item.style.borderWidth = '1px';
+				}
+			})
+
+			
+		}
+
+
+
+
+		// 아이디 중복 체크
+		const duplicateCheckBtn = document.querySelector('#check-duplicate-btn');
+		
+		// 버튼 활성화
+		function activateButton(){
+			duplicateCheckBtn.classList.remove('disabled');
+			duplicateCheckBtn.onclick = checkDuplicate;
+		}
+
+		// 버튼 비활성화
+		function deactivateButton(){
+			duplicateCheckBtn.classList.add('disabled');
+			duplicateCheckBtn.onclick = null;
+		}
+
+
+
+		// onclick 핸들러 - ajax 비동기통신
+		function checkDuplicate() {
+			(async () => {
+				const memberId = document.querySelector('#memberId').value;
+
+				// 중복 확인 요청
+				const response = await fetch('/member/api/check-duplicate-id', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ memberId })
+				});
+
+				if (!response.ok) {
+            console.log(response.status);
+						
+        }
+
+				const result = await response.json();
+
+				if (result.success) {
+					Swal.fire({
+							icon: 'success',
+							title: 'Alert가 실행되었습니다.',
+							text: result.message,
+					});
+					// 중복확인 - data-valid : true 로 변경
+					duplicateCheckBtn.setAttribute('data-valid', 'true');
+					
+				} else {
+					Swal.fire({
+							icon: 'warning',
+							title: 'Alert가 실행되었습니다.',
+							text: result.message,
+					});
+					idSuccessMessage.classList.add('hide');
+					idFailureMessageDuplicate.classList.remove('hide');
+
+					// 중복확인 - data-valid : false 로 변경
+					duplicateCheckBtn.setAttribute('data-valid', 'false');
+				}
+			})();
+
+
+		}
+
+
+
+	</script>
+</body>
+</html>

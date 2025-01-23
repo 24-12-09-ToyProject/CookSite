@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+		<style>
+		</style>
+	</head>
+	<body>
+		<h1>login 페이지</h1>
+
+		<!-- login 실행 form -->
+		<form action="/member/login" method="post">
+			<div>
+				아이디
+				<input type="text" name="memberId" placeholder="아이디" required>
+			</div>
+			<div>
+				비밀번호
+				<input type="password" name="memberPw" placeholder="패스워드" required>
+			</div>
+			<button type="submit">로그인</button>
+		</form>
+
+		<a href="">아이디 찾기</a>
+		<a href="">비밀번호 찾기</a>
+		<a href="">
+			<div>회원가입</div>
+		</a>
+
+		<hr>
+		<hr>
+
+		<div>더욱 간편한 로그인/회원가입</div>
+		<div>카카오, 네이버..</div>
+
+
+		<hr>
+		<hr>
+
+		회사소개, 이용약관, 이용안내, 개인정보처리방침
+		{{signupResult}}
+	</body>
+
+	<script>
+		// 서버에서 전달된 signupResult 메시지 확인
+		const signupResult = '<%= signupResult %>';
+  
+  // 메시지가 있다면 알림창 표시
+  if (signupResult) {
+    alert(signupResult);
+  }
+	</script>
+</html>
