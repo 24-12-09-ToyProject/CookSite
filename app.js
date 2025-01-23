@@ -53,12 +53,13 @@ app.use(express.static('static'));
 const cookingRouter = require('./routes/cooking/cookingRoute.js');
 // - member 라우터
 const memberRouter = require('./routes/member/memberRoute.js');
+const recipeRouter = require('./routes/recipe/recipeRoute.js');
 
 // 라우터 미들웨어 등록
-app.use('/' , cookingRouter);
+app.use('/cooking' , cookingRouter);
+app.use('/recipe' , recipeRouter);
 // - member 미들웨어
 app.use('/member' , memberRouter);
-
 
 // view 모든 하위 폴더 설정
 function getAllSubfolders(directory) {
@@ -82,6 +83,8 @@ app.listen(port, () =>{
     console.log("서버가 정상적으로 실행 되었습니다" + port);
 });
 
+// static의 모든 하위 폴더 지정
+app.use('/static', express.static(path.join(__dirname, 'static')));
 
 //DB 테스트 
 // pool.getConnection((err, conn)=>{
