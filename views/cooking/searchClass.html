@@ -3,151 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>클래스 메인페이지</title>
+    <link rel="stylesheet" href="../../static/css/reset.css">
+    <link rel="stylesheet" href="../../static/css/layout.css">
     <link rel="stylesheet" href="../../static/css/cooking/searchClass.css">
     <script defer src="../../static/js/cooking/searchClass.js"></script>
     
 </head>
 <body>
-    <div class="main">
-        <div class="main-top">
-            <div class="search-class">
-                <input type="text" placeholder="클래스 입력" id="class-input" value=""> <br>
-            </div>
-            <!--  클래스 선택  -->
-            <div class="select-class">
-                <span class="offline">오프라인 클래스</span>
-                <span class="online">온라인 클래스</span>
-            </div>
-            <!-- 옵션 영역 -->
-            <div class="select-option">
-                <!-- 첫번째 옵션 -->
-                <div class="option1">
-                    <div class="dropdown-header">
-                        <span class="region">지역</span>
-                        <span class="arrow"></span>
-                    </div>
-                    <div class="dropdown-content"></div>
-                </div>
-                <!-- 두번째 옵션 -->
-                <div class="option2">
-                    <div class="class">
-                        <span class="oneDay" value="oneDay">원데이</span><span class="regular" value="regular">정기</span>
-                    </div>
-                </div>
-                <!-- 세번째 옵션 -->
-                <div class="option3">
-                    <div class="dropdown-header2">
-                        <span class="category">전체</span>
-                        <span class="arrow2"></span>
-                    </div>
-                    <div class="dropdown-content2"></div>
-                </div>
-                <!-- 네번째 옵션 -->
-                <div class="option4">
-                    <div class="dropdown-header3">
-                        <span class="visitor">선택안함</span>
-                        <span class="arrow3"></span>
-                    </div>
-                    <div class="dropdown-content3"></div>
-                </div>
-                <!-- 다섯번째 옵션 -->
-                <div class="option5">
-                    <div class="day">
-                        <span class="weekdays">평일</span>
-                        <span class="saturday">토요일</span>
-                        <span class="sunday">일요일</span>
-                    </div>
-                </div>
-                <!-- 여섯번째 옵션 -->
-                <div class="option6">
-                    <div class="slider-container">
-                        <div class="slider-track"></div>
-                        <div class="slider-range"></div>
-                        <div class="thumb" id="thumbMin"></div>
-                        <div class="thumb" id="thumbMax"></div>
-                    </div>
-                    <div class="time-label">
-                        <span id="timeMin">00:00</span> - <span id="timeMax">23:59</span>
-                    </div>
-                </div>
-                <!-- 일곱번째 옵션 -->
-                <div class="option7">
-                    <div class="difficulty">
-                        <span class="basic">입문</span>
-                        <span class="middle">중급</span>
-                        <span class="hard">고급</span>
-                    </div>
-                    </div>
-                <!-- 여덟번째 옵션 -->
-                <div class="option8">
-                    <div class="slider-container">
-                        <div class="slider-track"></div>
-                        <div class="price-slider-range"></div>
-                        <div class="thumb" id="priceThumbMin"></div>
-                        <div class="thumb" id="priceThumbMax"></div>
-                    </div>
-                    <div class="time-label">
-                        <span id="priceMin" class="price-label">0</span>
-                        <span id="priceMax" class="price-label">1,000,000</span>
-                    </div>
-                </div>
-                <div class="searchButton">
-                    <button value="검색하기" id="searchButton">검색</button>
-                </div>
-            </div>
-            <div class="main-top-recommandKeyword">
-                <div class="Keyword-div">
-                    <span>추천 검색어</span>
-                    <div class="recommandKeyword-keywordType">
-                        <ul>
-                            <li class="keywordType"><p>단체</p></li>
-                            <li class="keywordType"><p>베이킹</p></li>
-                            <li class="keywordType"><p>커피</p></li>
-                            <li class="keywordType"><p>화과자</p></li>
-                            <li class="keywordType"><p>앙금</p></li>
-                            <li class="keywordType"><p>칵테일</p></li>
-                            <li class="keywordType"><p>케이크</p></li>
-                        </ul>
-                    </div>
-                    <div class="ghost">
-                        <button class="openMap">지도 표시하기</button>
-                    </div>
-                </div>
-            </div>
+    <header>
+        <div class="header-top">
+            <h1>헤더 영역입니다.</h1>
         </div>
-        <!-- 메인 바디 -->
-        <div class="main-mid">
-            <div class="main-mid-cookinglist">
-                <div class="cookinglist-head">
-                    <span class="cookinglist-searchresult"></span>
-                    <button><span>최신순</span></button>
+        <div class="header-bottom">
+            <nav class="nav-menu">
+                <a href="#">레시피</a>
+                <a href="#">스토어</a>
+                <a href="#">쿠킹클래스</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="main">
+            <div class="main-top">
+                <div class="search-class">
+                    <input type="text" placeholder="클래스 입력" id="class-input" value=""> <br>
                 </div>
-                <div class="template-ghost">
-        <!-- 게시글 템플릿 -->
-                <template id="card-template">
-                    <a href="">
-                        <div class="cookinglist-content">
-                            <div class="list-head">
-                                <img src="" alt="클래스 이미지" class="class-img">
-                            </div>
-                            <div class="list-body">
-                                <div class="class-content">
-                                    <p class="class-Tag"></p>
-                                    <p class="class-Name"></p>
+                <!--  클래스 선택  -->
+                <div class="select-class">
+                    <span class="offline">오프라인 클래스</span>
+                    <span class="online">온라인 클래스</span>
+                </div>
+                <!-- 옵션 영역 -->
+                <div class="select-option">
+                    <!-- 첫번째 옵션 -->
+                    <div class="option1">
+                        <div class="dropdown-header">
+                            <span class="region">지역</span>
+                            <span class="arrow"></span>
+                        </div>
+                        <div class="dropdown-content"></div>
+                    </div>
+                    <!-- 두번째 옵션 -->
+                    <div class="option2">
+                        <div class="class">
+                            <span class="oneDay" value="oneDay">원데이</span><span class="regular" value="regular">정기</span>
+                        </div>
+                    </div>
+                    <!-- 세번째 옵션 -->
+                    <div class="option3">
+                        <div class="dropdown-header2">
+                            <span class="category">전체</span>
+                            <span class="arrow2"></span>
+                        </div>
+                        <div class="dropdown-content2"></div>
+                    </div>
+                    <!-- 네번째 옵션 -->
+                    <div class="option4">
+                        <div class="dropdown-header3">
+                            <span class="visitor">선택안함</span>
+                            <span class="arrow3"></span>
+                        </div>
+                        <div class="dropdown-content3"></div>
+                    </div>
+                    <!-- 다섯번째 옵션 -->
+                    <div class="option5">
+                        <div class="day">
+                            <span class="weekdays">평일</span>
+                            <span class="saturday">토요일</span>
+                            <span class="sunday">일요일</span>
+                        </div>
+                    </div>
+                    <!-- 여섯번째 옵션 -->
+                    <div class="option6">
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-range"></div>
+                            <div class="thumb" id="thumbMin"></div>
+                            <div class="thumb" id="thumbMax"></div>
+                        </div>
+                        <div class="time-label">
+                            <span id="timeMin">00:00</span> - <span id="timeMax">23:59</span>
+                        </div>
+                    </div>
+                    <!-- 일곱번째 옵션 -->
+                    <div class="option7">
+                        <div class="difficulty">
+                            <span class="basic">입문</span>
+                            <span class="middle">중급</span>
+                            <span class="hard">고급</span>
+                        </div>
+                        </div>
+                    <!-- 여덟번째 옵션 -->
+                    <div class="option8">
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="price-slider-range"></div>
+                            <div class="thumb" id="priceThumbMin"></div>
+                            <div class="thumb" id="priceThumbMax"></div>
+                        </div>
+                        <div class="time-label">
+                            <span id="priceMin" class="price-label">0</span>
+                            <span id="priceMax" class="price-label">1,000,000</span>
+                        </div>
+                    </div>
+                    <div class="searchButton">
+                        <button value="검색하기" id="searchButton">검색</button>
+                    </div>
+                </div>
+                <div class="main-top-recommandKeyword">
+                    <div class="Keyword-div">
+                        <span>추천 검색어</span>
+                        <div class="recommandKeyword-keywordType">
+                            <ul>
+                                <li class="keywordType"><p>단체</p></li>
+                                <li class="keywordType"><p>베이킹</p></li>
+                                <li class="keywordType"><p>커피</p></li>
+                                <li class="keywordType"><p>화과자</p></li>
+                                <li class="keywordType"><p>앙금</p></li>
+                                <li class="keywordType"><p>칵테일</p></li>
+                                <li class="keywordType"><p>핸드메이드</p></li>
+                            </ul>
+                        </div>
+                        <div class="ghost">
+                            <button class="openMap">지도 표시하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 메인 바디 -->
+            <div class="main-mid">
+                <div class="main-mid-cookinglist">
+                    <div class="cookinglist-head">
+                        <span class="cookinglist-searchresult"></span>
+                        <button><span>최신순</span></button>
+                    </div>
+                    <div class="template-ghost">
+            <!-- 게시글 템플릿 -->
+                    <template id="card-template">
+                        <a href="">
+                            <div class="cookinglist-content">
+                                <div class="list-head">
+                                    <img src="" alt="클래스 이미지" class="class-img">
+                                </div>
+                                <div class="list-body">
+                                    <div class="class-content">
+                                        <p class="class-Tag"></p>
+                                        <p class="class-Name"></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>    
-                </template>
-                <div id="card-container" class="card-container"></div>
-                <button id="load-more" class="load-more">더보기</button>
+                        </a>    
+                    </template>
+                    <div id="card-container" class="card-container"></div>
+                    <button id="load-more" class="load-more">더보기</button>
+                    </div>
                 </div>
             </div>
+            
         </div>
-        
-    </div>
-
+    </main>
+    <footer>
+        <p>cooksite@cooksite.com<br>Copyright ⓒ 2025 CookSite. All Rights Reserved.</p>
+    </footer>
 
 
 </body>

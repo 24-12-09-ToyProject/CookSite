@@ -38,10 +38,16 @@ router.get("/registerClass",(req,res)=>
 {
     res.render("registerClass.html")
 });
+// 클래스 등록 추가 페이지
+router.get("/createClass",(req,res)=>
+{
+    res.render("createClass.html")
+});
 
 // 클래스 내용 전달
 // 실제 데이터는 데이터베이스에서 가져오거나 동적으로 생성
 router.get("/api/cooking",(req,res)=>{
+    let query = ` `
     const cardData = [
         {
             img: "../../static/img/cooking/화면 캡처 2025-01-12 135101.png",
@@ -155,7 +161,7 @@ router.get("/api/cooking",(req,res)=>{
 
 //검색 조건
 router.post("/api/cooking/filter", async (req, res) => {
-    const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax } = req.body;
+    const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
     let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
@@ -206,6 +212,10 @@ router.post("/api/cooking/filter", async (req, res) => {
     if (classForm) {
         query += ` AND CLASS_FORM = ?`;
         params.push(classForm);
+    }
+    if(keyword) {
+        query += ` AND CLASS_CATEGORY =?`;
+        params.push(keyword);
     }
 
     console.log("받은 필터:", req.body);

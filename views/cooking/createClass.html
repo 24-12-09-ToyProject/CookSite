@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../static/css/reset.css">
+    <link rel="stylesheet" href="../../static/css/layout.css">
+    <link rel="stylesheet" href="../../static/css/cooking/createClass.css">
+    <script defer src="../../static/js/cooking/createClass.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <h1>헤더 영역입니다.</h1>
+        </div>
+    </header>
+        <main>
+            <div class="main">
+                <div class="sidebar">
+                    <ul>
+                        <li>클래스 유형</li>
+                        <li>클래스 소개</li>
+                        <li>금액 및 일정</li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <!-- Step 1: 클래스/모임 -->
+                    <div id="step-1" class="step">
+                        <h3>클래스/모임 <span style="color: red;">(필수)</span></h3>
+                        <div class="options">
+                            <div class="option">클래스</div>
+                            <div class="option">모임</div>
+                        </div>
+                        <h3>온라인/오프라인 <span style="color: red;">(필수)</span></h3>
+                        <div class="options">
+                            <div class="option">오프라인</div>
+                            <div class="option">온라인 라이브</div>
+                        </div>
+                        <h3>원데이/정기 <span style="color: red;">(필수)</span></h3>
+                        <div class="options">
+                            <div class="option">원데이 클래스</div>
+                            <div class="option">정기 클래스</div>
+                        </div>
+                        <div class="buttons">
+                            <button class="next" onclick="showStep(2)">다음</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: 제목 및 카테고리 -->
+                    <div id="step-2" class="step hidden">
+                        <h3>제목 및 카테고리</h3>
+                        <p>클래스/모임 제목과 카테고리를 등록해주세요</p>
+                        <div>
+                            <label>클래스 명 <span style="color: red;">(필수)</span></label>
+                            <input type="text" placeholder="클래스 명을 입력해주세요" maxlength="50">
+                        </div>
+                        <div>
+                            <label>카테고리 <span style="color: red;">(필수)</span></label>
+                            <select>
+                                <option>카테고리</option>
+                                <option>카테고리 1</option>
+                                <option>카테고리 2</option>
+                            </select>
+                            <p>서브 카테고리는 최대 3개까지 선택하실 수 있어요</p>
+                        </div>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(1)">이전</button>
+                            <button class="next" onclick="showStep(3)">다음</button>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div id="step-3" class="step hidden">
+                        <h4>이미지</h4>
+                        <p class="description">클래스/모임을 대표하는 이미지(썸네일)에 사용될 이미지를 등록해주세요</p>
+
+                        <div class="image-upload-container">
+                            <label for="image-upload-1" class="image-upload-box">
+                                <div class="image-icon">
+                                    <img src="https://via.placeholder.com/50" alt="이미지 추가 아이콘">
+                                </div>
+                                <p class="image-text">이미지 추가하기</p>
+                                <p class="image-description">클릭 후 이미지를 추가해 주세요</p>
+                            </label>
+                            <input type="file" id="image-upload-1" accept="image/*" class="hidden-input">
+                        </div>
+
+                        <div class="upload-guidelines">
+                            <p>• 용량은 3mb 이하를 사용해 주세요</p>
+                            <p>• 이미지 사이즈는 750px × 500px (3:2)에요 (비율이 맞지 않으면 이미지가 잘릴 수 있어요)</p>
+                        </div>
+
+                        <h4 class="class-image">클래스 이미지 <span class="optional">(선택/최대 8개 등록 가능)</span></h4>
+                        <div class="image-upload-container">
+                            <label for="image-upload-2" class="image-upload-box">
+                                <div class="image-icon">
+                                    <img src="https://via.placeholder.com/50" alt="이미지 추가 아이콘">
+                                </div>
+                                <p class="image-text">이미지 추가하기</p>
+                                <p class="image-description">클릭 후 이미지를 추가해 주세요</p>
+                            </label>
+                            <input type="file" id="image-upload-2" accept="image/*" class="hidden-input" multiple>
+                        </div>
+
+                        <div class="upload-guidelines">
+                            <p>• 클래스/모임 이미지가 많을수록 클래스/모임을 신청할 확률이 올라가요</p>
+                        </div>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(2)">이전</button>
+                            <button class="next" onclick="showStep(4)">다음</button>
+
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div id="step-4" class="step hidden">
+                        <h3>추가 단계</h3>
+                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(3)">이전</button>
+                            <button class="next" onclick="showStep(5)">다음</button>
+
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div id="step-5" class="step hidden">
+                        <h3>추가 단계</h3>
+                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(4)">이전</button>
+                            <button class="next" onclick="showStep(6)">다음</button>
+                        </div>
+                    </div>
+                    <!-- Step 6 -->
+                    <div id="step-6" class="step hidden">
+                        <h3>추가 단계</h3>
+                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(5)">이전</button>
+                            <button class="next" onclick="showStep(7)">다음</button>
+                        </div>
+                    </div>
+                    <!-- Step 7 -->
+                    <div id="step-7" class="step hidden">
+                        <h3>추가 단계</h3>
+                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div class="buttons">
+                            <button class="prev" onclick="showStep(6)">이전</button>
+                            <button class="next" onclick="showStep(8)">다음</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    <footer>
+        <p>cooksite@cooksite.com<br>Copyright ⓒ 2025 CookSite. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

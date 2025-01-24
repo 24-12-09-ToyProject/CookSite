@@ -415,7 +415,7 @@ function getSearchFilters() {
     // 가격 범위
     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
-
+    // 추천 검색어
     console.log("classForm:", classForm);
     console.log("classType:", classType);
     console.log("difficulty:", difficulty);
@@ -461,15 +461,32 @@ document.getElementById("searchButton").addEventListener("click", async () => {
     }
 });
 
+document.querySelectorAll(".keywordType").forEach((element) => {
+    element.addEventListener("click", async () => {
+        const keyword = element.textContent.trim() || null; // 클릭된 요소의 텍스트를 가져옴
+        console.log("디버깅 - 선택된 키워드:", keyword);
+
+        // API 호출
+        const filteredCards = await fetchFilteredCards({}, keyword);
+
+        if (filteredCards.length === 0) {
+            console.log("검색 결과가 없습니다.");
+            document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다</p>";
+        } else {
+            renderCards(filteredCards);
+        }
+    });
+});
 // 필터 API 호출 함수
-async function fetchFilteredCards(filters) {
+async function fetchFilteredCards(filters = {}, keyword = null) {
+    const requestBody = { ...filters, keyword };
     try {
         const response = await fetch("/api/cooking/filter", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(filters),
+            body: JSON.stringify(requestBody),
         });
 
         if (!response.ok) {
@@ -484,6 +501,7 @@ async function fetchFilteredCards(filters) {
         return [];
     }
 }
+
 
 
 // DOM에 카드 렌더링
@@ -513,5 +531,6 @@ function renderCards(filteredCards) {
             container.innerHTML = "<p>검색 결과가 없습니다.</p>";
         }
 };
+
 
 
