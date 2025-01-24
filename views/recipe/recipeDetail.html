@@ -1,0 +1,34 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="/static/css/recipe/recipeList.css">
+{% endblock %}
+
+{% block content %}
+    <div class="cate_list">
+        <span><b>종류</b></span>
+        <a href="#">반찬</a>
+        <a href="#">국/탕/찌개</a>
+        <a href="#">면/만두</a>
+        <a href="#">밥/죽/떡</a>
+        <a href="#">양식/샐러드</a>
+    </div>
+    <div class="search_result">
+        총 {{ recipes.length }} 개의 레시피가 있습니다.
+    </div>
+    <ul>
+        {% for recipe in recipes %}
+        <li>
+            <h3>{{ recipe.title }}</h3>
+            <a href="#">
+                <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
+            </a>
+            <p>ID: {{ recipe.member_id }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="/static/js/recipe/recipeList.js"></script>
+{% endblock %}

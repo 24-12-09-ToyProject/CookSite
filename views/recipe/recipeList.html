@@ -13,6 +13,20 @@
         <a>밥/죽/떡</a>
         <a>양식/샐러드</a>
     </div>
+    <div class="search_result">
+        총 {{ recipes.length }} 개의 레시피가 있습니다.
+    </div>
+    <ul>
+        {% for recipe in recipes %}
+        <li>
+            <h3>{{ recipe.title }}</h3>
+            <a href="#">
+                <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
+            </a>
+            <p>ID: {{ recipe.member_id }}</p>
+        </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
 
 {% block extra_scripts %}
