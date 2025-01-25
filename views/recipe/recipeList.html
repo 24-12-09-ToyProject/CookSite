@@ -5,24 +5,25 @@
 {% endblock %}
 
 {% block content %}
-    <div class="cate_list">
+    <div class="cate-list">
         <span><b>종류</b></span>
-        <a>반찬</a>
-        <a>국/탕/찌개</a>
-        <a>면/만두</a>
-        <a>밥/죽/떡</a>
-        <a>양식/샐러드</a>
+        <button class="cate-button" data-category="sidedish">밑반찬</button>
+        <button class="cate-button" data-category="maindish">메인반찬</button>
+        <button class="cate-button" data-category="soup">국/탕/찌개</button>
+        <button class="cate-button" data-category="noodle">면/만두</button>
+        <button class="cate-button" data-category="rice">밥/죽/떡</button>
+        <button class="cate-button" data-category="western">양식/샐러드</button>
     </div>
-    <div class="search_result">
-        총 {{ recipes.length }} 개의 레시피가 있습니다.
+    <div class="search-result">
+        총 <b id="recipe-count">{{ recipes.length }}</b> 개의 레시피가 있습니다.
     </div>
-    <ul>
+    <ul id="recipe-list">
         {% for recipe in recipes %}
         <li>
-            <h3>{{ recipe.title }}</h3>
-            <a href="#">
+            <a href="/recipe/detail/{{ recipe.recipe_no }}">
                 <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
             </a>
+            <h3>{{ recipe.title }}</h3>
             <p>ID: {{ recipe.member_id }}</p>
         </li>
         {% endfor %}
