@@ -48,7 +48,7 @@
 }
 
 /* 옵션 버튼 스타일 */
-.option {
+.option ,.classFrequency {
     width: 150px; /* 고정된 버튼 크기 */
     height: 50px;
     border: 1px solid #ddd;
@@ -62,7 +62,7 @@
 }
 
 /* 선택된 옵션 스타일 */
-.option.active {
+.option.active ,.classFrequency.active{
     border-color: #007bff;
     background-color: #e9f4ff;
 }
@@ -186,6 +186,37 @@ span {
     background-color: #007bff;
     color: #fff;
 }
+.className-text{
+    position: relative;
+    bottom:3px;
+}
+
+.address-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#address {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#search-address-btn {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#search-address-btn:hover {
+    background-color: #0056b3;
+}
+
 
 /*  이미지  */
 .description {
@@ -258,4 +289,200 @@ span {
 /* 숨겨진 파일 입력 */
 .hidden-input {
     display: none;
+}
+
+/* step - 5  */
+#curriculum-form {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.write-mode label {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.difficulty {
+    display: flex;
+    gap: 10px;
+}
+
+.difficulty-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.difficulty-btn.active{
+    background-color:blanchedalmond;
+}
+.difficulty-btn:hover {
+    background-color: #e9e9e9;
+}
+
+#duration, #curriculum-description {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #888;
+}
+/* step - 6 */
+/* 기본 폼 스타일 */
+#instructor-intro-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #888;
+}
+
+/* 사진 업로드 스타일 */
+.photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.photo-preview img {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#upload-photo-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#upload-photo-btn:hover {
+    background-color: #e9e9e9;
+}
+
+/* 입력 필드 및 텍스트박스 */
+#nickname,
+#instructor-description {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+/*  Step - 7 */
+.class-count {
+    margin-top : 10px;
+}
+/* 전체 폼 스타일 */
+#regular-class-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* 폼 그룹 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="date"] {
+    padding: 8px;
+}
+
+/* 날짜 및 인원 설정 그룹 */
+.date-group, .person-group {
+    display: flex;
+    gap: 10px;
+}
+
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* 등록 버튼 */
+#add-class-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-class-btn:hover {
+    background-color: #218838;
 }

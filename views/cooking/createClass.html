@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../../static/css/reset.css">
     <link rel="stylesheet" href="../../static/css/layout.css">
     <link rel="stylesheet" href="../../static/css/cooking/createClass.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <script defer src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
     <script defer src="../../static/js/cooking/createClass.js"></script>
 </head>
 <body>
@@ -25,22 +27,17 @@
                     </ul>
                 </div>
                 <div class="content">
-                    <!-- Step 1: 클래스/모임 -->
+                    <!-- Step 1: 클래스 타입 결정 -->
                     <div id="step-1" class="step">
-                        <h3>클래스/모임 <span style="color: red;">(필수)</span></h3>
-                        <div class="options">
-                            <div class="option">클래스</div>
-                            <div class="option">모임</div>
-                        </div>
                         <h3>온라인/오프라인 <span style="color: red;">(필수)</span></h3>
                         <div class="options">
                             <div class="option">오프라인</div>
-                            <div class="option">온라인 라이브</div>
+                            <div class="option">온라인</div>
                         </div>
                         <h3>원데이/정기 <span style="color: red;">(필수)</span></h3>
                         <div class="options">
-                            <div class="option">원데이 클래스</div>
-                            <div class="option">정기 클래스</div>
+                            <div class="classFrequency">원데이 클래스</div>
+                            <div class="classFrequency">정기 클래스</div>
                         </div>
                         <div class="buttons">
                             <button class="next" onclick="showStep(2)">다음</button>
@@ -53,7 +50,8 @@
                         <p>클래스/모임 제목과 카테고리를 등록해주세요</p>
                         <div>
                             <label>클래스 명 <span style="color: red;">(필수)</span></label>
-                            <input type="text" placeholder="클래스 명을 입력해주세요" maxlength="50">
+                            <input type="text" placeholder="클래스 명을 입력해주세요" maxlength="50" id="className">
+                            <small class="className-text">최대 50글자(0/50)</small>
                         </div>
                         <div>
                             <label>카테고리 <span style="color: red;">(필수)</span></label>
@@ -64,6 +62,31 @@
                             </select>
                             <p>서브 카테고리는 최대 3개까지 선택하실 수 있어요</p>
                         </div>
+                        <div class="form-group">
+                            <label>주소 <span style="color: red;">(필수)</span></label>
+                            <div class="address-input-group">
+                                <input type="text" id="address" placeholder="주소를 입력해주세요" maxlength="100">
+                                <button type="submit" id="search-address-btn">주소 검색</button>
+                            </div>
+                            <small>정확한 주소를 입력해주세요</small>
+                        </div>
+                        <div class="form-group">
+                            <label>시간 설정</label>
+                            <div class="time-options">
+                                <label for="start-time">시작 시간</label>
+                                <select id="start-time">
+                                    <option value="" disabled selected>시작 시간을 선택하세요</option>
+                                    <!-- 00:00부터 24:00까지 옵션 추가 -->
+                                </select>
+                                
+                                <label for="end-time">끝 시간</label>
+                                <select id="end-time">
+                                    <option value="" disabled selected>끝 시간을 선택하세요</option>
+                                    <!-- 00:00부터 24:00까지 옵션 추가 -->
+                                </select>
+                            </div>
+                        </div>
+                    
                         <div class="buttons">
                             <button class="prev" onclick="showStep(1)">이전</button>
                             <button class="next" onclick="showStep(3)">다음</button>
@@ -113,18 +136,38 @@
                     </div>
                     <!-- Step 4 -->
                     <div id="step-4" class="step hidden">
-                        <h3>추가 단계</h3>
-                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div class="quiz-content"></div>
                         <div class="buttons">
                             <button class="prev" onclick="showStep(3)">이전</button>
                             <button class="next" onclick="showStep(5)">다음</button>
-
                         </div>
                     </div>
                     <!-- Step 5 -->
                     <div id="step-5" class="step hidden">
-                        <h3>추가 단계</h3>
-                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <div id="curriculum-form">
+                            <div class="form-group">
+                                <label>커리큘럼 <span style="color: red;">(필수)</span> <span title="커리큘럼 작성 방법에 대한 도움말" style="cursor: help;">❓</span></label>
+                            </div>
+                    
+                            <div class="form-group">
+                                <label>난이도</label>
+                                <div class="difficulty">
+                                    <button type="button" class="difficulty-btn" data-level="beginner">입문</button>
+                                    <button type="button" class="difficulty-btn" data-level="intermediate">중급</button>
+                                    <button type="button" class="difficulty-btn" data-level="advanced">고급</button>
+                                </div>
+                            </div>
+                    
+                            <div class="form-group">
+                                <label for="duration">소요시간</label>
+                                <input type="text" id="duration" placeholder="소요 시간/기간을 입력 해주세요">
+                            </div>
+                            <div class="form-group">
+                                <label for="curriculum-description">커리큘럼</label>
+                                <textarea id="curriculum-description" placeholder="커리큘럼을 자유롭게 작성해 주세요 (최소 40자 이상)" minlength="40" maxlength="600"></textarea>
+                                <small>최소 40자 이상 (0/600)</small>
+                            </div>
+                        </div>
                         <div class="buttons">
                             <button class="prev" onclick="showStep(4)">이전</button>
                             <button class="next" onclick="showStep(6)">다음</button>
@@ -132,8 +175,37 @@
                     </div>
                     <!-- Step 6 -->
                     <div id="step-6" class="step hidden">
-                        <h3>추가 단계</h3>
-                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <h3>강사 소개</h3>
+                        <p>호스트님을 소개해주세요</p>
+                    
+                        <!-- 강사 소개 폼 -->
+                        <div id="instructor-intro-form">
+                            <!-- 강사 사진 -->
+                            <div class="form-group">
+                                <label>강사님 사진 <span style="color: red;">(필수)</span> <span title="사진 등록 방법에 대한 도움말" style="cursor: help;">❓</span></label>
+                                <div class="photo-upload">
+                                    <div class="photo-preview">
+                                        <img src="../../static/img/cooking/user-icon.png" alt="강사 사진 미리보기" id="photo-preview">
+                                    </div>
+                                    <button type="button" id="upload-photo-btn">사진 등록</button>
+                                    <input type="file" id="upload-photo-input" accept="image/*" style="display: none;">
+                                </div>
+                            </div>
+                    
+                            <!-- 상호명 또는 닉네임 -->
+                            <div class="form-group">
+                                <label for="nickname">상호명 또는 닉네임 <span style="color: red;">(필수)</span></label>
+                                <input type="text" id="nickname" placeholder="닉네임을 입력해주세요" maxlength="15">
+                                <small>(<span id="nickname-count">0</span>/15)</small>
+                            </div>
+                    
+                            <!-- 강사님 소개 -->
+                            <div class="form-group">
+                                <label for="instructor-description">강사님 소개 <span style="color: red;">(필수)</span> <span title="소개 작성에 대한 도움말" style="cursor: help;">❓</span></label>
+                                <textarea id="instructor-description" placeholder="소개글을 작성해주세요 (최소 40자 이상)" minlength="40" maxlength="600"></textarea>
+                                <small>(<span id="description-count">0</span>/600)</small>
+                            </div>
+                        </div>
                         <div class="buttons">
                             <button class="prev" onclick="showStep(5)">이전</button>
                             <button class="next" onclick="showStep(7)">다음</button>
@@ -141,11 +213,60 @@
                     </div>
                     <!-- Step 7 -->
                     <div id="step-7" class="step hidden">
-                        <h3>추가 단계</h3>
-                        <p>여기에 필요한 내용을 추가하세요.</p>
+                        <h3>클래스/모임 수강권 <span style="color: red;">(필수)</span> <span title="수강권 등록 방법에 대한 도움말" style="cursor: help;">❓</span></h3>
+                        <p>정기 클래스/모임 수강권을 등록해주세요 (최대 4개 등록 가능)</p>
+                    
+                        <!-- 정기 클래스 수강권 등록 -->
+                        <div id="regular-class-form">
+                            <h4>정기 클래스 수강권 등록 <span title="정기 클래스 등록 도움말" style="cursor: help;">❓</span></h4>
+                            <div class="form-group">
+                                <!-- 수강 횟수 -->
+                                <label for="class-count" class="class-count">수강 횟수 <span style="color: red;">(필수)</span></label>
+                                <input type="number" id="class-count" placeholder="회" min="1" required>
+                            </div>
+                            
+                            <!-- 총 수강 금액 -->
+                            <div class="form-group">
+                                <label for="class-price">총 수강 금액 <span style="color: red;">(필수)</span></label>
+                                <input type="number" id="class-price" placeholder="원" min="0" required>
+                            </div>
+                            
+                            <!-- 기간 설정 -->
+                            <div class="form-group">
+                                <label>기간 설정 <span style="color: gray;">(선택)</span></label>
+                                <div class="date-group">
+                                    <input type="date" id="start-date" placeholder="시작 날짜">
+                                    <input type="date" id="end-date" placeholder="종료 날짜">
+                                </div>
+                            </div>
+                    
+                            <!-- 인원 설정 -->
+                            <div class="form-group">
+                                <label>인원 설정 <span style="color: gray;">(선택)</span></label>
+                                <div class="person-group">
+                                    <select id="min-people">
+                                        <option value="" disabled selected>최소 인원</option>
+                                        <option value="1">1명</option>
+                                        <option value="2">2명</option>
+                                        <option value="3">3명</option>
+                                        <option value="4">4명</option>
+                                    </select>
+                                    <select id="max-people">
+                                        <option value="" disabled selected>최대 인원</option>
+                                        <option value="5">5명</option>
+                                        <option value="10">10명</option>
+                                        <option value="15">15명</option>
+                                        <option value="20">20명</option>
+                                    </select>
+                                </div>
+                            </div>
+                    
+                            <!-- 등록 버튼 -->
+                            <button type="button" id="add-class-btn">정기 수강권 등록</button>
+                        </div>
                         <div class="buttons">
                             <button class="prev" onclick="showStep(6)">이전</button>
-                            <button class="next" onclick="showStep(8)">다음</button>
+                            <button class="register" onclick="showStep(8)">등록</button>
                         </div>
                     </div>
                 </div>
@@ -154,5 +275,11 @@
     <footer>
         <p>cooksite@cooksite.com<br>Copyright ⓒ 2025 CookSite. All Rights Reserved.</p>
     </footer>
+    <script th:inline="javascript">
+        let quizContent="";
+        let answerContent="";
+    </script>
+
+
 </body>
 </html>

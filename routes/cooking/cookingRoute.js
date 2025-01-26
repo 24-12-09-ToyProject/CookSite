@@ -9,23 +9,10 @@ router.get("/" , (request,response)=>{
 // db 세팅
 const pool = require('../../config/db.js');
 
-// 로그인
-router.get("/login", (request,response)=>
-{
-    response.render("Test.html")
-}
-)
-// 로그인 테스트
-router.post("/gologin",(req,res)=>
-{
-    const memberId = req.body.memberId;
-    const memberPw = req.body.memberPw;
-
-    res.render("Test2.html",{
-        id:memberId,
-        pw:memberPw
-    });
-});
+//쿠킹 컨트롤러 호출
+const cookingController = require('../../controllers/cooking/cookingController.js');
+router.post('/api/cooking/filter',cookingController.searchClass);
+router.post('/api/cooking/insert',cookingController.createClass);
 
 // 쿠킹 클래스 메인 페이지
 router.get("/searchClass",(req,res)=>
@@ -159,91 +146,131 @@ router.get("/api/cooking",(req,res)=>{
         res.json(cardData);
 })
 
-//검색 조건
-router.post("/api/cooking/filter", async (req, res) => {
-    const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
+// //검색 조건
+// router.post("/api/cooking/filter", async (req, res) => {
+//     const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
-    const params = [];
-    if(classTitle){
-        query += ` AND CLASS_TITLE LIKE ?`;
-        params.push(`%${classTitle}%`);
-    }
-    if (region) {
-        query += ` AND CLASS_LOCATION = ? `;
-        params.push(region);
-    }
+//     let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+//     const params = [];
+//     if(classTitle){
+//         query += ` AND CLASS_TITLE LIKE ?`;
+//         params.push(`%${classTitle}%`);
+//     }
+//     if (region) {
+//         query += ` AND CLASS_LOCATION = ? `;
+//         params.push(region);
+//     }
 
-    if (priceMin !== undefined && priceMax !== undefined) {
-        query += ` AND CLASS_PRICE BETWEEN ? AND ?`;
-        params.push(priceMin, priceMax);
-    }
+//     if (priceMin !== undefined && priceMax !== undefined) {
+//         query += ` AND CLASS_PRICE BETWEEN ? AND ?`;
+//         params.push(priceMin, priceMax);
+//     }
 
-    if (difficulty) {
-        query += ` AND CLASS_DIFFICULTY_LEVEL = ?`; // 단일 값 처리
-        params.push(difficulty);
-    }
+//     if (difficulty) {
+//         query += ` AND CLASS_DIFFICULTY_LEVEL = ?`; // 단일 값 처리
+//         params.push(difficulty);
+//     }
 
-    if (visitor) {
-        query += ` AND CLASS_PEOPLE_RECRUITED = ?`;
-        params.push(visitor);
-    }
+//     if (visitor) {
+//         query += ` AND CLASS_PEOPLE_RECRUITED = ?`;
+//         params.push(visitor);
+//     }
 
-    if (classType) {
-        query += ` AND CLASS_TYPE = ?`;
-        params.push(classType);
-    }
+//     if (classType) {
+//         query += ` AND CLASS_TYPE = ?`;
+//         params.push(classType);
+//     }
 
-    if (timeMin && timeMax) {
-        query += ` AND CLASS_START_TIME >= ? AND CLASS_END_TIME <= ?`;
-        params.push(timeMin, timeMax);
-    }
+//     if (timeMin && timeMax) {
+//         query += ` AND CLASS_START_TIME >= ? AND CLASS_END_TIME <= ?`;
+//         params.push(timeMin, timeMax);
+//     }
 
-    if (category) {
-        query += ` AND CLASS_CATEGORY = ?`;
-        params.push(category);
-    }
+//     if (category) {
+//         query += ` AND CLASS_CATEGORY = ?`;
+//         params.push(category);
+//     }
 
-    if (weekdays) {
-        query += ` AND CLASS_DATE = ?`; // 단일 값 처리
-        params.push(weekdays);
-    }
+//     if (weekdays) {
+//         query += ` AND CLASS_DATE = ?`; // 단일 값 처리
+//         params.push(weekdays);
+//     }
 
-    if (classForm) {
-        query += ` AND CLASS_FORM = ?`;
-        params.push(classForm);
-    }
-    if(keyword) {
-        query += ` AND CLASS_CATEGORY =?`;
-        params.push(keyword);
-    }
+//     if (classForm) {
+//         query += ` AND CLASS_FORM = ?`;
+//         params.push(classForm);
+//     }
+//     if(keyword) {
+//         query += ` AND CLASS_CATEGORY =?`;
+//         params.push(keyword);
+//     }
 
-    console.log("받은 필터:", req.body);
-    console.log("실행될 쿼리:", query);
-    console.log("바인딩될 파라미터:", params);
+//     console.log("받은 필터:", req.body);
+//     console.log("실행될 쿼리:", query);
+//     console.log("바인딩될 파라미터:", params);
 
-    try {
-        // 디버깅을 위한 로그
-        console.log('Request Body:', req.body);
-        console.log('Query:', query);
-        console.log('Parameters:', params);
+//     try {
+//         // 디버깅을 위한 로그
+//         console.log('Request Body:', req.body);
+//         console.log('Query:', query);
+//         console.log('Parameters:', params);
 
-        const connection = await pool.getConnection();
-        try {
-            const [results] = await connection.execute(query, params);
-            console.log('Query Results:', results);
-            res.json(results || []);
-        } finally {
-            connection.release();
-        }
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({
-            error: 'Database error',
-            message: error.message
-        });
-    }
-});
+//         const connection = await pool.getConnection();
+//         try {
+//             const [results] = await connection.execute(query, params);
+//             console.log('Query Results:', results);
+//             res.json(results || []);
+//         } finally {
+//             connection.release();
+//         }
+//     } catch (error) {
+//         console.error('Database Error:', error);
+//         res.status(500).json({
+//             error: 'Database error',
+//             message: error.message
+//         });
+//     }
+// });
 
+// // 랜덤 classNo 생성 함수
+// function generateClassNo() {
+//     const randomString = crypto.randomBytes(3).toString('hex').slice(0, 6);
+//     const randomNumber = Math.floor(1000 + Math.random() * 9000);
+//     return `${randomString}${randomNumber}`;
+// }
+
+// router.post("/api/cooking/insert" , async (req,res) => {
+//     const {
+//         classType, meetingType, classFrequency, className, category,
+//         thumbnailURL, classImages, editorContent, difficulty,
+//         duration, curriculum, nickname, instructorDescription,
+//         instructorPhoto, classCount, classPrice, startDate,
+//         endDate, minPeople, maxPeople, notes
+//     } = req.body;
+//     const query = `
+//         INSERT INTO classes (
+//             classNo, classType, meetingType, classFrequency, className, category,
+//             thumbnailURL, classImages, editorContent, difficulty,
+//             duration, curriculum, nickname, instructorDescription,
+//             instructorPhoto, classCount, classPrice, startDate, endDate,
+//             minPeople, maxPeople, notes
+//         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//     `;
+//     const values = [
+//         generateClassNo(), classType, meetingType, classFrequency, className, category,
+//         thumbnailURL, JSON.stringify(classImages), editorContent, difficulty,
+//         duration, curriculum, nickname, instructorDescription,
+//         instructorPhoto, classCount, classPrice, startDate, endDate,
+//         minPeople, maxPeople, notes
+//     ];
+//         db.query(query, values, (err, result) => {
+//         if (err) {
+//             console.error(err);
+//             res.status(500).json({ success: false, error: err.message });
+//         } else {
+//             res.json({ success: true, data: result });
+//         }
+//     });
+// });
 
 module.exports = router;
