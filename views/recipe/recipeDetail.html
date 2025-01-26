@@ -1,34 +1,39 @@
 {% extends "common/layout.html" %}
 
 {% block extra_styles %}
-    <link rel="stylesheet" href="/static/css/recipe/recipeList.css">
+    <link rel="stylesheet" href="/static/css/recipe/recipeDetail.css">
 {% endblock %}
 
 {% block content %}
-    <div class="cate_list">
-        <span><b>종류</b></span>
-        <a href="#">반찬</a>
-        <a href="#">국/탕/찌개</a>
-        <a href="#">면/만두</a>
-        <a href="#">밥/죽/떡</a>
-        <a href="#">양식/샐러드</a>
+    <div class="thumbnail-box">
+        <img src="{{ detail.thumbnail }}" alt="{{ detail.title }}">
     </div>
-    <div class="search_result">
-        총 {{ recipes.length }} 개의 레시피가 있습니다.
+    <div class="information-box">
+        <h3>작성자 : {{ detail.member_id }}</h3>
+        <h3>제목 : {{ detail.title }}</h3>
+        <h3>인트로 : {{ detail.intro }}</h3>
+        <h3>인분 : {{ detail.serving }}</h3>
+        <h3>난이도 : {{ detail.difficulty }}</h3>
     </div>
-    <ul>
-        {% for recipe in recipes %}
-        <li>
-            <h3>{{ recipe.title }}</h3>
-            <a href="#">
-                <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
-            </a>
-            <p>ID: {{ recipe.member_id }}</p>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="ingredients-box">
+        <h3>재료 : {{ detail.ingredients }}</h3>
+    </div>
+    <div class="steps-box">
+        <h3>조리 순서 :</h3>
+        <ul>
+            {% for step in detail.steps %}
+                <li>
+                    <h4>Step {{ step.step }}</h4>
+                    <p>{{ step.description }}</p>
+                    {% if step.recipe_image_path %}
+                    <img src="{{ step.recipe_image_path }}" alt="Step {{ step.step }} image">
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="/static/js/recipe/recipeList.js"></script>
+    <script src="/static/js/recipe/recipeDetail.js"></script>
 {% endblock %}

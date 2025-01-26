@@ -1,5 +1,6 @@
 const pool = require('../../config/db');
 const RecipeDTO = require('../../dtos/recipe/RecipeDTO');
+const RecipeDetailDTO = require('../../dtos/recipe/RecipeDetailDTO');
 
 // 레시피 리스트 정보 가져오는 함수
 async function getRecipeList(req, res) {
@@ -25,6 +26,7 @@ async function getRecipeList(req, res) {
         if(kCategory) {
             query += ' WHERE RECIPE_CATEGORY = ?';
         }
+        query += ' ORDER BY RECIPE_NO DESC';
 
         const [rows] = await connection.query(query, kCategory ? [kCategory] : []);
         connection.release();
@@ -44,8 +46,53 @@ async function getRecipeList(req, res) {
 }
 
 // 레시피 상세 정보 가져오는 함수
-// async function getRecipeDetail(req, res) {
+async function getRecipeDetail(req, res) {
+    try {
+        const connection = await pool.getConnection();
+        const recipeNo = req.params.recipeNo; // URL 파라미터에서 recipeNo 가져오기
+        
+        const query = `
+            SELECT 
+                r.RECIPE_NO,
+                r.MEMBER_ID,
+                r.RECIPE_TITLE,
+                r.RECIPE_INTRO,
+                r.RECIPE_CATEGORY,
+                r.RECIPE_DIFFICULTY,
+                r.SERVING,
+                r.INGREDIENTS,
+                r.RECIPE_THUMBNAIL,
+                s.STEP_NO,
+                s.STEP,
+                s.DESCRIPTION,
+                s.RECIPE_IMAGE_PATH
+            FROM 
+                RECIPE r
+            LEFT JOIN 
+                STEPS s ON r.RECIPE_NO = s.RECIPE_NO
+            WHERE 
+                r.RECIPE_NO = ?;
+        `;
+        const [rows] = await connection.query(query, [recipeNo]);
+        connection.release();
 
-// }
+        if(rows.length === 0) {
+            return res.status(404).send('레시피를 찾을 수 없습니다.')
+        }
 
-module.exports = { getRecipeList };
+        const detail = new RecipeDetailDTO(rows[0]);
+
+        // 모든 조리 단계 추가
+        rows.forEach(row => {
+            detail.addStep(row);
+        })
+        console.log('Recipe Detail:', detail);
+
+        res.render('recipeDetail', { detail });
+    } catch (error) {
+        console.error('레시피 상세 조회 오류:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+module.exports = { getRecipeList, getRecipeDetail };

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(data => {
+                    console.log('응답 데이터:', data);
                     if (data.error) {
                         console.error('Server error:', data.error);
                         return;
@@ -32,12 +33,13 @@ function updateRecipeList(recipes) {
     const recipeList = document.getElementById('recipe-list');
     recipeList.innerHTML = '';
     recipes.forEach(recipe => {
+        console.log('recipe 데이터:', recipe); 
         const li = document.createElement('li');
         li.innerHTML = `
-            <a href="/recipe/detail/${recipe.recipe.no}">
+            <a href="/recipe/detail/${recipe.recipe_no}">
                 <img src="${recipe.thumbnail}" alt="${recipe.title}">
             </a>
-            <h3>${recipe.title}</h3>
+            <h3 class="recipe-title">${recipe.title}</h3>
             <p>ID: ${recipe.member_id}</p>
         `;
         recipeList.appendChild(li);

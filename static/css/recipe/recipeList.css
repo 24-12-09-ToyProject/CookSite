@@ -1,0 +1,76 @@
+/* 카테고리 */
+.cate-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.cate-list span {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 20px;
+    align-self: center;
+}
+
+.cate-button {
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.cate-button:hover {
+    background-color: chocolate;
+    color: white;
+    transform: scale(1.05);
+}
+
+.cate-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px chocolate;
+}
+
+/* 레시피 목록 */
+#recipe-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+#recipe-list li {
+    list-style: none;
+    flex: 1 1 calc(20% - 20px);
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+#recipe-list li:hover {
+    transform: scale(1.05);
+}
+
+#recipe-list li img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+#recipe-list .recipe-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+}
+
+#recipe-list p {
+    margin: 5px 0;
+    text-align: center;
+}
