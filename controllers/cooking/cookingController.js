@@ -1,6 +1,8 @@
 const { generateClassNo } = require('../../utils/cookingUtils');
 // db 세팅
 const pool = require('../../config/db.js');
+//googleCloud 
+const { bucket, bucketName } = require('../../config/googlecloud.js');
 
 //검색 조건
 exports.searchClass = async (req, res) => {
@@ -87,6 +89,38 @@ exports.searchClass = async (req, res) => {
         });
     }
 };
+
+// 파일 업로드 핸들러 함수
+exports.uploadFileToGCS = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+
+        // GCS에 파일 업로드
+        const blob = bucket.file(Date.now() + "_" + req.file.originalname); // 고유한 파일 이름 지정
+        const blobStream = blob.createWriteStream({
+            resumable: false,
+        });
+
+        blobStream.on("error", (err) => {
+            console.error(err);
+            return res.status(500).send("Error uploading to GCS.");
+        });
+
+        blobStream.on("finish", async () => {
+            // GCS 파일 URL 생성
+            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+            res.status(200).json({ url: publicUrl }); // 업로드된 파일 URL 반환
+        });
+
+        blobStream.end(req.file.buffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error.");
+    }
+};
+
 
 // 클래스 생성 컨트롤러
 exports.createClass = (req, res) => {
