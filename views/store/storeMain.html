@@ -1,45 +1,60 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스토어</title>
-    <link rel="stylesheet" href="../../static/css/store/storeMain.css">
-</head>
-<body>
-    <div class="store-container">
-        <!-- 상단 헤더 -->
-        <header class="store-header">
-            <h1>스토어</h1>
-        </header>
-        <nav class="category-nav">
-            <ul>
-                <li><a href="/store/all">전체</a></li>
-                <li><a href="/store/category/1">신선식품</a></li>
-                <li><a href="/store/category/2">간편식</a></li>
-                <li><a href="/store/category/3">가공식품</a></li>
-                <li><a href="/store/category/4">주방용품</a></li>
-                <li><a href="/store/category/5">주방가전</a></li>
-                <li><a href="/store/category/6">생활용품</a></li>
-            </ul>
-        </nav>
+{% extends "common/layout.html" %}
 
-        <!-- 상품 리스트 -->
-        <div class="product-list">
-            {% if tables and tables.length > 0 %}
-                {% for product in tables %}
-                <a href="/product/{{ product.PRODUCT_NO }}" class="product-card">
-                    <div class="product-content">
-                        <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}">
-                        <h2 class="product-name">{{ product.PRODUCT_NAME }}</h2>
-                        <p class="product-price"><strong>{{ product.BASE_PRICE }} 원</strong></p>
-                    </div>
-                </a>
-                {% endfor %}
-            {% else %}
-            <p class="no-products">상품이 없습니다.</p>
-            {% endif %}
-        </div>
+{% block extra_styles %}
+<link rel="stylesheet" href="../../static/css/store/storeMain.css">
+{% endblock %}
+
+{% block content %}
+<div class="store-container">
+    <!-- 상단 헤더 -->
+    <header class="store-header">
+        <h1>스토어</h1>
+    </header>
+    <nav class="category-nav">
+        <ul>
+            <li><a class="nav-btn {% if currentCategory == 'all' %}selected{% endif %}" href="/store/all">전체</a></li>
+            <li><a class="nav-btn {% if currentCategory == '신선식품' %}selected{% endif %}" href="/store/category/신선식품">신선식품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '간편식' %}selected{% endif %}" href="/store/category/간편식">간편식</a></li>
+            <li><a class="nav-btn {% if currentCategory == '가공식품' %}selected{% endif %}" href="/store/category/가공식품">가공식품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '주방용품' %}selected{% endif %}" href="/store/category/주방용품">주방용품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '주방가전' %}selected{% endif %}" href="/store/category/주방가전">주방가전</a></li>
+            <li><a class="nav-btn {% if currentCategory == '생활용품' %}selected{% endif %}" href="/store/category/생활용품">생활용품</a></li>
+        </ul>
+    </nav>
+
+    <!-- 상품 리스트 -->
+    <div class="product-list">
+        {% if tables and tables.length > 0 %}
+        {% for product in tables %}
+        <a href="/store/product/{{ product.PRODUCT_NO }}" class="product-card">
+            <div class="product-content">
+                <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}">
+                <h2 class="product-name">{{ product.PRODUCT_NAME }}</h2>
+                <p class="product-price"><strong>{{ product.BASE_PRICE }} 원</strong></p>
+            </div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <p class="no-products">상품이 없습니다.</p>
+        {% endif %}
     </div>
-</body>
+</div>
+<script> 
+    document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('.nav-btn');
+
+    links.forEach(link => {
+        link.addEventListener('click', function(event) {
+            // 모든 링크에서 'active' 클래스 제거
+            links.forEach(l => l.classList.remove('selected'));
+
+            // 클릭한 링크에 'active' 클래스 추가
+            event.target.classList.add('selected');
+        });
+    });
+});
+</script>
+{% endblock %}
+
+
 </html>
