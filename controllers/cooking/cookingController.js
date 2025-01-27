@@ -2,13 +2,13 @@ const { generateClassNo } = require('../../utils/cookingUtils');
 // db 세팅
 const pool = require('../../config/db.js');
 //googleCloud 
-const { bucket, bucketName } = require('../../config/googlecloud.js');
+const { bucket } = require('../../config/googlecloud.js');
 
 //검색 조건
 exports.searchClass = async (req, res) => {
     const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_IMAGE_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_THUMBNAIL_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
     if (classTitle) {
         query += ` AND CLASS_TITLE LIKE ? COLLATE utf8_general_ci`;
@@ -97,26 +97,22 @@ exports.uploadFileToGCS = async (req, res) => {
             return res.status(400).send("No file uploaded.");
         }
 
-        // GCS에 파일 업로드
-        const blob = bucket.file(Date.now() + "_" + req.file.originalname); // 고유한 파일 이름 지정
-        const blobStream = blob.createWriteStream({
-            resumable: false,
-        });
+        const blob = bucket.file(Date.now() + "_" + req.file.originalname);
+        const blobStream = blob.createWriteStream({ resumable: false });
 
         blobStream.on("error", (err) => {
-            console.error(err);
-            return res.status(500).send("Error uploading to GCS.");
+            console.error("GCS 업로드 실패:", err);
+            res.status(500).send("Error uploading to GCS.");
         });
 
-        blobStream.on("finish", async () => {
-            // GCS 파일 URL 생성
+        blobStream.on("finish", () => {
             const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-            res.status(200).json({ url: publicUrl }); // 업로드된 파일 URL 반환
+            res.status(200).json({ url: publicUrl });
         });
 
         blobStream.end(req.file.buffer);
     } catch (error) {
-        console.error(error);
+        console.error("서버 오류:", error);
         res.status(500).send("Server error.");
     }
 };
@@ -124,26 +120,32 @@ exports.uploadFileToGCS = async (req, res) => {
 
 // 클래스 생성 컨트롤러
 exports.createClass = (req, res) => {
+    const {
+        classType, classFrequency, classTitle, category, classAddress, startTime, endTime,
+        thumbnailURL, classImages, classIntroduce, difficulty, classPlayingTime, curriculum,
+        instructorPhoto, instructorName, instructorintroduce, classCount, classPrice,
+        startDate, endDate, minPeople, maxPeople
+    } = req.body;
+    
     // classNo 생성
     const classNo = generateClassNo();
 
-    const {
-        classType,classFrequency,classTitle,category,classAddress,startTime,endTime,thumbnailURL, classImages,classIntroduce, difficulty,classPlayingTime,curriculum,instructorPhoto, instructorName, instructorintroduce,classCount,classPrice,startDate,endDate,minPeople,maxPeople
-    } = req.body;
-
-
     // 데이터 삽입 쿼리
     const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    values = [
-        classNo,'Test',classType,classFrequency,classTitle,category,classAddress,startTime,endTime,thumbnailURL, classImages,classIntroduce, difficulty,classPlayingTime,curriculum,instructorPhoto, instructorName, instructorintroduce,classCount,classPrice,startDate,endDate,minPeople,maxPeople 
-    ];
+        
+    const values = [
+        classNo, 'Test', classType, classFrequency, classTitle, category, classAddress, 
+        startTime, endTime, thumbnailURL, JSON.stringify(classImages), classIntroduce, difficulty, 
+        classPlayingTime, curriculum, instructorPhoto, instructorName, instructorintroduce, 
+        classCount, classPrice, startDate, endDate, minPeople, maxPeople
+        ]; 
 
     pool.query(query, values, (err, result) => {
         if (err) {
-            console.error(err);
+            console.error('SQL 에러:', err);
             return res.status(500).json({ success: false, error: err.message });
         }
-
+        console.log('쿼리 실행 결과:', result); // 성공 여부 확인
         res.json({ success: true, classNo, data: result });
     });
 };

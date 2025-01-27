@@ -12,7 +12,9 @@ const fs = require('fs');
 
 // db 세팅
 const pool = require('./config/db.js');
-
+//Cors 세팅
+const cors = require('cors');
+app.use(cors());
 
 //body 파싱 하기위한 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));

@@ -116,9 +116,6 @@ createDropdown(visitors, dropdownHeader3, dropdownContent3, arrow3,visitorSpan);
 //     arrow2.classList.toggle('up');
 // });
 
-
-
-
 // 유형 옵션
 const classDayForm =[
     document.querySelector('.oneDay'),

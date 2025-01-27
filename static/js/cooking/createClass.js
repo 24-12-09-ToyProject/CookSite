@@ -43,123 +43,77 @@ function showStep(stepNumber) {
     });
     document.getElementById(`step-${stepNumber}`).classList.remove("hidden");
 }
-// 클래스 사진 업로드 관련 요소
-const photoUploadContainer = document.getElementById("upload-class-photo-container");
-const photoInput = document.getElementById("upload-class-photo-input");
-const Preview = document.getElementById("class-photo-preview");
 
-// 클릭 시 파일 선택 창 열기
-photoUploadContainer.addEventListener("click", () => {
-    photoInput.click(); // 숨겨진 input[type="file"] 클릭
-});
+// 대표 및 클래스 내용 이미지 관련 요소
+const photoContainers = [
+    {
+        container: document.getElementById("upload-class-photo-container"),
+        input: document.getElementById("upload-class-photo-input"),
+        preview: document.getElementById("class-photo-preview"),
+    },
+    {
+        container: document.getElementById("upload-class-content-container"),
+        input: document.getElementById("upload-class-content-input"),
+        preview: document.getElementById("class-content-preview"),
+    },
+];
 
-// 파일 선택 이벤트
-photoInput.addEventListener("change", async (event) => {
-    const file = event.target.files[0];
+// 공통: 파일 업로드 처리
+async function uploadFile(file) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            return result.url; // 서버에서 반환된 GCS URL
+        } else {
+            console.error("업로드 실패:", await response.text());
+            throw new Error("업로드 실패");
+        }
+    } catch (error) {
+        console.error("업로드 중 에러 발생:", error);
+        throw error;
+    }
+}
+
+// 파일 선택 후 이미지 업로드 및 미리보기 업데이트
+async function handleFileUpload(input, previewElement) {
+    const file = input.files[0];
     if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
+        // 1. 로컬 미리보기 표시
+        const blobUrl = URL.createObjectURL(file);
+        previewElement.src = blobUrl;
 
+        // 2. 파일 업로드
         try {
-            // 서버로 파일 업로드
-            const response = await fetch("/upload", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                const gcsUrl = result.url; // 서버에서 반환된 GCS URL
-
-                // 업로드된 이미지를 미리보기로 표시
-                Preview.src = gcsUrl;
-            } else {
-                console.error("이미지 업로드 실패:", await response.text());
-            }
+            const uploadedUrl = await uploadFile(file); // 파일 업로드
+            previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
         } catch (error) {
-            console.error("업로드 중 에러 발생:", error);
+            console.error("업로드 중 오류:", error);
         }
     }
+}
+
+// 모든 컨테이너에 클릭 및 파일 업로드 이벤트 추가
+photoContainers.forEach(({ container, input, preview }) => {
+    if (!container || !input || !preview) {
+        console.error("필수 DOM 요소가 정의되지 않았습니다.");
+        return;
+    }
+    // 클릭 시 파일 선택 창 열기
+    container.addEventListener("click", () => input.click());
+
+    // 파일 선택 후 처리
+    input.removeEventListener("change", handleFileUpload);
+    input.addEventListener("change", () => handleFileUpload(input, preview));
 });
 
-// // 사진 업로드 + GCS
-// document.querySelectorAll(".image-upload-container").forEach((container) => {
-//     const input = container.querySelector(".hidden-input");
-//     const uploadBox = container.querySelector(".image-upload-box");
-
-//     input.addEventListener("change", async (event) => {
-//         const file = event.target.files[0]; // 첫 번째 파일만 처리
-//         if (file) {
-//             // 미리보기 처리 (Blob URL 사용)
-//             const blobUrl = URL.createObjectURL(file);
-//             const previewImage = document.createElement("img");
-//             previewImage.src = blobUrl;
-//             previewImage.classList.add("uploaded-image");
-
-//             // 이전 미리보기 이미지 삭제
-//             const existingImage = container.querySelector(".uploaded-image");
-//             if (existingImage) {
-//                 existingImage.remove();
-//             }
-
-//             // 새 이미지 추가
-//             container.appendChild(previewImage);
-
-//             // 서버 업로드
-//             const formData = new FormData();
-//             formData.append("image", file);
-
-//             try {
-//                 const response = await fetch("/upload", {
-//                     method: "POST",
-//                     body: formData,
-//                 });
-
-//                 if (response.ok) {
-//                     const result = await response.json();
-//                     const serverUrl = result.url; // 서버에서 반환된 GCS URL
-
-//                     // 서버 URL로 이미지 교체
-//                     previewImage.src = serverUrl;
-//                 } else {
-//                     console.error("업로드 실패:", await response.text());
-//                 }
-//             } catch (error) {
-//                 console.error("에러 발생:", error);
-//             }
-//         }
-//     });
-
-//     // 클릭으로 파일 선택 트리거
-//     uploadBox.addEventListener("click", () => {
-//         input.click();
-//     });
-// });
-// // 사진 업로드 미리보기 
-// document.querySelectorAll(".image-upload-container").forEach((container) => {
-//     const input = container.querySelector(".hidden-input"); // 해당 컨테이너의 파일 입력
-//     const uploadBox = container.querySelector(".image-upload-box");
-
-//     input.addEventListener("change", (event) => {
-//         const file = event.target.files[0]; // 첫 번째 파일만 처리
-//         if (file) {
-//             const reader = new FileReader();
-//             reader.onload = function (e) {
-//                 // 기존 업로드 박스 숨기기
-//                 uploadBox.style.display = "none";
-
-//                 // 업로드된 이미지 표시
-//                 const uploadedImage = document.createElement("img");
-//                 uploadedImage.src = e.target.result;
-//                 uploadedImage.classList.add("uploaded-image");
-
-//                 // 기존 이미지를 지우고 새로운 이미지 추가
-//                 container.appendChild(uploadedImage);
-//             };
-//             reader.readAsDataURL(file); // 파일을 base64 URL로 읽기
-//         }
-//     });
-// });
 //글쓰기 에디터 api 
 const contentEditor = new toastui.Editor({
     el: document.querySelector('.quiz-content'),
@@ -231,8 +185,8 @@ className.addEventListener('input', ()=>{
 
 // 강사 사진 업로드 미리보기
 // HTML 요소 가져오기
-const uploadPhotoInput = document.getElementById('upload-photo-input'); // 숨겨진 파일 입력
 const uploadPhotoBtn = document.getElementById('upload-photo-btn'); // "사진 등록" 버튼
+const uploadPhotoInput = document.getElementById('upload-photo-input'); // 숨겨진 파일 입력
 const photoPreview = document.getElementById('photo-preview'); // 미리보기 이미지
 
 // "사진 등록" 버튼 클릭 시 파일 선택 창 열기
@@ -422,23 +376,24 @@ let step1Data = {
     endTime: ''  
 };
 
-function collectAllData() {
-
+async function collectAllData() {
     // Step 2 데이터
     const step2Data = {
-        classTitle: document.getElementById('className').value || '',
-        category: document.querySelector('select').value || '',
-        classAddress : document.getElementById('address').value || ''
+        classTitle: document.getElementById('className').value || '', // 제목
+        category: document.querySelector('select').value || '',      // 카테고리
+        classAddress: document.getElementById('address').value || '' // 주소
     };
+    console.log('Step 2 Data:', step2Data);
+ // Step 3 데이터 (이미지 업로드)
+    const thumbnailFile = document.getElementById('upload-class-photo-input').files[0];
+    const classImageFiles = Array.from(document.getElementById('upload-class-content-input').files);
 
-    // Step 3 데이터 (이미지 업로드)
-    const thumbnail = document.getElementById('image-upload-1').files[0];
-    const classImages = Array.from(document.getElementById('image-upload-2').files).map(file =>
-        URL.createObjectURL(file)
-    );
+    const thumbnailURL = thumbnailFile ? await uploadFile(thumbnailFile) : '';
+    const classImagesURLs = await Promise.all(classImageFiles.map(uploadFile));
+
     const step3Data = {
-        thumbnailURL: thumbnail ? URL.createObjectURL(thumbnail) : '',
-        classImages
+     thumbnailURL, // 업로드된 GCS URL
+     classImages: classImagesURLs, // 업로드된 GCS URL 배열
     };
 
     // Step 4 데이터 (에디터 콘텐츠)
@@ -515,8 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 document.querySelector('.register').addEventListener('click', async () => {
-    const data = collectAllData();
-
+    const data = await collectAllData();
+    console.log('수집된 데이터:', data)
     try {
         const response = await fetch('/api/cooking/insert', {
             method: 'POST',
@@ -538,37 +493,5 @@ document.querySelector('.register').addEventListener('click', async () => {
         alert('클래스 등록에 실패했습니다.');
     }
 });
-
-// 클래스 생성 API 호출 함수
-async function createClassAPI(classData) {
-    const apiUrl = '/api/cooking/insert'; // API URL
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST', // HTTP 메서드
-            headers: {
-                'Content-Type': 'application/json' // JSON 요청
-            },
-            body: JSON.stringify(classData) // 요청 데이터 직렬화
-        });
-
-        // 응답 처리
-        if (response.ok) {
-            const result = await response.json();
-            console.log('클래스 생성 성공:', result);
-            alert('클래스가 성공적으로 생성되었습니다!');
-            return result; // 성공 결과 반환
-        } else {
-            // 에러 응답 처리
-            const errorData = await response.json();
-            console.error('클래스 생성 실패:', errorData);
-            alert('클래스 생성에 실패했습니다. 다시 시도해주세요.');
-        }
-    } catch (error) {
-        console.error('API 호출 중 오류 발생:', error);
-        alert('서버와의 통신 중 오류가 발생했습니다.');
-    }
-}
-
 
 
