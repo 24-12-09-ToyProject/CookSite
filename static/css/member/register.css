@@ -69,11 +69,15 @@ input{
 	padding-top: 6px;
 }
 
-.name-container, .phone-container, .email-container, .gender-container{
+.name-container, .phone-container, .gender-container{
 	height: 50px;
 	padding-top: 4px;
 }
 
+.email-container{
+	height: 100px;
+	padding-top: 4px;
+}
 
 .notice{
 	font-size: 11px;
@@ -233,7 +237,7 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 	width: 240px;
 }
 
-#check-duplicate-btn{
+#check-duplicate-btn, #send-code-btn, #email-verify-btn{
 	display: inline-block;
 	border-radius: 5px;
 	background-color: rgb(144, 144, 144);
@@ -247,14 +251,45 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 }
 
 
-#check-duplicate-btn:not(.disabled) {
+#check-duplicate-btn:not(.disabled), #email-verify-btn:not(.disabled), #send-code-btn:not(.disabled) {
 	background-color: rgb(120, 120, 120);
 	opacity: 1;
 	cursor: pointer; /* 활성화 상태에서 클릭 가능 */
 	pointer-events: auto; /* 클릭 이벤트 허용 */
 }
 
-#check-duplicate-btn:hover{
+#check-duplicate-btn:hover, #send-code-btn:hover, #email-verify-btn:hover{
 	background-color: rgb(31, 31, 31);
 	opacity: 1;
+}
+
+#basic-info #email{
+	width: 135px;
+	margin-right: 5px;
+}
+
+#email-domain{
+	color: #63666e;
+	border: 1px solid #e9e9e9;
+	border-radius: 5px;
+	outline: none;
+	height: 40px;
+}
+
+select option{
+	border-color: #e9e9e9;
+}
+
+#email-verify-btn{
+	padding: 10px 10px;
+}
+
+#basic-info #email-code{
+	margin-top: 8px;
+	margin-left: 100px;
+	width: 155px;
+}
+
+#timer{
+	color: tomato;
 }

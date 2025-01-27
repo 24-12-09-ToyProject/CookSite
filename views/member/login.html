@@ -1,31 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Document</title>
-		<style>
-		</style>
-	</head>
-	<body>
-		<h1>login 페이지</h1>
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<h1>login 페이지</h1>
 
 		<!-- login 실행 form -->
-		<form action="/member/login" method="post">
+		<form id="signin-form" action="/member/login" method="post">
 			<div>
 				아이디
-				<input type="text" name="memberId" placeholder="아이디" required>
+				<input id="memberId" type="text" name="memberId" placeholder="아이디" required autocomplete="off">
 			</div>
 			<div>
 				비밀번호
-				<input type="password" name="memberPw" placeholder="패스워드" required>
+				<input id="memberPw" type="password" name="memberPw" placeholder="패스워드" required autocomplete="off">
 			</div>
-			<button type="submit">로그인</button>
+			<button type="button" onclick="signin();">로그인</button>
 		</form>
 
 		<a href="">아이디 찾기</a>
 		<a href="">비밀번호 찾기</a>
-		<a href="">
+		<a href="/member/signUp">
 			<div>회원가입</div>
 		</a>
 
@@ -40,16 +39,67 @@
 		<hr>
 
 		회사소개, 이용약관, 이용안내, 개인정보처리방침
-		{{signupResult}}
-	</body>
+{% endblock %}
 
-	<script>
-		// 서버에서 전달된 signupResult 메시지 확인
-		const signupResult = '<%= signupResult %>';
-  
-  // 메시지가 있다면 알림창 표시
-  if (signupResult) {
-    alert(signupResult);
-  }
-	</script>
-</html>
+{% block extra_scripts %}
+<script>
+
+
+	let signupResult = "{{signupResult}}";
+	let loggedInMessage = "{{loggedInMessage}}";
+
+	if(signupResult === 'success'){
+		Swal.fire({
+					icon: 'success',
+					title: 'Alert가 실행되었습니다.',
+					text: '회원가입 성공',
+		});
+	}else if(signupResult === 'fail'){
+		Swal.fire({
+					icon: 'warning',
+					title: 'Alert가 실행되었습니다.',
+					text: '회원가입 오류 발생',
+		});
+	}else if(loggedInMessage === '로그아웃상태'){
+		Swal.fire({
+					icon: 'warning',
+					title: 'Alert가 실행되었습니다.',
+					text: '로그인 후 이용해주세요',
+		});
+	}
+
+	
+	// id입력해주세요 -> 패스워드 입력해주세요 (클라이언트에서 검증)-> 아이디/비밀번호가 일치하지 않습니다 (서버에서 검증)
+	const elMemberId = document.querySelector('#memberId');
+	const elMemberPw = document.querySelector('#memberPw');
+
+	const signinForm = document.querySelector('#signin-form');
+	
+	function checkValidInput(){
+
+		// id 필수입력 체크
+		if(elMemberId.value === ""){
+			alert("아이디를 입력해주세요");
+			return;
+		}
+		
+		// pw 필수입력 체크
+		if(elMemberPw.value === ""){
+			alert("비밀번호를 입력해주세요");
+			return;
+		}
+
+		// 서버 검증
+		signinForm.submit();
+
+
+	}
+
+	function signin(){
+		checkValidInput();
+	}
+
+
+</script>
+{% endblock %}
+

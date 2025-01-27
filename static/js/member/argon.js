@@ -20,7 +20,8 @@ async function hashValue(value) {
 async function verifyValue(hash, plainvalue) {
 	try {
 			// 입력된 비밀번호가 해시된 비밀번호와 일치하는지 검증
-			const match = await argon2.verify(hash, plainvalue);
+			let match = await argon2.verify(hash, plainvalue);
+			
 			if (match) {
 					//일치하는 경우
 					console.log('검증 결과: 일치함');
@@ -28,6 +29,8 @@ async function verifyValue(hash, plainvalue) {
 					//일치하지 않는 경우
 					console.log('검증 결과: 일치하지 않음');
 			}
+			console.log("match : " + match);
+			
 			return match;
 	} catch (err) {
 			// 검증 과정에서 오류가 발생한 경우
@@ -36,4 +39,31 @@ async function verifyValue(hash, plainvalue) {
 	}
 }
 
-module.exports = { hashValue, verifyValue };
+// 전체 계정에 대해 검증
+async function allVerifyValue(results, plainvalue){
+	try {
+		let match = false;
+
+		for(let i = 0; i < results.length; i++){
+			// 입력된 비밀번호가 해시된 비밀번호와 일치하는지 검증
+			match = await argon2.verify(results[i].password, plainvalue);
+			
+			if (match) {
+					//일치하는 경우
+					console.log('검증 결과: 일치함');
+					return match;
+			} else {
+					//일치하지 않는 경우
+					console.log('검증 결과: 일치하지 않음');
+			}
+			console.log("all match : " + match);
+		}
+		return match;
+} catch (err) {
+		// 검증 과정에서 오류가 발생한 경우
+		console.error('검증과정에서 오류 발생:', err);
+		throw err;
+}
+}
+
+module.exports = { hashValue, verifyValue, allVerifyValue };

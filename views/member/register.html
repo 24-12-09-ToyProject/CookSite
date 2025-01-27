@@ -1,44 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>register</title>
-	<link rel="stylesheet" href="/css/member/register.css">
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+	<link rel="stylesheet" href="/static/css/member/register.css">
 	<!-- daum kakao  -->
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 	<!-- sweetalert2 -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+{% endblock %}
 
-	<script>
-		const searchAddress = () => {
-			cancelAddress();
-			let width = 400;
-			let height = 500;
-			new daum.Postcode({
-				width: width,
-				height: height,
-        oncomplete: function(data) {
-            document.querySelector('#zonecode').value = data.zonecode;
-            document.querySelector('#default-address').value = data.address;
-        }
-    }).open({
-			left: (window.screen.width / 2) - (width / 2),
-			top: (window.screen.height / 2) - (height / 2)
-});
-		}
-
-		const cancelAddress = () => {
-			document.querySelector('#zonecode').value = "";
-			document.querySelector('#default-address').value = "";
-		}
-    
-</script>
-</head>
-<body>
-	<h2>가입을 시작합니다!</h2>
+{% block content %}
+<h2>가입을 시작합니다!</h2>
 	<form id="signUp-form" action="/member/signUp" method="post">
 		<div id="basic-info">
 			<div class="basic-info-header">
@@ -103,7 +76,17 @@
 			<div class="small-container email-container">
 				<div class="container-head">이메일<span class="essential-mark"> *</span></div>
 				<div>
-					<input type="email" class="required" name="email" autocomplete="off">
+					<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()">@
+					<select name="emailDomain" id="email-domain">
+						<option value="@naver.com">naver.com</option>
+						<!-- <option value="@gmail.com">gmail.com</option> -->
+					</select>
+					<span id="send-code-btn" class="disabled" onclick="sendEmailCode();">인증요청</span>
+					<div style="position: relative;">
+						<div id="timer" style="position: absolute; top: 17px; right: 55px; user-select: none;"></div>
+						<input type="text" id="email-code" name="emailCode" disabled="false">
+						<span id="email-verify-btn" class="disabled" data-emailVerified="false" onclick="verifyEmailCode();">인증</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -212,7 +195,7 @@
 					idFailureMessageData.classList.remove('hide');
 					idFailureMessageDuplicate.classList.add('hide');
 					// 유효성 체크 후 중복체크 버튼 비활성화
-					deactivateButton();
+					deactivateButton('checkDuplicate');
 				}else if(!checkLength('id', valMemberId)){
 					idSuccessMessage.classList.add('hide');
 					idFailureMessageLength.classList.remove('hide');
@@ -220,7 +203,7 @@
 					idFailureMessageData.classList.add('hide');
 					idFailureMessageDuplicate.classList.add('hide');
 					// 유효성 체크 후 중복체크 버튼 비활성화
-					deactivateButton();
+					deactivateButton('checkDuplicate');
 				}else if(!checkRegex('id', valMemberId)){
 					idSuccessMessage.classList.add('hide');
 					idFailureMessageLength.classList.add('hide');
@@ -228,7 +211,7 @@
 					idFailureMessageData.classList.add('hide');
 					idFailureMessageDuplicate.classList.add('hide');
 					// 유효성 체크 후 중복체크 버튼 비활성화
-					deactivateButton();
+					deactivateButton('checkDuplicate');
 				}else{
 					// 성공
 					idSuccessMessage.classList.remove('hide');
@@ -238,7 +221,7 @@
 					idFailureMessageDuplicate.classList.add('hide');
 
 					// 유효성 체크 후 중복체크 버튼 활성화
-					activateButton();
+					activateButton('checkDuplicate');
 				}
 			}else if(idPw === 'pw'){
 				if(!checkEmpty(valMemberPw)){
@@ -316,7 +299,7 @@
 
 			// 아이디 중복확인 
 			let isValid =	duplicateCheckBtn.getAttribute('data-valid');
-				
+			let isEmailVerified = elEmailCodeBtn.getAttribute('data-emailVerified');	
 
 			// 공란 highlight 처리
 			showEmptyFieldWarnings();
@@ -338,6 +321,12 @@
 						icon: 'warning',
 						title: 'Alert가 실행되었습니다.',
 						text: '아이디 중복 확인을 해주세요',
+					});
+			}else if(isEmailVerified === 'false'){
+				Swal.fire({
+						icon: 'warning',
+						title: 'Alert가 실행되었습니다.',
+						text: '이메일 인증이 필요합니다',
 					});
 			}else{
 				
@@ -416,19 +405,46 @@
 
 
 
-		// 아이디 중복 체크
+		// 아이디 중복 체크 버튼, 이메일 인증요청 버튼
 		const duplicateCheckBtn = document.querySelector('#check-duplicate-btn');
+		const verifyEmailBtn = document.querySelector('#email-verify-btn');
+		const sendCodeBtn = document.querySelector('#send-code-btn');
 		
 		// 버튼 활성화
-		function activateButton(){
-			duplicateCheckBtn.classList.remove('disabled');
-			duplicateCheckBtn.onclick = checkDuplicate;
-		}
+		function activateButton(btnName){
+			if(btnName === 'checkDuplicate'){
+				duplicateCheckBtn.classList.remove('disabled');
+				duplicateCheckBtn.onclick = checkDuplicate;
+			}
 
+			if(btnName === 'verifyEmail'){
+				verifyEmailBtn.classList.remove('disabled');
+				verifyEmailBtn.onclick = verifyEmailCode;
+			}
+
+			if(btnName === 'sendCodeBtn'){
+				sendCodeBtn.classList.remove('disabled');
+				sendCodeBtn.onclick = sendEmailCode;
+			}
+		}
+		
+.0000
 		// 버튼 비활성화
-		function deactivateButton(){
-			duplicateCheckBtn.classList.add('disabled');
-			duplicateCheckBtn.onclick = null;
+		function deactivateButton(btnName){
+			if(btnName === 'checkDuplicate'){
+				duplicateCheckBtn.classList.add('disabled');
+				duplicateCheckBtn.onclick = null;
+			}
+
+			if(btnName === 'verifyEmail'){
+				verifyEmailBtn.classList.add('disabled');
+				verifyEmailBtn.onclick = null;
+			}
+
+			if(btnName === 'sendCodeBtn'){
+				sendCodeBtn.classList.add('disabled');
+				sendCodeBtn.onclick = null;
+			}
 		}
 
 
@@ -453,6 +469,9 @@
         }
 
 				const result = await response.json();
+
+				console.log(result);
+				
 
 				if (result.success) {
 					Swal.fire({
@@ -480,8 +499,171 @@
 
 		}
 
+		
 
+		// 이메일 공란 체크
+		function checkEmailRequired() {
+			let email = document.querySelector('#email').value;
+
+			if(email === ''){
+				deactivateButton('sendCodeBtn');
+			}else{
+				activateButton('sendCodeBtn');
+			}
+		}
+
+
+		const email = document.querySelector('#email');
+		const emailDomain = document.querySelector('#email-domain');
+
+		// 이메일 코드 전송
+		async	function sendEmailCode(){
+			const response = await fetch('/member/api/send-email', {
+				method: 'POST',
+					headers: {
+							'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ email:email.value, emailDomain:emailDomain.value }),
+			});
+
+			const data = await response.json();
+
+			console.log("data : "+data);
+
+			if(data.success){
+				console.log("성공");
+				
+				const boolean = alert('이메일로 코드가 전송되었습니다');
+				const elMailCode = document.querySelector('#email-code');
+				startTimer(); // 1분 타이머 시작
+				// 제한시간 1분 스타트
+				window.setTimeout(()=>{
+					deactivateButton('verifyEmail'); // 이메일 인증 버튼 비활성화
+					elMailCode.disabled = true;			// 이메일 인증코드 입력창 비활성화
+				}, 1000 * 60) // 60초
+
+				activateButton('verifyEmail');
+				elMailCode.disabled = false;
+
+			}else{
+				console.log("실패");
+				
+			}
+		
+			
+			// 조건따라 인증버튼 활성화
+			
+			// if(boolean){
+			// activateButton('verifyEmail');
+			// elMailCode.disabled = false;
+			// }
+		}
+
+
+		const elEmailCode = document.querySelector('#email-code');
+		const elEmailCodeBtn = document.querySelector('#email-verify-btn');
+
+		// 이메일 코드 인증 
+		async	function verifyEmailCode(){
+			const emailAddress = `${email.value}${emailDomain.value}`;
+			const response = await fetch('/member/api/verify-emailCode', {
+				method: 'POST',
+					headers: {
+							'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ emailCode:elEmailCode.value, email:emailAddress }),
+			});
+
+			const result = await response.json();
+
+			console.log("result : " + result);
+
+			if(result.success){
+				Swal.fire({
+							icon: 'success',
+							title: 'Alert가 실행되었습니다.',
+							text: '인증 성공하였습니다',
+				});
+				elEmailCodeBtn.setAttribute('data-emailVerified', 'true');
+				clearInterval(timer);
+				document.querySelector("#timer").style.display='none';
+				deactivateButton('verifyEmail'); // 이메일 인증 버튼 비활성화
+				elEmailCode.disabled = true;			// 이메일 인증코드 입력창 비활성화
+				
+			}else{
+				Swal.fire({
+							icon: 'warning',
+							title: 'Alert가 실행되었습니다.',
+							text: '다시 입력해주세요',
+				});
+				elEmailCodeBtn.setAttribute('data-emailVerifed', 'false');
+			}
+
+
+		}
+
+		
 
 	</script>
-</body>
-</html>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+	const searchAddress = () => {
+		cancelAddress();
+		let width = 400;
+		let height = 500;
+		new daum.Postcode({
+			width: width,
+			height: height,
+			oncomplete: function(data) {
+					document.querySelector('#zonecode').value = data.zonecode;
+					document.querySelector('#default-address').value = data.address;
+			}
+	}).open({
+		left: (window.screen.width / 2) - (width / 2),
+		top: (window.screen.height / 2) - (height / 2)
+});
+	}
+
+	const cancelAddress = () => {
+		document.querySelector('#zonecode').value = "";
+		document.querySelector('#default-address').value = "";
+	}
+
+
+
+	let timer; // 타이머 변수
+	
+
+	function startTimer() {
+		let timeLeft = 60; // 1분 카운트
+		let time = `01:00`;
+		// 타이머가 이미 실행 중이라면 종료
+		if (timer) {
+			clearInterval(timer);
+		}
+		document.querySelector("#timer").textContent = time;
+
+		// 타이머 실행
+		timer = setInterval(function() {
+			timeLeft--; // 남은 시간 감소
+			// 남은 시간이 0초가 되면 타이머 종료
+			if (timeLeft <= 0) {
+				clearInterval(timer);
+				time = `00:00`;
+				document.querySelector("#timer").textContent = time;
+			} else {
+				// 타이머 업데이트
+				if(timeLeft < 10){
+					time = `00:0${timeLeft}`;
+				}else{
+					time = `00:${timeLeft}`;
+				}
+				document.querySelector("#timer").textContent = time;
+			}
+		}, 1000); // 1초마다 실행
+  }
+	
+</script>
+{% endblock %}

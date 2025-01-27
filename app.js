@@ -45,7 +45,7 @@ app.use(session({
 app.use(flash());
 
 // static 경로 설정
-app.use(express.static('static'));
+// app.use(express.static('static'));
 //------------------------
 
 
