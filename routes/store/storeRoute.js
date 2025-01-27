@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { getTables } = require('../../static/js/store/storeMain')  // storeMain.js에서 getTables 함수 가져오기
+const { getProductDetails } = require('../../static/js/store/storeDetail');  // 경로 확인
 
 // '/storeMain' 경로에 대해 비동기 라우팅 처리
 router.get("/storeMain", async (req, res) => {
-    console.log('storeMain 라우트 시작');
     try {
         // 테이블 조회 함수 호출
         const tables = await getTables();
-        console.log('getTables 결과:', tables);  // 콘솔에 테이블 목록 출력
-
         // 테이블 목록을 클라이언트로 전달하여 렌더링
         res.render('store/storeMain.html', { tables });  // storeMain.html에 데이터 전달
     } catch (error) {
@@ -18,4 +16,15 @@ router.get("/storeMain", async (req, res) => {
     }
 });
 
+router.get('/product/:id', async (req, res) => {
+    const productId = req.params.id; // URL에서 상품 ID 가져오기
+
+    try {
+        const details = await getProductDetails(productId); // 상품 상세 정보 조회
+        res.render('store/storeDetail.html', { details }); // productDetail.ejs에 데이터 전달
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('상품 정보를 불러오는데 실패했습니다.');
+    }
+});
 module.exports = router;

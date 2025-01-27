@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>Store Main</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스토어</title>
+    <link rel="stylesheet" href="../../static/css/store/storeMain.css">
 </head>
 <body>
-    <h1>상품 목록</h1>
-    {% if tables and tables.length > 0 %}
-        <ul>
-        {% for product in tables %}
-            <li>
-                <strong>카테고리:</strong> {{ product.PRODUCT_CATEGORY }}<br>
-                <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}" width="200"><br>
-                <strong>상품명:</strong> {{ product.PRODUCT_NAME }}<br>
-                <strong>가격:</strong> {{ product.PRODUCT_PRICE }} 원<br>
-                옵션: <select>
-                    <option>{{ product.OPTION_NAME }} {{ product.PRODUCT_PRICE }}+{{ product.OPTION_PRICE }}원  (재고수량 : {{ product.OPTION_STOCK }})</option><br>
-                </select>
+    <div class="store-container">
+        <!-- 상단 헤더 -->
+        <header class="store-header">
+            <h1>스토어</h1>
+        </header>
+        <nav class="category-nav">
+            <ul>
+                <li><a href="/store/all">전체</a></li>
+                <li><a href="/store/category/1">신선식품</a></li>
+                <li><a href="/store/category/2">간편식</a></li>
+                <li><a href="/store/category/3">가공식품</a></li>
+                <li><a href="/store/category/4">주방용품</a></li>
+                <li><a href="/store/category/5">주방가전</a></li>
+                <li><a href="/store/category/6">생활용품</a></li>
+            </ul>
+        </nav>
 
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>상품이 없습니다.</p>
-    {% endif %}
+        <!-- 상품 리스트 -->
+        <div class="product-list">
+            {% if tables and tables.length > 0 %}
+                {% for product in tables %}
+                <a href="/product/{{ product.PRODUCT_NO }}" class="product-card">
+                    <div class="product-content">
+                        <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}">
+                        <h2 class="product-name">{{ product.PRODUCT_NAME }}</h2>
+                        <p class="product-price"><strong>{{ product.BASE_PRICE }} 원</strong></p>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+            <p class="no-products">상품이 없습니다.</p>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
