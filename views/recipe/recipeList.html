@@ -5,31 +5,34 @@
 {% endblock %}
 
 {% block content %}
-    <div class="cate-list">
-        <span><b>종류</b></span>
-        <button class="cate-button" data-category="sidedish">밑반찬</button>
-        <button class="cate-button" data-category="maindish">메인반찬</button>
-        <button class="cate-button" data-category="soup">국/탕/찌개</button>
-        <button class="cate-button" data-category="noodle">면/만두</button>
-        <button class="cate-button" data-category="rice">밥/죽/떡</button>
-        <button class="cate-button" data-category="western">양식/샐러드</button>
+    <div class="list-container">
+        <div class="cate-list">
+            <span><b>종류</b></span>
+            <button class="cate-button" data-category="all">전체</button>
+            <button class="cate-button" data-category="sidedish">밑반찬</button>
+            <button class="cate-button" data-category="maindish">메인반찬</button>
+            <button class="cate-button" data-category="soup">국/탕/찌개</button>
+            <button class="cate-button" data-category="noodle">면/만두</button>
+            <button class="cate-button" data-category="rice">밥/죽/떡</button>
+            <button class="cate-button" data-category="western">양식/샐러드</button>
+        </div>
+        <div class="search-result">
+            총 <b id="recipe-total-count">{{ totalCount }}</b> 개의 맛있는 레시피가 있습니다.
+        </div>
+        <ul id="recipe-list">
+            {% for recipe in recipes %}
+            <li>
+                <a href="/recipe/detail/{{ recipe.recipe_no }}">
+                    <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
+                </a>
+                <p>ID: {{ recipe.member_id }}</p>
+                <p class="recipe-title">{{ recipe.title }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        <button id="load-more" data-page="1">더보기</button>
     </div>
-    <div class="search-result">
-        총 <b id="recipe-count">{{ recipes.length }}</b> 개의 레시피가 있습니다.
-    </div>
-    <ul id="recipe-list">
-        {% for recipe in recipes %}
-        <li>
-            <a href="/recipe/detail/{{ recipe.recipe_no }}">
-                <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
-            </a>
-            <p class="recipe-title">{{ recipe.title }}</p>
-            <p>ID: {{ recipe.member_id }}</p>
-        </li>
-        {% endfor %}
-    </ul>
 {% endblock %}
-
 {% block extra_scripts %}
     <script src="/static/js/recipe/recipeList.js"></script>
 {% endblock %}

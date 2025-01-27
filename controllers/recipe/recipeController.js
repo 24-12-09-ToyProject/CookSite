@@ -9,6 +9,9 @@ async function getRecipeList(req, res) {
 
         // 카테고리 파라미터 가져오기
         const category = req.query.category;
+        const page = parseInt(req.query.page, 10) || 1;
+        const boardLimit = 20;
+        const offset = (page - 1) * boardLimit;
         let kCategory;
 
         switch (category) {
@@ -23,21 +26,25 @@ async function getRecipeList(req, res) {
         }
 
         let query = 'SELECT RECIPE_NO, MEMBER_ID, RECIPE_TITLE, RECIPE_THUMBNAIL FROM RECIPE';
+        let countQuery = 'SELECT COUNT(*) AS totalCount FROM RECIPE';
         if(kCategory) {
             query += ' WHERE RECIPE_CATEGORY = ?';
+            countQuery += ' WHERE RECIPE_CATEGORY = ?';
         }
-        query += ' ORDER BY RECIPE_NO DESC';
+        query += ' ORDER BY RECIPE_NO DESC LIMIT ? OFFSET ?';
 
-        const [rows] = await connection.query(query, kCategory ? [kCategory] : []);
+        const [rows] = await connection.query(query, kCategory ? [kCategory, boardLimit, offset] : [boardLimit, offset]);
+        const [countRows] = await connection.query(countQuery, kCategory ? [kCategory] : []);
         connection.release();
 
         const recipes = rows.map(row => new RecipeDTO(row));
+        const totalCount = countRows[0].totalCount;
 
         // ajax 요청이면 json 객체 반환, 아닐 경우 recipeList 페이지 렌더링
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-            res.json({ recipes });
+            res.json({ recipes , totalCount });
         } else {
-            res.render('recipeList', { recipes });
+            res.render('recipeList', { recipes , totalCount });
         }
     } catch (error) {
         console.error('레시피 목록 조회 오류:', error.message);
@@ -94,5 +101,7 @@ async function getRecipeDetail(req, res) {
         res.status(500).send('Internal Server Error');
     }
 }
+
+// 레시피 등록하는 함수
 
 module.exports = { getRecipeList, getRecipeDetail };

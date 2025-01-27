@@ -1,3 +1,8 @@
+
+.list-container {
+    background-color: white;
+    padding: 50px 25px 20px 25px;
+}
 /* 카테고리 */
 .cate-list {
     display: flex;
@@ -5,72 +10,100 @@
     justify-content: center;
     margin-bottom: 20px;
 }
-
-.cate-list span {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-right: 20px;
-    align-self: center;
-}
-
-.cate-button {
-    background-color: #f0f0f0;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.cate-button:hover {
-    background-color: chocolate;
-    color: white;
-    transform: scale(1.05);
-}
-
-.cate-button:focus {
-    outline: none;
-    box-shadow: 0 0 5px chocolate;
-}
+    .cate-list span {
+        font-size: 22px;
+        font-weight: bold;
+        margin-right: 15px;
+        padding: 3px 20px;
+        color: goldenrod;
+        align-self: center;
+    }
+    .cate-button {
+        font-family: 'Pretendard-Regular', sans-serif;
+        border: none;
+        outline: none;
+        border-radius: 30px;
+        padding: 10px 15px;
+        margin: 5px 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .cate-button.selected {
+        background-color: goldenrod;
+        color: white;
+    }
+    .cate-button:not(.selected):hover {
+        color: goldenrod;
+    }
+    .cate-button:focus {
+        outline: none;
+    }
+    .search-result {
+        padding: 30px 0 30px 10px;
+        font-size: 20px;
+    }
+        #recipe-total-count {
+            font-size: 26px;
+            color: goldenrod;
+        }
 
 /* 레시피 목록 */
 #recipe-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 20px;
 }
-
-#recipe-list li {
-    list-style: none;
-    flex: 1 1 calc(20% - 20px);
-    max-width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s;
+    #recipe-list li {
+        list-style: none;
+        flex: 1 1 calc(20% - 20px);
+        max-width: 254px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        transition: transform 0.2s;
+        padding-bottom: 5px;
+    }
+    #recipe-list li:hover {
+        transform: translateY(-5px);
+    }
+        #recipe-list li img {
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+        }
+    #recipe-list .recipe-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 5px 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
 }
+    #recipe-list p {
+        margin: 5px 10px;
+    }
 
-#recipe-list li:hover {
-    transform: scale(1.05);
-}
-
-#recipe-list li img {
-    width: 100%;
-    height: auto;
-    border-bottom: 1px solid #ddd;
-}
-
-#recipe-list .recipe-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 10px 0;
-    text-align: center;
-}
-
-#recipe-list p {
-    margin: 5px 0;
-    text-align: center;
-}
+/* 더보기 버튼 */
+    #load-more {
+        display: block;
+        width: 35%;
+        margin: 40px auto;
+        padding: 14px 50px;
+        font-size: 20px;
+        font-family: 'Pretendard-Regular', sans-serif;
+        background-color: #8e8e8e;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    #load-more:hover {
+        transform: translateY(-5px);
+    }
