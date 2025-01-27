@@ -3,14 +3,11 @@ const mysql = require('mysql2/promise')
 const pool = mysql.createPool({
     connectionLimit : 10, // 최대 10개 만듦
     host : 'localhost', // host 주소는 고정
-    // user : 'cooksite',
-    // password : 'cooksite',
-    // database : 'test1',
-    user : 'root',
-    password : 'khadmin1023!!',
-    database:"cooksite_temp",
+    user : 'cooksite',
+    password : 'cooksite',
+    database : 'test1',
     debug : false,
-    port: '3306' // 포트번호 반드시 업데이트 후 사용!! 
+    port: '' // 포트번호 반드시 업데이트 후 사용!! 
     
     
     // db정보들은 공유되면 안되기 떄문에 파일을 따로만들어 관리
