@@ -103,7 +103,7 @@ router.post('/signUp', async (req, res)=>{
 		console.log(resultMessage);
 		
 
-		if(resultMessage === 'insert 성공'){
+		if(resultMessage === '회원가입 성공'){
 			req.flash('signupResult', 'success');
 		}else{
 			req.flash('signupResult', 'fail');
@@ -128,19 +128,17 @@ router.post('/api/check-duplicate-id', async (req, res) => {
 	console.log('/api/check-duplicate-id ' +memberId);
 	
 
-	checkDuplicateId(memberId, (resultMessage)=>{
-
-		console.log("resultMessage " + resultMessage);
+	const resultMessage = await checkDuplicateId(memberId);
+	console.log(resultMessage);
+	
 		
-		if(resultMessage === '이미 존재하는 아이디'){
-			return res.status(200).json({success:false, message:resultMessage});
-		}else if(resultMessage === '사용 가능한 아이디'){
-			return res.status(200).json({success:true, message:resultMessage});
-		}else{
-			return res.status(500).json({success:false, message:resultMessage});
-		}
-
-	});
+	if(resultMessage === '이미 존재하는 아이디'){
+		return res.status(200).json({success:false, message:resultMessage});
+	}else if(resultMessage === '사용 가능한 아이디'){
+		return res.status(200).json({success:true, message:resultMessage});
+	}else{
+		return res.status(500).json({success:false, message:resultMessage});
+	}
 	
 });
 

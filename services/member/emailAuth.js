@@ -1,5 +1,5 @@
 const {createNewTransport} = require('../../config/member/email'); //위에서만든거 가져옴email.js
-const { addEmailCode } = require('../../services/member/memberService');
+const { addEmailCode } = require('../../services/member/memberService.js');
 
 
 //인증번호를 위한 랜덤숫자만들어주는 함수
@@ -29,7 +29,7 @@ const mailAuth = { //객체에 함수를 담음.
         console.log("addEmailCode result : " + result);
 
         
-        if(result === 'insert 성공'){
+        if(result === '이메일 인증번호 저장 성공'){
             // 새로운 smtpTransport 연결을 생성
             const smtpTransport = createNewTransport();
 
