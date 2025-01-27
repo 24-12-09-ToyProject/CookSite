@@ -1,0 +1,20 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="/static/css/recipe/recipeList.css">
+{% endblock %}
+
+{% block content %}
+    <div class="cate_list">
+        <span><b>종류</b></span>
+        <a>반찬</a>
+        <a>국/탕/찌개</a>
+        <a>면/만두</a>
+        <a>밥/죽/떡</a>
+        <a>양식/샐러드</a>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="/static/js/recipe/recipeList.js"></script>
+{% endblock %}

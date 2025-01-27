@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooksite</title>
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+
+    <!-- 각 페이지의 css 작성 위치 -->
+    {% block extra_styles %}{% endblock %}
+    
+</head>
+<body>
+    {% include "common/header.html" %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% include "common/footer.html" %}
+
+    <!-- 각 페이지의 script 작성 위치 -->
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
