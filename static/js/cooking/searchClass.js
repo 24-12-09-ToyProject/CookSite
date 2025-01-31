@@ -1,3 +1,5 @@
+
+
 // 지역 나열
 const regions = [
 '서울','경기도','인천','대구','울산','광주',
@@ -318,7 +320,7 @@ async function loadCards() {
         const show_count = 9;
         let currentCount = 0;
 
-        function renderCards(count){
+        function renderdefaultCards(count){ // createClass js 에서 쓰기 위해 windows 로 전역 함수로 변경
             const cardsToShow = cardData.slice(currentCount, currentCount + count);
             cardsToShow.forEach((data) => {
                 const card = template.content.cloneNode(true); 
@@ -328,7 +330,7 @@ async function loadCards() {
                 
                  // a 태그 설정
                 const cardLink = card.querySelector("a"); // 템플릿 내 a 태그를 선택
-                cardLink.href = data.link;
+                cardLink.href = `/class/${data.classNo}`;
                 container.appendChild(card);
             });
             currentCount += count;
@@ -337,8 +339,9 @@ async function loadCards() {
         document.getElementById("load-more").style.display = "none";
     }
     }
+
     // 초기 카드 렌더링
-    renderCards(show_count);
+    renderdefaultCards(show_count);
 
     // 더보기 버튼 클릭 이벤트
     document.getElementById("load-more").addEventListener("click", () => {
@@ -352,35 +355,6 @@ async function loadCards() {
 // 페이지 로드 시 카드 데이터를 불러옴
 document.addEventListener("DOMContentLoaded", loadCards);
 
-
-
-// //검색 조건 필터
-// function getSearchFilters() {
-//     // 선택된 클래스
-//     const selectedClasses = Array.from(document.querySelectorAll(".selected"))
-//         .map((el) => el.textContent.trim());
-
-//     // 시간 범위
-//     const timeMin = document.getElementById("timeMin").textContent;
-//     const timeMax = document.getElementById("timeMax").textContent;
-
-//     // 가격 범위
-//     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
-//     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
-
-//     return { selectedClasses, timeMin, timeMax, priceMin, priceMax };
-// }
-
-// function getSearchFilters() {
-//     const timeMin = document.getElementById("timeMin").textContent;
-//     const timeMax = document.getElementById("timeMax").textContent;
-//     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
-//     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
-
-//     const selectedClasses = [...document.querySelectorAll(".selected")].map((el) => el.dataset.value);
-
-//     return { timeMin, timeMax, priceMin, priceMax, selectedClasses };
-// }
 // 검색 조건 필터
 function getSearchFilters() {
     // 제목 검색
@@ -522,9 +496,11 @@ function renderCards(filteredCards) {
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
         const resultCount = filteredCards.length;
         document.querySelector(".cookinglist-searchresult").textContent = resultCount + "개의 결과";       
-        // const cardLink = card.querySelector("a");
-        // cardLink.href = data.link;
-
+        
+        // 클래스 ID 부여
+        const cardLink = card.querySelector("a");
+        cardLink.href = `/class/${data.classNo}`;
+        cardLink.dataset.classNo = data.classNo;
         container.appendChild(card);
     });
 
@@ -533,6 +509,8 @@ function renderCards(filteredCards) {
             container.innerHTML = "<p>검색 결과가 없습니다.</p>";
         }
 };
+    //renderCards전역함수 활성화
+    window.renderCards = renderCards;
 
 
 

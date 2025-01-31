@@ -120,39 +120,59 @@ exports.uploadFileToGCS = async (req, res) => {
 
 
 // 클래스 생성 컨트롤러
-exports.createClass = (req, res) => {
+exports.createClass = async (req, res) => {
     const {
         classType, classFrequency, classTitle, category, classAddress, startTime, endTime,
         thumbnailURL, classImages, classIntroduce, difficulty, classPlayingTime, curriculum,
         instructorPhoto, instructorName, instructorintroduce,
         startDate, endDate,
     } = req.body;
+
     const classCount = parseInt(req.body.classCount, 10) || 0;
     const classPrice = parseFloat(req.body.classPrice) || 0;
     const minPeople = parseInt(req.body.minPeople, 10) || 0;
     const maxPeople = parseInt(req.body.maxPeople, 10) || 0;
+
     // classNo 생성
     const classNo = generateClassNo();
+
     // 데이터 삽입 쿼리
     const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-        
     const values = [
         classNo, 'Test', classType, classFrequency, classTitle, category, classAddress, 
         startTime, endTime, thumbnailURL, JSON.stringify(classImages), classIntroduce, difficulty, 
         classPlayingTime, curriculum, instructorPhoto, instructorName, instructorintroduce, 
         classCount, classPrice, startDate, endDate, minPeople, maxPeople
-        ]; 
+    ]; 
 
-    pool.query(query, values, (err, result) => {
-        console.log('실행할 SQL:', query);
-        console.log('바인딩 값:', values);
-        if (err) {
-            console.error('SQL 에러:', err);
-            return res.status(500).json({ success: false, error: err.message });
-        }
-        console.log('쿼리 실행 결과:', result); // 성공 여부 확인
-        res.status(200).json({ success: true, classNo, data: result });    });// 예기치 못한 예외 처리
-    process.on('unhandledRejection', (reason, promise) => {
-        console.error('Unhandled Rejection:', reason);
-    });
+    let connection;
+    try {
+        connection = await pool.getConnection(); // DB 연결
+        await connection.execute(query, values); // SQL 실행
+        connection.release(); // DB 연결 해제
+
+        console.log("쿼리 실행 완료:", { classNo, values });
+        
+        // ✅ 성공 응답 전송
+        res.status(200).json({
+            success: true,
+            classNo,
+            message: "클래스가 성공적으로 생성되었습니다!"
+        });
+
+    } catch (err) {
+        console.error("SQL 에러 발생:", err);
+        
+        if (connection) connection.release(); // 에러 발생 시 DB 연결 해제
+
+        res.status(500).json({ 
+            success: false, 
+            error: err.message 
+        });
+    }
 };
+
+// 예외 처리 및 미처리된 Promise 예외 핸들링
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+});

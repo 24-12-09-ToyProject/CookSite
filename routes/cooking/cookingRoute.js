@@ -42,6 +42,10 @@ router.get("/createClass",(req,res)=>
 {
     res.render("createClass.html")
 });
+//클래스 상세 페이지
+router.get("/detailClass" , (req,res) =>
+res.render("detailClass.html")
+);
 
 // 클래스 내용 전달
 // 실제 데이터는 데이터베이스에서 가져오거나 동적으로 생성

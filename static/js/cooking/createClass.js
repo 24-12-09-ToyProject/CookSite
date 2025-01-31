@@ -1,3 +1,5 @@
+
+
 // 모든 "options" 컨테이너에 클릭 이벤트 추가
 document.querySelectorAll(".options").forEach((optionsContainer) => {
     optionsContainer.addEventListener("click", (event) => {
@@ -514,35 +516,40 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('현재 Step 1 데이터:', step1Data); // 디버깅용
     });
 });
-document.querySelector('.register').addEventListener('click', async () => {
+
+document.querySelector(".register").addEventListener("click", async () => {
     const data = await collectAllData();
-    console.log('수집된 데이터:', data)
+    console.log("수집된 데이터:", data);
+
     try {
-        const response = await fetch('/api/cooking/insert', {
-            method: 'POST',
+        const response = await fetch("/api/cooking/insert", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
         });
 
-        if (response.status === 200) {
-            const result = await response.json();
-            console.log('서버 응답 데이터:', result);
+        if (!response.ok) {
+            throw new Error(`API 요청 실패: ${response.status}`);
+        }
 
-            if (result.success) {
-                alert('클래스가 성공적으로 등록되었습니다!');
-                location.href = "/";
-            } else {
-                alert('클래스 등록 중 오류가 발생했습니다.');
-            }
+        const { success, classNo, message } = await response.json();
+        console.log("클래스 생성 결과:", { success, classNo, message });
+
+        if (success) {
+            alert(message);
+
+            // 새로 생성된 클래스를 렌더링
+            const newClass = { ...data, classNo };
+            renderCards([newClass]);
+
+            // 페이지를 클래스 메인으로 리다이렉트
+            window.location.href = "/searchClass";
         } else {
-            alert(`서버 오류 발생: 상태 코드 ${response.status}`);
+            alert("클래스 생성 중 오류가 발생했습니다.");
         }
     } catch (error) {
-        console.error('서버와의 통신 중 오류:', error);
-        alert('클래스 등록에 실패했습니다.');
+        console.error("클래스 생성 요청 에러:", error);
     }
 });
-
-
