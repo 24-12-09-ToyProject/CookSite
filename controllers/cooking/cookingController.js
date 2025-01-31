@@ -123,13 +123,15 @@ exports.createClass = (req, res) => {
     const {
         classType, classFrequency, classTitle, category, classAddress, startTime, endTime,
         thumbnailURL, classImages, classIntroduce, difficulty, classPlayingTime, curriculum,
-        instructorPhoto, instructorName, instructorintroduce, classCount, classPrice,
-        startDate, endDate, minPeople, maxPeople
+        instructorPhoto, instructorName, instructorintroduce,
+        startDate, endDate,
     } = req.body;
-    
+    const classCount = parseInt(req.body.classCount, 10) || 0;
+    const classPrice = parseFloat(req.body.classPrice) || 0;
+    const minPeople = parseInt(req.body.minPeople, 10) || 0;
+    const maxPeople = parseInt(req.body.maxPeople, 10) || 0;
     // classNo 생성
     const classNo = generateClassNo();
-
     // 데이터 삽입 쿼리
     const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
         
@@ -141,11 +143,15 @@ exports.createClass = (req, res) => {
         ]; 
 
     pool.query(query, values, (err, result) => {
+        console.log('실행할 SQL:', query);
+        console.log('바인딩 값:', values);
         if (err) {
             console.error('SQL 에러:', err);
             return res.status(500).json({ success: false, error: err.message });
         }
         console.log('쿼리 실행 결과:', result); // 성공 여부 확인
-        res.json({ success: true, classNo, data: result });
+        res.status(200).json({ success: true, classNo, data: result });    });// 예기치 못한 예외 처리
+    process.on('unhandledRejection', (reason, promise) => {
+        console.error('Unhandled Rejection:', reason);
     });
 };

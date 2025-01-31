@@ -481,12 +481,18 @@ document.querySelector('.register').addEventListener('click', async () => {
             body: JSON.stringify(data),
         });
 
-        const result = await response.json();
-        if (result.success) {
-            alert('클래스가 성공적으로 등록되었습니다!');
-            location.href="/";
+        if (response.status === 200) {
+            const result = await response.json();
+            console.log('서버 응답 데이터:', result);
+
+            if (result.success) {
+                alert('클래스가 성공적으로 등록되었습니다!');
+                location.href = "/";
+            } else {
+                alert('클래스 등록 중 오류가 발생했습니다.');
+            }
         } else {
-            alert('클래스 등록 중 오류가 발생했습니다.');
+            alert(`서버 오류 발생: 상태 코드 ${response.status}`);
         }
     } catch (error) {
         console.error('서버와의 통신 중 오류:', error);
