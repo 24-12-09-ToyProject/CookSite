@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.querySelector(".register").addEventListener("click", async () => {
     const data = await collectAllData();
-    console.log("수집된 데이터:", data);
+    console.log("📌 수집된 데이터 (서버로 전송 전):", data);
 
     try {
         const response = await fetch("/api/cooking/insert", {
@@ -534,22 +534,43 @@ document.querySelector(".register").addEventListener("click", async () => {
             throw new Error(`API 요청 실패: ${response.status}`);
         }
 
-        const { success, classNo, message } = await response.json();
-        console.log("클래스 생성 결과:", { success, classNo, message });
+        // ✅ 서버 응답 데이터 받기
+        const responseData = await response.json();
+        console.log("✅ 서버 응답 데이터:", responseData);
 
-        if (success) {
-            alert(message);
+        if (responseData.success) {
+            alert(responseData.message);
 
-            // 새로 생성된 클래스를 렌더링
-            const newClass = { ...data, classNo };
-            renderCards([newClass]);
+            // ✅ `classNo`가 정상적으로 전달되었는지 확인
+            if (!responseData.classNo) {
+                console.error("🚨 classNo가 정상적으로 반환되지 않았습니다!");
+                return;
+            }
 
-            // 페이지를 클래스 메인으로 리다이렉트
-            window.location.href = "/searchClass";
+            // ✅ 새로 생성된 클래스에 `classNo`를 추가하여 렌더링
+            const newClass = { ...data, classNo: responseData.classNo };
+            console.log("📌 렌더링할 데이터:", newClass);
+
+            try {
+                renderCards([newClass]);
+            } catch (renderError) {
+                console.error("🚨 renderCards 함수 실행 중 오류 발생:", renderError);
+                return;
+            }
+
+            // ✅ `classNo`가 반영된 상세 페이지로 이동
+            console.log("✅ 이동할 상세 페이지 URL:", `/class/${responseData.classNo}`);
+            try {
+                window.location.href = `/class/${responseData.classNo}`;
+            } catch (redirectError) {
+                console.error("🚨 페이지 이동 중 오류 발생:", redirectError);
+            }
         } else {
             alert("클래스 생성 중 오류가 발생했습니다.");
         }
     } catch (error) {
-        console.error("클래스 생성 요청 에러:", error);
+        console.error("🚨 클래스 생성 요청 에러:", error);
+        console.error("📌 오류 스택:", error.stack);
     }
 });
+

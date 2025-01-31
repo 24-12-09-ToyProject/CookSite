@@ -6,7 +6,7 @@ const app = express();
 const port = 8888;
 //nunjucks 불러오기
 const nunjucks = require("nunjucks");
-//nunjucks 세팅
+// //nunjucks 세팅
 const path = require('path');
 const fs = require('fs');
 

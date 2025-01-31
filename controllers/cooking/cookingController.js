@@ -8,7 +8,7 @@ const { bucket } = require('../../config/googlecloud.js');
 exports.searchClass = async (req, res) => {
     const { classTitle, region, classType, classFrequency, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_NO , CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
     if (classTitle) {
         query += ` AND CLASS_TITLE LIKE ? COLLATE utf8mb4_general_ci`;
@@ -135,44 +135,93 @@ exports.createClass = async (req, res) => {
 
     // classNo 생성
     const classNo = generateClassNo();
+    console.log("생성된 classNo:", classNo);
 
-    // 데이터 삽입 쿼리
+    const safeValues = [
+        classNo, 'Test', 
+        classType || "미정", classFrequency || "미정", 
+        classTitle || "제목 없음", category || "기타", classAddress || "위치 없음",
+        startTime || "00:00", endTime || "00:00", 
+        thumbnailURL || "https://default-image.png", JSON.stringify(classImages || []), 
+        classIntroduce || "소개 없음", difficulty || "미정",
+        classPlayingTime || "0", curriculum || "없음", 
+        instructorPhoto || "https://default-instructor.png", instructorName || "강사 미정", 
+        instructorintroduce || "소개 없음", 
+        classCount, classPrice, startDate || "2025-01-01", endDate || "2025-01-01",
+        minPeople, maxPeople
+    ];
+
     const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    const values = [
-        classNo, 'Test', classType, classFrequency, classTitle, category, classAddress, 
-        startTime, endTime, thumbnailURL, JSON.stringify(classImages), classIntroduce, difficulty, 
-        classPlayingTime, curriculum, instructorPhoto, instructorName, instructorintroduce, 
-        classCount, classPrice, startDate, endDate, minPeople, maxPeople
-    ]; 
+    const selectQuery = `SELECT CLASS_NO FROM COOKING WHERE CLASS_NO = ?`;
 
     let connection;
     try {
-        connection = await pool.getConnection(); // DB 연결
-        await connection.execute(query, values); // SQL 실행
-        connection.release(); // DB 연결 해제
+        connection = await pool.getConnection();
+        await connection.execute(query, safeValues);
+        await connection.execute("COMMIT");
+        const [rows] = await connection.execute(selectQuery, [classNo]);
 
-        console.log("쿼리 실행 완료:", { classNo, values });
-        
-        // ✅ 성공 응답 전송
+        if (rows.length === 0) {
+            console.error("🚨 INSERT 후 classNo 조회 실패!");
+            return res.status(500).json({ success: false, error: "클래스 번호 조회 실패" });
+        }
+
+        console.log("✅ 응답 데이터:", rows[0]);
+
         res.status(200).json({
             success: true,
-            classNo,
-            message: "클래스가 성공적으로 생성되었습니다!"
+            classNo: rows[0].CLASS_NO, // 정확히 DB 컬럼명 사용
+            message: "클래스가 성공적으로 생성되었습니다!",
         });
-
     } catch (err) {
         console.error("SQL 에러 발생:", err);
-        
-        if (connection) connection.release(); // 에러 발생 시 DB 연결 해제
-
-        res.status(500).json({ 
-            success: false, 
-            error: err.message 
-        });
+        res.status(500).json({ success: false, error: err.message });
+    } finally {
+        if (connection) connection.release();
     }
 };
+
 
 // 예외 처리 및 미처리된 Promise 예외 핸들링
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection:', reason);
 });
+
+
+
+
+// 컨트롤러 코드
+exports.getClassDetail = async (req, res) => {
+    const classNo = req.params.classNo;
+
+    try {
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            `SELECT * FROM COOKING WHERE CLASS_NO = ?`,
+            [classNo]
+        );
+        connection.release();
+
+        if (rows.length === 0) {
+            return res.status(404).send("클래스를 찾을 수 없습니다.");
+        }
+
+        const classData = rows[0];
+        
+        // // 인코딩된 URL
+        // classData.CLASS_THUMBNAIL_IMG = encodeURI(classData.CLASS_THUMBNAIL_IMG);
+        // classData.CLASS_INSTRUCTOR_IMG = encodeURI(classData.CLASS_INSTRUCTOR_IMG);
+        // classData.CLASS_CONTENT_IMG = JSON.parse(classData.CLASS_CONTENT_IMG).map((img) => encodeURI(img));
+        // 데이터베이스에서 가져온 URL을 그대로 사용
+        classData.CLASS_THUMBNAIL_IMG = classData.CLASS_THUMBNAIL_IMG;
+        classData.CLASS_INSTRUCTOR_IMG = classData.CLASS_INSTRUCTOR_IMG;
+        classData.CLASS_CONTENT_IMG = JSON.parse(classData.CLASS_CONTENT_IMG);
+        console.log("📌 인코딩된 상세 페이지 데이터:", classData);
+
+        res.render("detailClass.html", { classData });
+    } catch (error) {
+        console.error("🚨 클래스 상세 조회 오류:", error);
+        res.status(500).send("서버 오류 발생");
+    }
+};
+

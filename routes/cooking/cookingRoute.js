@@ -1,5 +1,10 @@
 const express = require('express');
+const app = express();
 const router = express.Router();
+
+//nunjucks 세팅
+const path = require('path');
+const fs = require('fs');
 //google-Cloud 불러오기
 const gc = require('../../config/googlecloud.js');
 
@@ -42,12 +47,10 @@ router.get("/createClass",(req,res)=>
 {
     res.render("createClass.html")
 });
-//클래스 상세 페이지
-router.get("/detailClass" , (req,res) =>
-res.render("detailClass.html")
-);
-
-// 클래스 내용 전달
+// ✅ 클래스 상세 페이지 조회 라우터 추가
+router.get("/class/:classNo", cookingController.getClassDetail);  // ✅ API URL을 명확히 구분
+// 상세 페이지 조회 위한 설정
+app.set("views", path.join(__dirname, "views"));
 // 실제 데이터는 데이터베이스에서 가져오거나 동적으로 생성
 router.get("/api/cooking",(req,res)=>{
     let query = ` `
