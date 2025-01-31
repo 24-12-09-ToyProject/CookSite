@@ -386,12 +386,12 @@ function getSearchFilters() {
     // 제목 검색
     const classTitle = document.getElementById("class-input").value.trim();
     // 온/오프라인 클래스 선택
-    const classForm = document.querySelector(".select-class .selected")?.textContent.trim()|| null;
+    const classType = document.querySelector(".select-class .selected")?.textContent.trim()|| null;
     // 지역 선택
     const region = document.querySelector(".region.selected")?.textContent.trim() || null;
 
     // 클래스 타입 (원데이, 정기)
-    const classType = document.querySelector(".class .selected")?.textContent.trim() || null;
+    const classFrequency = document.querySelector(".class .selected")?.textContent.trim() || null;
 
     // 카테고리
     const category = document.querySelector(".category.selected")?.textContent.trim() || null;
@@ -413,7 +413,6 @@ function getSearchFilters() {
     const priceMin = parseInt(document.getElementById("priceMin").textContent.replace(/,/g, ""), 10);
     const priceMax = parseInt(document.getElementById("priceMax").textContent.replace(/,/g, ""), 10);
     // 추천 검색어
-    console.log("classForm:", classForm);
     console.log("classType:", classType);
     console.log("difficulty:", difficulty);
     console.log("weekdays:", weekdays);
@@ -421,9 +420,9 @@ function getSearchFilters() {
     // 반환 객체
     return {
         classTitle,
-        classForm,
         region,
         classType,
+        classFrequency,
         category,
         visitor,
         weekdays,
@@ -434,19 +433,31 @@ function getSearchFilters() {
         priceMax,
     };
 }
-// 검색 버튼 클릭 이벤트
-document.getElementById("searchButton").addEventListener("click", async () => {
+// 검색 버튼 및 추천 검색어 클릭 이벤트 통합
+async function performSearch(keyword = null) {
     // 1. 검색 조건 수집
     const filters = getSearchFilters();
-    console.log("디버깅 - 검색 필터 데이터:", filters);
 
-    // 2. API 호출 및 결과 반환
-    const filteredCards = await fetchFilteredCards(filters);
-    console.log("디버깅 - 서버 응답 데이터:", filteredCards);
+    // 2. 추천 검색어가 있다면 카테고리 덮어쓰기
+    if (keyword) {
+        console.log("추천 검색어가 적용되었습니다:", keyword);
+        filters.category = keyword; // 추천 검색어로 카테고리를 설정
+    }
 
-    // 3. 결과 렌더링
+    // 3. 빈 값 제거
+    const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined)
+    );
+
+    console.log("디버깅 - 최종 검색 필터 데이터:", cleanFilters);
+
+    // 4. API 호출 및 결과 반환
+    const filteredCards = await fetchFilteredCards(cleanFilters);
+
+    // 5. 결과 렌더링
     if (!Array.isArray(filteredCards)) {
         console.error("API 응답 데이터가 배열이 아닙니다:", filteredCards);
+        document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다</p>";
         return;
     }
 
@@ -456,34 +467,28 @@ document.getElementById("searchButton").addEventListener("click", async () => {
     } else {
         renderCards(filteredCards);
     }
-});
+}
 
+// 검색 버튼 클릭 이벤트
+document.getElementById("searchButton").addEventListener("click", () => performSearch());
+
+// 추천 검색어 클릭 이벤트
 document.querySelectorAll(".keywordType").forEach((element) => {
-    element.addEventListener("click", async () => {
-        const keyword = element.textContent.trim() || null; // 클릭된 요소의 텍스트를 가져옴
-        console.log("디버깅 - 선택된 키워드:", keyword);
-
-        // API 호출
-        const filteredCards = await fetchFilteredCards({}, keyword);
-
-        if (filteredCards.length === 0) {
-            console.log("검색 결과가 없습니다.");
-            document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다</p>";
-        } else {
-            renderCards(filteredCards);
-        }
+    element.addEventListener("click", () => {
+        const keyword = element.textContent.trim() || null;
+        performSearch(keyword);
     });
 });
+
 // 필터 API 호출 함수
-async function fetchFilteredCards(filters = {}, keyword = null) {
-    const requestBody = { ...filters, keyword };
+async function fetchFilteredCards(filters = {}) {
     try {
         const response = await fetch("/api/cooking/filter", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify(filters),
         });
 
         if (!response.ok) {
@@ -512,7 +517,7 @@ function renderCards(filteredCards) {
     // 새 카드 추가
     filteredCards.forEach((data) => {
         const card = template.content.cloneNode(true);
-        card.querySelector(".class-img").src = data.CLASS_IMAGE_URL;
+        card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
         const resultCount = filteredCards.length;

@@ -30,19 +30,62 @@ document.querySelectorAll(".options").forEach((optionsContainer) => {
         console.log("현재 Step 1 데이터:", step1Data); // 디버깅용
     });
 });
+// 사이드 바 목록 위치 체크
+document.addEventListener("DOMContentLoaded", () => {
+    const steps = document.querySelectorAll(".sidebar-step");
+    const nextButton = document.querySelectorAll(".next");
+    let currentStep = 0;
 
+    nextButton.addEventListener("click", () => {
+        if (currentStep < steps.length - 1) {
+            // 현재 항목에서 active 클래스 제거
+            steps[currentStep].classList.remove("active");
+
+            // 다음 항목에 active 클래스 추가
+            currentStep += 1;
+            steps[currentStep].classList.add("active");
+        }
+    });
+});
 // 다음 클릭 시 번호 이동
 function showStep(stepNumber) {
     const steps = document.querySelectorAll(".step");
     const buttons = document.querySelectorAll(".buttons")
+
+    // 모든 사이드바 항목에서 BOLD 제거
+    document.querySelectorAll(".sidebar-step").forEach((sidebarStep) => {
+        sidebarStep.style.fontWeight = "normal";
+        sidebarStep.style.color = "black";
+    });
+
+    // 현재 스텝에 맞는 사이드바 항목에 BOLD 추가
+    let activeSidebarStep;
+    if (stepNumber === 1 || stepNumber === 2) {
+        activeSidebarStep = document.getElementById("sidebar-step1");
+    } else if (stepNumber === 3 || stepNumber === 4) {
+        activeSidebarStep = document.getElementById("sidebar-step2");
+    } else {
+        activeSidebarStep = document.getElementById("sidebar-step3");
+    }
+
+    if (activeSidebarStep) {
+        activeSidebarStep.style.fontWeight = "bold";
+        activeSidebarStep.style.color = "blue"; // 강조 색상 변경 가능
+    }
     buttons.forEach((button) =>{
         button.classList.add("hidden");
     } )
+
     steps.forEach((step) => {
         step.classList.add("hidden");
     });
     document.getElementById(`step-${stepNumber}`).classList.remove("hidden");
 }
+
+// 페이지 로드 시 초기화
+document.addEventListener("DOMContentLoaded", () => {
+    showStep(1);
+});
 
 // 대표 및 클래스 내용 이미지 관련 요소
 const photoContainers = [
@@ -71,7 +114,9 @@ async function uploadFile(file) {
 
         if (response.ok) {
             const result = await response.json();
-            return result.url; // 서버에서 반환된 GCS URL
+            const encodedUrl = encodeURI(result.url); // URL에 문제가 있을 경우 추가적으로 인코딩
+
+            return encodedUrl;
         } else {
             console.error("업로드 실패:", await response.text());
             throw new Error("업로드 실패");

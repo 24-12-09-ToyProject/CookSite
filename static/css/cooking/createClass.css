@@ -23,6 +23,12 @@
     margin-bottom: 15px;
 }
 
+.sidebar-step{
+    font-weight: normal;
+}
+.sidebar-step.active {
+    font-weight: bold;
+}
 /* 콘텐츠 영역 */
 .content {
     flex: 1;

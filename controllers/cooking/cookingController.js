@@ -6,14 +6,15 @@ const { bucket } = require('../../config/googlecloud.js');
 
 //검색 조건
 exports.searchClass = async (req, res) => {
-    const { classTitle,classForm, region, classType, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
+    const { classTitle, region, classType, classFrequency, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_THUMBNAIL_URL, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
     const params = [];
     if (classTitle) {
-        query += ` AND CLASS_TITLE LIKE ? COLLATE utf8_general_ci`;
+        query += ` AND CLASS_TITLE LIKE ? COLLATE utf8mb4_general_ci`;
         params.push(`%${classTitle.trim()}%`);
     }
+
     if (region) {
         query += ` AND CLASS_LOCATION = ? `;
         params.push(region);
@@ -54,9 +55,9 @@ exports.searchClass = async (req, res) => {
         params.push(weekdays);
     }
 
-    if (classForm) {
-        query += ` AND CLASS_FORM = ?`;
-        params.push(classForm);
+    if (classFrequency) {
+        query += ` AND CLASS_FREQUENCY LIKE ? COLLATE utf8mb4_general_ci`;
+        params.push(`$${classFrequency}%`);
     }
     if(keyword) {
         query += ` AND CLASS_CATEGORY =?`;
