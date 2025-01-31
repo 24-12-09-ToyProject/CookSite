@@ -1,0 +1,93 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="/static/css/recipe/recipeRegister.css">
+{% endblock %}
+
+{% block content %}
+        <span class="regi-title">레시피 등록</span> <span class="regi-sub-title">여러분의 레시피를 소개해주세요</span>
+        <form id="recipe-form" action="/recipe/register" method="POST" enctype="multipart/form-data" class="form-section">
+            <input type="hidden" id="member_id">
+            <div class="information-box">
+                <div class="information-left">
+                    <div class="form-group">
+                        <label for="title">레시피 제목</label>
+                        <input type="text" id="title" name="title" placeholder="예) 소고기 미역국 끓이기" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="intro">요리소개</label>
+                        <textarea id="intro" name="intro" placeholder="이 레시피의 탄생배경을 적어주세요. 예) 남편의 생일을 맞아 소고기 미역국을 끓여봤어요. 어머니로부터 배운 미역국 레시피를 남편 입맛에 맞게 고안했습니다." rows="5" required style="resize:none;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">카테고리</label>
+                        <select name="category" required>
+                            <option selected disabled>종류별</option>
+                            <option value="sidedish">밑반찬</option>
+                            <option value="maindish">메인반찬</option>
+                            <option value="soup">국/탕/찌개</option>
+                            <option value="noodle">면/만두</option>
+                            <option value="rice">밥/죽/떡</option>
+                            <option value="western">양식/샐러드</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="serving">인원</label>
+                        <select name="serving" required>
+                            <option selected disabled>인원</option>
+                            <option value="one">1인분</option>
+                            <option value="two">2인분</option>
+                            <option value="three">3인분</option>
+                            <option value="four">4인분</option>
+                            <option value="five">5인분</option>
+                            <option value="six">6인분 이상</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="difficulty">난이도</label>
+                        <select name="serving" required>
+                            <option selected disabled>난이도</option>
+                            <option value="anyone">아무나</option>
+                            <option value="easy">초급</option>
+                            <option value="middle">중급</option>
+                            <option value="hard">고급</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="information-right">
+                    <div>
+                        <img id="thumbnail-img" src="https://recipe1.ezmember.co.kr/img/pic_none4.gif" style="width: 250px; height: 250px; cursor:pointer">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ingredients-box">
+                <div class="form-group">
+                    <label for="ingredients">재료</label>
+                    <textarea id="ingredients-input" name="ingredients" placeholder="예) 소고기 200g, 미역 30g, 간장 1/2큰술, 다진마늘 1T, 소고기 다시다 1포..." rows="5" required style="resize:none;"></textarea>
+                </div>
+            </div>
+            
+            <div class="steps-box" id="steps-container">
+                <p>조리 순서</p>
+                <div class="step" id="step1">
+                    <div class="form-group">
+                        <label for="step1-description">Step 1</label>
+                        <textarea id="step1-description" name="steps[]" placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required style="resize:none;"></textarea>
+                        <div class="form-group">
+                            <div id="step1-photoBox-div">
+                                <img id="step1-photo" src="https://recipe1.ezmember.co.kr/img/pic_none2.gif">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="add-step-btn" class="add-step-btn">순서 추가</button>
+            </div>
+            <div class="form-group" id="button-group">
+                <button type="submit" class="common-btn" id="submit-btn" style="margin-right: 40px;">등록</button>
+                <button type="cancel" class="common-btn" id="cancel-btn">취소</button>
+            </div>
+        </form>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="/static/js/recipe/recipeRegister.js"></script>
+{% endblock %}

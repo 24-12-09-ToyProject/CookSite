@@ -1,0 +1,175 @@
+.regi-title {
+    padding: 0 10px 0 20px;
+    font-size: 30px;
+    font-weight: 600;
+}
+.regi-sub-title {
+    color: #787878;
+    font-size: 17px;
+    letter-spacing: 1px;
+}
+#recipe-form {
+    margin-top: 10px;
+}
+.information-box, .ingredients-box, .steps-box {
+    width: 1200px;
+    margin: 0 auto 15px;
+    border-radius: 3px;
+    background-color: #fff;
+    text-align: left;
+}
+.information-box {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 50px 0;
+}
+.ingredients-box, .steps-box {
+    padding: 50px 70px;
+}
+    .information-left .form-group {
+        display: flex;
+        margin-bottom: 30px;
+    }
+    .ingredients-box .form-group {
+        display: flex;
+    }
+        .form-group label, .steps-box p {
+            padding-top: 10px;
+            display: block;
+            width: 140px;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        .steps-box p {
+            margin-bottom: 20px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 600px;
+            padding: 12px;
+            border: 1px solid #e1e1e1;
+            background-color: #f3f2f2;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-family: 'Pretendard-Regular', sans-serif;
+        }
+        .form-group select {
+            width: 200px;
+        }
+        #ingredients-input {
+            width: 900px;
+        }
+        input::placeholder,
+        textarea::placeholder {
+            color: #787878;
+        }
+    #thumbnail-img {
+        border: 1px solid #e1e1e1;
+    }
+.common-btn {
+    width: 200px;
+    padding: 14px;
+    font-size: 18px;
+    font-family: 'Pretendard-Regular', sans-serif;
+    background-color: goldenrod;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+}
+#button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+#submit-btn:hover {
+    background-color: rgb(205, 156, 34);
+}
+#cancel-btn {
+    background-color: rgb(211, 211, 211); 
+    color: black;
+}
+#cancel-btn:hover {
+    background-color: rgb(203, 203, 203);
+}
+
+/* Step 관련 CSS */
+.steps-box {
+    margin-top: 30px;
+}
+.step {
+    margin-bottom: 20px;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+    padding: 20px 40px 20px 30px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+.delete-step-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: rgb(253, 103, 103);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 22px;
+    text-align: center;
+    z-index: 100;
+}
+.step .form-group {
+    display: flex;
+    align-items: center;
+}
+.step .form-group label {
+    font-size: 24px;
+    color: green;
+    padding-top: 0;
+}
+.step .form-group textarea {
+    flex: 1;
+    margin-right: 20px;
+    height: 180px;
+}
+.step .form-group img {
+    width: 180px;
+    height: 180px;
+    cursor: pointer;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+}
+.step .form-group .add-step-btn:hover {
+    background-color: #ccc;
+}
+.add-step-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #8e8e8e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: 'Pretendard-Regular', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+.add-step-btn:hover {
+    transform: translateY(-5px);;
+}
+
+/* Step 삭제 애니메이션 */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.step.fade-out {
+    animation: fadeOut 0.4s;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
