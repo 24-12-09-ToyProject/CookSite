@@ -7,7 +7,7 @@
 {% block content %}
         <span class="regi-title">레시피 등록</span> <span class="regi-sub-title">여러분의 레시피를 소개해주세요</span>
         <form id="recipe-form" action="/recipe/register" method="POST" enctype="multipart/form-data" class="form-section">
-            <input type="hidden" id="member_id">
+            <!-- <input type="hidden" id="member_id" name="member_id"> -->
             <div class="information-box">
                 <div class="information-left">
                     <div class="form-group">
@@ -22,40 +22,42 @@
                         <label for="category">카테고리</label>
                         <select name="category" required>
                             <option selected disabled>종류별</option>
-                            <option value="sidedish">밑반찬</option>
-                            <option value="maindish">메인반찬</option>
-                            <option value="soup">국/탕/찌개</option>
-                            <option value="noodle">면/만두</option>
-                            <option value="rice">밥/죽/떡</option>
-                            <option value="western">양식/샐러드</option>
+                            <option value="밑반찬">밑반찬</option>
+                            <option value="메인반찬">메인반찬</option>
+                            <option value="국/탕/찌개">국/탕/찌개</option>
+                            <option value="면/만두">면/만두</option>
+                            <option value="밥/죽/떡">밥/죽/떡</option>
+                            <option value="양식/샐러드">양식/샐러드</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="serving">인원</label>
                         <select name="serving" required>
                             <option selected disabled>인원</option>
-                            <option value="one">1인분</option>
-                            <option value="two">2인분</option>
-                            <option value="three">3인분</option>
-                            <option value="four">4인분</option>
-                            <option value="five">5인분</option>
-                            <option value="six">6인분 이상</option>
+                            <option value="1인분">1인분</option>
+                            <option value="2인분">2인분</option>
+                            <option value="3인분">3인분</option>
+                            <option value="4인분">4인분</option>
+                            <option value="5인분">5인분</option>
+                            <option value="6인분 이상">6인분 이상</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="difficulty">난이도</label>
-                        <select name="serving" required>
+                        <select name="difficulty" required>
                             <option selected disabled>난이도</option>
-                            <option value="anyone">아무나</option>
-                            <option value="easy">초급</option>
-                            <option value="middle">중급</option>
-                            <option value="hard">고급</option>
+                            <option value="아무나">아무나</option>
+                            <option value="초급">초급</option>
+                            <option value="중급">중급</option>
+                            <option value="고급">고급</option>
                         </select>
                     </div>
                 </div>
                 <div class="information-right">
                     <div>
+                        <!-- 썸네일 등록 -->
                         <img id="thumbnail-img" src="https://recipe1.ezmember.co.kr/img/pic_none4.gif" style="width: 250px; height: 250px; cursor:pointer">
+                        <input type="file" id="thumbnail-file" name="thumbnail" accept="image/*" style="display:none;">
                     </div>
                 </div>
             </div>
@@ -72,10 +74,12 @@
                 <div class="step" id="step1">
                     <div class="form-group">
                         <label for="step1-description">Step 1</label>
-                        <textarea id="step1-description" name="steps[]" placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required style="resize:none;"></textarea>
+                        <textarea id="step1-description" name="description[]" placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required style="resize:none;"></textarea>
                         <div class="form-group">
                             <div id="step1-photoBox-div">
+                                <!-- 조리 순서 이미지 등록 -->
                                 <img id="step1-photo" src="https://recipe1.ezmember.co.kr/img/pic_none2.gif">
+                                <input type="file" id="step1-photo-file" name="recipe_image_path[]" accept="image/*" style="display:none;">
                             </div>
                         </div>
                     </div>

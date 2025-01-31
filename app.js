@@ -86,6 +86,9 @@ app.listen(port, () =>{
 // static의 모든 하위 폴더 지정
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
+// 정적 파일 제공 (uploads 폴더)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 //DB 테스트 
 // pool.getConnection((err, conn)=>{
 

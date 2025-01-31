@@ -103,5 +103,91 @@ async function getRecipeDetail(req, res) {
 }
 
 // 레시피 등록하는 함수
+async function registerRecipe(req, res) {
+    let connection;
+    try {
+        // MySQL 연결 및 트랜잭션 시작
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
 
-module.exports = { getRecipeList, getRecipeDetail };
+        console.log("Request Body:", req.body);
+        console.log("Uploaded Files:", req.files);
+        console.log(req.session.user.id);
+        const member_id = req.session.user.id;
+
+        // 레시피 데이터 삽입
+        const { title, intro, category, serving, difficulty, ingredients, description } = req.body;
+
+        // 필수 값 처리
+        if (!title || !intro || !category || !serving || !difficulty || !ingredients || !description) {
+            return res.status(400).json({ message: "모든 필수 항목을 입력해주세요." });
+        }
+
+        // 썸네일 처리 (단일 이미지)
+        const thumbnail = req.files['thumbnail'] && req.files['thumbnail'][0] ? req.files['thumbnail'][0].filename : null;
+        const thumbnailUrl = thumbnail ? `http://127.0.0.1:8888/uploads/${thumbnail}` : null;
+
+        // 레시피 SQL 작성
+        const recipeSql = `
+            INSERT INTO RECIPE 
+            (MEMBER_ID, RECIPE_TITLE, RECIPE_INTRO, RECIPE_CATEGORY, RECIPE_DIFFICULTY, 
+            SERVING, INGREDIENTS, RECIPE_THUMBNAIL, CREATED_AT, UPDATED_AT)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `;
+        
+        const recipeValues = [member_id, title, intro, category, difficulty, serving, ingredients, thumbnailUrl];
+        const [recipeResult] = await connection.query(recipeSql, recipeValues);
+        const recipeId = recipeResult.insertId;
+
+        // 조리 순서 데이터 배열 변환 (단일 값일 경우 대비)
+        const descriptions = Array.isArray(description) ? description : [description];
+        const recipe_image_paths = Array.isArray(req.files['recipe_image_path[]']) ? req.files['recipe_image_path[]'] : [];
+
+        // 스텝 데이터 삽입
+        const stepSql = `
+            INSERT INTO STEPS
+            (RECIPE_NO, STEP, DESCRIPTION, RECIPE_IMAGE_PATH)
+            VALUES (?, ?, ?, ?)
+        `;
+
+        const stepPromises = descriptions.map((desc, index) => {
+            let stepImageUrl = null;
+
+            // 조리순서 이미지가 업로드된 경우 처리
+            if (recipe_image_paths[index]) {
+                const stepImagePath = recipe_image_paths[index].filename;
+                stepImageUrl = `http://127.0.0.1:8888/uploads/${stepImagePath}`;
+            } else {
+                stepImageUrl = null;
+            }
+
+            const stepValues = [
+                recipeId, 
+                index + 1, 
+                desc, 
+                stepImageUrl
+            ];
+            return connection.query(stepSql, stepValues);
+        });
+
+        await Promise.all(stepPromises);
+
+        // 트랜잭션 커밋
+        await connection.commit();
+        res.status(200).json({
+            message: '레시피가 성공적으로 등록되었습니다.',
+            recipeId,
+            thumbnailUrl,  // 썸네일 이미지 URL을 응답에 포함
+        });
+    } catch (error) {
+        // 트랜잭션 롤백
+        if (connection) await connection.rollback();
+        console.error('레시피 등록 오류:', error.message);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        if (connection) connection.release();
+    }
+}
+
+
+module.exports = { getRecipeList, getRecipeDetail, registerRecipe };
