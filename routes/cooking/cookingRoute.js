@@ -19,6 +19,13 @@ router.post('/api/cooking/insert',cookingController.createClass);
 // multer 설정 가져오기
 const { upload } = require('../../config/googlecloud.js');
 router.post('/upload',upload.single('image'), cookingController.uploadFileToGCS);
+
+// 로그인 마이페이지 불러오기
+const { checkLogin } = require('../member/checkLogin.js');
+router.get('/mypage', checkLogin, (req, res)=>{
+	res.render('mypage.html');
+});
+
 // 쿠킹 클래스 메인 페이지
 router.get("/searchClass",(req,res)=>
 {
