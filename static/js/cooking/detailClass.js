@@ -1,24 +1,8 @@
-function changeImage(element) {
-    const mainImage = document.getElementById("main-image");
-    mainImage.src = element.src;
-}
-
-function increaseCount() {
-    const participants = document.getElementById("participants");
-    let count = parseInt(participants.value, 10);
-    participants.value = count + 1;
-}
-
-function decreaseCount() {
-    const participants = document.getElementById("participants");
-    let count = parseInt(participants.value, 10);
-    if (count > 1) {
-        participants.value = count - 1;
-    }
-}
 async function fetchClassDetail() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const classNo = urlParams.get("classNo"); // URL에서 classNo 가져오기
+    const pathParts = window.location.pathname.split("/");
+    const classNo = pathParts[pathParts.length - 1]; // 마지막 경로가 classNo
+    // const urlParams = new URLSearchParams(window.location.search); // 이 방식은 쿼리스트링 
+    // const classNo = urlParams.get("classNo"); // URL에서 classNo 가져오기
 
     if (!classNo) {
         alert("클래스 번호가 없습니다.");
@@ -26,7 +10,7 @@ async function fetchClassDetail() {
     }
 
     try {
-        const response = await fetch(`class/${classNo}`); // API 호출
+        const response = await fetch(`/api/class/${classNo}`); // API 호출
         const data = await response.json();
 
         if (!data.success) {

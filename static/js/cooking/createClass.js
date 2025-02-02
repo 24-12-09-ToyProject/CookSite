@@ -95,11 +95,13 @@ const photoContainers = [
         container: document.getElementById("upload-class-photo-container"),
         input: document.getElementById("upload-class-photo-input"),
         preview: document.getElementById("class-photo-preview"),
+        isRequired: true,
     },
     {
         container: document.getElementById("upload-class-content-container"),
         input: document.getElementById("upload-class-content-input"),
-        preview: document.getElementById("class-content-preview"),
+        preview: document.getElementById("image-preview-wrapper"),
+        isRequired: false,
     },
 ];
 
@@ -129,38 +131,142 @@ async function uploadFile(file) {
     }
 }
 
-// 파일 선택 후 이미지 업로드 및 미리보기 업데이트
-async function handleFileUpload(input, previewElement) {
-    const file = input.files[0];
-    if (file) {
-        // 1. 로컬 미리보기 표시
-        const blobUrl = URL.createObjectURL(file);
-        previewElement.src = blobUrl;
+let isUploading = false;
+// 이미지 업로드 및 미리보기 처리
+let classImages = []; // 전역 배열, 모든 클래스 이미지 URL을 저장
 
-        // 2. 파일 업로드
+async function handleImageUpload(containerConfig) {
+    const { input, preview, isRequired } = containerConfig;
+    const files = Array.from(input.files);
+
+    if (files.length === 0 && isRequired) {
+        alert("필수 이미지를 업로드해야 합니다!");
+        return;
+    }
+
+    isUploading = true; // 업로드 시작
+
+    if (preview.id === "class-photo-preview") {
+        const file = files[0]; // 대표 이미지는 하나만 처리
+        const localUrl = URL.createObjectURL(file);
+        preview.src = localUrl; // 로컬 미리보기 업데이트
+
         try {
-            const uploadedUrl = await uploadFile(file); // 파일 업로드
-            previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
+            const uploadedUrl = await uploadFile(file);
+            preview.src = uploadedUrl; // 업로드된 URL로 변경
+            console.log(`📌 업로드된 대표 이미지 URL: ${uploadedUrl}`);
         } catch (error) {
-            console.error("업로드 중 오류:", error);
+            console.error("🚨 대표 이미지 업로드 중 오류:", error);
         }
     }
+
+    if (preview.id === "image-preview-wrapper") {
+        const container = preview.parentNode;
+
+        await Promise.all(
+            files.map(async (file) => {
+                const previewWrapper = document.createElement("div");
+                previewWrapper.className = "image-preview-wrapper";
+                previewWrapper.style.marginTop = "10px";
+                previewWrapper.style.width = "200px";
+                previewWrapper.style.height = "100px";
+                previewWrapper.style.borderRadius = "10px";
+
+                const newImg = document.createElement("img");
+                newImg.src = URL.createObjectURL(file);
+                newImg.alt = "업로드된 클래스 이미지";
+                newImg.className = "preview-image";
+
+                previewWrapper.appendChild(newImg);
+                container.insertBefore(previewWrapper, preview);
+
+                try {
+                    const uploadedUrl = await uploadFile(file);
+                    newImg.src = uploadedUrl; // 업로드된 URL로 변경
+                    classImages.push(uploadedUrl); // 배열에 추가
+                    console.log(`📌 업로드된 클래스 이미지 URL: ${uploadedUrl}`);
+                } catch (error) {
+                    console.error("🚨 클래스 이미지 업로드 중 오류:", error);
+                }
+            })
+        );
+    }
+
+    isUploading = false; // 업로드 완료
+    console.log("📌 최종 업로드된 classImages 배열:", classImages);
 }
 
+
+
+// // 파일 선택 후 이미지 업로드 및 미리보기 업데이트
+// async function handleFileUpload(input, previewElement) {
+//     const files = Array.from(input.files); // 다중 파일 처리
+//     if (files.length === 0) return;
+
+//     // 미리보기 영역 초기화
+//     previewElement.innerHTML = "";
+
+//     for (const file of files) {
+//         // 1. 로컬 미리보기 생성
+//         const reader = new FileReader();
+//         reader.onload = (event) => {
+//             previewElement.src = event.target.result; // 로컬 파일 URL
+//         };
+//         reader.readAsDataURL(file); // 파일을 데이터 URL로 변환
+
+//         // 2. 파일 업로드
+//         try {
+//             const uploadedUrl = await uploadFile(file); // 파일 업로드
+//             previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
+//         } catch (error) {
+//             console.error("업로드 중 오류:", error);
+//         }
+//     }
+
+    // const file = input.files[0];
+    // if (file) {
+    //     // 1. 로컬 미리보기 표시
+    //     const blobUrl = URL.createObjectURL(file);
+    //     previewElement.src = blobUrl;
+
+    //     // 2. 파일 업로드
+    //     try {
+    //         const uploadedUrl = await uploadFile(file); // 파일 업로드
+    //         previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
+    //     } catch (error) {
+    //         console.error("업로드 중 오류:", error);
+    //     }
+    // }
+
+
+// // 모든 컨테이너에 클릭 및 파일 업로드 이벤트 추가
+// photoContainers.forEach(({ container, input, preview }) => {
+//     if (!container || !input || !preview) {
+//         console.error("필수 DOM 요소가 정의되지 않았습니다.");
+//         return;
+//     }
+//     // 클릭 시 파일 선택 창 열기
+//     container.addEventListener("click", () => input.click());
+
+//     // 파일 선택 후 처리
+//     input.removeEventListener("change", handleFileUpload);
+//     input.addEventListener("change", () => handleFileUpload(input, preview));
+// });
 // 모든 컨테이너에 클릭 및 파일 업로드 이벤트 추가
-photoContainers.forEach(({ container, input, preview }) => {
-    if (!container || !input || !preview) {
+photoContainers.forEach((containerConfig) => {
+    const { container, input } = containerConfig;
+
+    if (!container || !input) {
         console.error("필수 DOM 요소가 정의되지 않았습니다.");
         return;
     }
+
     // 클릭 시 파일 선택 창 열기
     container.addEventListener("click", () => input.click());
 
     // 파일 선택 후 처리
-    input.removeEventListener("change", handleFileUpload);
-    input.addEventListener("change", () => handleFileUpload(input, preview));
+    input.addEventListener("change", () => handleImageUpload(containerConfig));
 });
-
 //글쓰기 에디터 api 
 const contentEditor = new toastui.Editor({
     el: document.querySelector('.quiz-content'),
@@ -268,6 +374,21 @@ uploadPhotoInput.addEventListener("change", async (event) => {
         }
     }
 });
+// 설명 칸 수 업데이트
+
+const instructortext = document.getElementById("instructor-description");
+const instructortextCount = instructortext.nextElementSibling;
+const nicknametext = document.getElementById("nickname");
+const nicknametextCount = nicknametext.nextElementSibling;
+nicknametext.addEventListener('input',()=>{
+    const currentLength = nicknametext.value.length;
+    nicknametextCount.textContent = `최대 15글자 (${currentLength}/15)`;
+})
+instructortext.addEventListener('input',()=>{
+    const currentLength = instructortext.value.length;
+    instructortextCount.textContent = `최대 600자 (${currentLength}/600)`;
+});
+
 
 // // 파일 선택 후 미리보기 이미지 업데이트
 // uploadPhotoInput.addEventListener('change', (event) => {
@@ -426,43 +547,50 @@ let step1Data = {
 async function collectAllData() {
     // Step 2 데이터
     const step2Data = {
-        classTitle: document.getElementById('className').value || '', // 제목
-        category: document.querySelector('select').value || '',      // 카테고리
-        classAddress: document.getElementById('address').value || '' // 주소
+        classTitle: document.getElementById('className').value || '',
+        category: document.querySelector('select').value || '',
+        classAddress: document.getElementById('address').value || '',
     };
-    console.log('Step 2 Data:', step2Data);
- // Step 3 데이터 (이미지 업로드)
-    const thumbnailFile = document.getElementById('upload-class-photo-input').files[0];
-    const classImageFiles = Array.from(document.getElementById('upload-class-content-input').files);
+    console.log('📌 Step 2 Data:', step2Data);
 
-    const thumbnailURL = thumbnailFile ? await uploadFile(thumbnailFile) : '';
-    const classImagesURLs = await Promise.all(classImageFiles.map(uploadFile));
+    // Step 3 데이터
+    const thumbnailFileInput = document.getElementById('upload-class-photo-input');
+    const selectedThumbnailFile = thumbnailFileInput?.files[0];
+
+    let thumbnailURL = '';
+    if (selectedThumbnailFile) {
+        try {
+            thumbnailURL = await uploadFile(selectedThumbnailFile);
+            console.log(`📌 업로드된 대표 이미지 URL: ${thumbnailURL}`);
+        } catch (error) {
+            console.error("🚨 대표 이미지 업로드 실패:", error);
+        }
+    }
 
     const step3Data = {
-     thumbnailURL, // 업로드된 GCS URL
-     classImages: classImagesURLs, // 업로드된 GCS URL 배열
+        thumbnailURL,
+        classImages, // handleImageUpload에서 업데이트된 배열 사용
     };
 
-    // Step 4 데이터 (에디터 콘텐츠)
+    console.log("📌 Step 3 Data:", step3Data);
+
+    // 다른 데이터 수집
     const step4Data = {
-        classIntroduce: contentEditor.getMarkdown(), // 에디터에서 Markdown 데이터를 가져옴
+        classIntroduce: contentEditor.getMarkdown(),
     };
 
-    // Step 5 데이터
     const step5Data = {
         difficulty: document.querySelector('.difficulty-btn.active')?.dataset.level || '',
         classPlayingTime: document.getElementById('duration').value || '',
         curriculum: document.getElementById('curriculum-description').value || '',
     };
 
-    // Step 6 데이터
     const step6Data = {
         instructorName: document.getElementById('nickname').value || '',
         instructorintroduce: document.getElementById('instructor-description').value || '',
         instructorPhoto: document.getElementById('photo-preview').src || '',
     };
 
-    // Step 7 데이터
     const step7Data = {
         classCount: document.getElementById('class-count').value || '',
         classPrice: document.getElementById('class-price').value || '',
@@ -472,17 +600,21 @@ async function collectAllData() {
         maxPeople: document.getElementById('max-people').value || '',
     };
 
-    // 모든 데이터를 통합하여 반환
-    return {
+    const data = {
         ...step1Data,
         ...step2Data,
         ...step3Data,
         ...step4Data,
         ...step5Data,
         ...step6Data,
-        ...step7Data
+        ...step7Data,
     };
+
+    console.log("📌 수집된 데이터 (서버로 전송 전):", data);
+    return data;
 }
+
+
 // 시작 시간과 끝 시간 옵션 생성
 function populateTimeOptions(selectElement) {
     for (let hour = 0; hour <= 24; hour++) {
@@ -517,60 +649,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.querySelector(".register").addEventListener("click", async () => {
-    const data = await collectAllData();
-    console.log("📌 수집된 데이터 (서버로 전송 전):", data);
 
-    try {
-        const response = await fetch("/api/cooking/insert", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(`API 요청 실패: ${response.status}`);
-        }
-
-        // ✅ 서버 응답 데이터 받기
-        const responseData = await response.json();
-        console.log("✅ 서버 응답 데이터:", responseData);
-
-        if (responseData.success) {
-            alert(responseData.message);
-
-            // ✅ `classNo`가 정상적으로 전달되었는지 확인
-            if (!responseData.classNo) {
-                console.error("🚨 classNo가 정상적으로 반환되지 않았습니다!");
-                return;
-            }
-
-            // ✅ 새로 생성된 클래스에 `classNo`를 추가하여 렌더링
-            const newClass = { ...data, classNo: responseData.classNo };
-            console.log("📌 렌더링할 데이터:", newClass);
-
-            try {
-                renderCards([newClass]);
-            } catch (renderError) {
-                console.error("🚨 renderCards 함수 실행 중 오류 발생:", renderError);
-                return;
-            }
-
-            // ✅ `classNo`가 반영된 상세 페이지로 이동
-            console.log("✅ 이동할 상세 페이지 URL:", `/class/${responseData.classNo}`);
-            try {
-                window.location.href = `/class/${responseData.classNo}`;
-            } catch (redirectError) {
-                console.error("🚨 페이지 이동 중 오류 발생:", redirectError);
-            }
-        } else {
-            alert("클래스 생성 중 오류가 발생했습니다.");
-        }
-    } catch (error) {
-        console.error("🚨 클래스 생성 요청 에러:", error);
-        console.error("📌 오류 스택:", error.stack);
+document.addEventListener("DOMContentLoaded", () => {
+    const registerButton = document.querySelector(".register");
+    if (!registerButton) {
+        console.error("🚨 .register 버튼이 존재하지 않습니다.");
+        return;
     }
+
+    registerButton.addEventListener("click", async () => {
+        if (isUploading) {
+            alert("이미지 업로드가 완료될 때까지 기다려 주세요.");
+            return;
+        }
+
+        console.log("📌 register 버튼 클릭됨");
+
+        try {
+            console.log("classImages 보여줘 : " , classImages);
+            const data = await collectAllData();
+            console.log("📌 서버로 보낼 데이터:", data);
+
+            const response = await fetch("/api/cooking/insert", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`API 요청 실패: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log("📌 서버 응답 데이터:", responseData);
+        } catch (error) {
+            console.error("🚨 API 요청 또는 데이터 수집 중 오류:", error);
+        }
+    });
 });
 
+// document.querySelector(".register").addEventListener("click", async () => {
+//     const data = await collectAllData(); // 데이터 수집
+    
+
+//     try {
+//         const response = await fetch("/api/cooking/insert", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify(data), // 데이터를 JSON 형태로 전송
+//         });
+
+//         if (!response.ok) {
+//             throw new Error(`API 요청 실패: ${response.status}`);
+//         }
+
+//         // 서버 응답 데이터
+//         const responseData = await response.json();
+//         console.log("✅ 서버 응답 데이터:", responseData);
+
+//         if (responseData.success) {
+//             alert(responseData.message);
+
+//             // 상세 페이지로 이동
+//             const redirectUrl = `/class/${responseData.classNo}`;
+//             console.log("✅ 이동할 상세 페이지 URL:", redirectUrl);
+//             window.location.href = redirectUrl;
+//         } else {
+//             console.error("🚨 서버 응답 실패:", responseData.message);
+//             alert("클래스 생성 중 오류가 발생했습니다.");
+//         }
+//     } catch (error) {
+//         console.error("🚨 클래스 생성 요청 에러:", error);
+//     }
+// });

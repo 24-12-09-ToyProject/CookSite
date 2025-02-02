@@ -47,8 +47,15 @@ router.get("/createClass",(req,res)=>
 {
     res.render("createClass.html")
 });
+
 // ✅ 클래스 상세 페이지 조회 라우터 추가
-router.get("/class/:classNo", cookingController.getClassDetail);  // ✅ API URL을 명확히 구분
+router.get("/api/class/:classNo", cookingController.getClassDetail);  // ✅ API URL을 명확히 구분
+
+// ✅ 클래스 상세 페이지 (HTML 파일 반환)
+router.get("/class/:classNo", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../views/cooking/detailClass.html"));
+});
+
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));
 // 실제 데이터는 데이터베이스에서 가져오거나 동적으로 생성

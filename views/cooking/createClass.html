@@ -117,11 +117,14 @@
 
                         <!-- 클래스 내용 이미지 -->
                         <label>클래스 이미지 <span class="optional">(선택/최대 8개 등록 가능)</span></label>
+                        <div id="photo-upload-preview">
+                        <div id="image-preview-wrapper" style="display :none"></div>
+                        </div>
                         <div class="photo-upload" id="upload-class-content-container">
                             <div class="photo-preview">
                                 <img src="../../static/img/cooking/images.png" alt="내용 이미지 미리보기" id="class-content-preview">
                             </div>
-                            <input type="file" id="upload-class-content-input" accept="image/*" style="display: none;">
+                            <input type="file" id="upload-class-content-input" multiple accept="image/*" style="display: none;">
                         </div>
                         <div class="upload-guidelines">
                             <p>• 클래스/모임 이미지가 많을수록 클래스/모임을 신청할 확률이 올라갑니다</p>
@@ -130,7 +133,6 @@
                         <div class="buttons">
                             <button class="prev" onclick="showStep(2)">이전</button>
                             <button class="next" onclick="showStep(4)">다음</button>
-
                         </div>
                     </div>
                     <!-- Step 4 -->
@@ -151,9 +153,9 @@
                             <div class="form-group">
                                 <label>난이도</label>
                                 <div class="difficulty">
-                                    <button type="button" class="difficulty-btn" data-level="beginner">입문</button>
-                                    <button type="button" class="difficulty-btn" data-level="intermediate">중급</button>
-                                    <button type="button" class="difficulty-btn" data-level="advanced">고급</button>
+                                    <button type="button" class="difficulty-btn" data-level="입문">입문</button>
+                                    <button type="button" class="difficulty-btn" data-level="중급">중급</button>
+                                    <button type="button" class="difficulty-btn" data-level="고급">고급</button>
                                 </div>
                             </div>
                     

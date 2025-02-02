@@ -122,64 +122,64 @@ exports.uploadFileToGCS = async (req, res) => {
 // 클래스 생성 컨트롤러
 exports.createClass = async (req, res) => {
     const {
-        classType, classFrequency, classTitle, category, classAddress, startTime, endTime,
-        thumbnailURL, classImages, classIntroduce, difficulty, classPlayingTime, curriculum,
-        instructorPhoto, instructorName, instructorintroduce,
+        classImages, // 이미지 배열
+        classType, classFrequency, classTitle, category, classAddress,
+        startTime, endTime, thumbnailURL, classIntroduce, difficulty,
+        classPlayingTime, curriculum, instructorPhoto, instructorName, instructorintroduce,
         startDate, endDate,
     } = req.body;
+
+    console.log("📌 요청된 데이터(req.body):", req.body); // 디버깅용
+
+    // 유효성 검사
+    if (!classImages || !Array.isArray(classImages)) {
+        return res.status(400).json({ success: false, error: "클래스 이미지가 유효하지 않습니다." });
+    }
 
     const classCount = parseInt(req.body.classCount, 10) || 0;
     const classPrice = parseFloat(req.body.classPrice) || 0;
     const minPeople = parseInt(req.body.minPeople, 10) || 0;
     const maxPeople = parseInt(req.body.maxPeople, 10) || 0;
 
-    // classNo 생성
-    const classNo = generateClassNo();
+    const classNo = generateClassNo(); // 고유 ID 생성
     console.log("생성된 classNo:", classNo);
 
     const safeValues = [
-        classNo, 'Test', 
-        classType || "미정", classFrequency || "미정", 
+        classNo, 'Test',
+        classType || "미정", classFrequency || "미정",
         classTitle || "제목 없음", category || "기타", classAddress || "위치 없음",
-        startTime || "00:00", endTime || "00:00", 
-        thumbnailURL || "https://default-image.png", JSON.stringify(classImages || []), 
+        startTime || "00:00", endTime || "00:00",
+        thumbnailURL || "https://default-image.png",
+        JSON.stringify(classImages || []), // JSON 형태로 저장
         classIntroduce || "소개 없음", difficulty || "미정",
-        classPlayingTime || "0", curriculum || "없음", 
-        instructorPhoto || "https://default-instructor.png", instructorName || "강사 미정", 
-        instructorintroduce || "소개 없음", 
+        classPlayingTime || "0", curriculum || "없음",
+        instructorPhoto || "https://default-instructor.png", instructorName || "강사 미정",
+        instructorintroduce || "소개 없음",
         classCount, classPrice, startDate || "2025-01-01", endDate || "2025-01-01",
         minPeople, maxPeople
     ];
 
-    const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-    const selectQuery = `SELECT CLASS_NO FROM COOKING WHERE CLASS_NO = ?`;
+    console.log("📌 DB에 저장할 데이터:", safeValues); // 디버깅용
 
-    let connection;
+    const query = `INSERT INTO COOKING VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
     try {
-        connection = await pool.getConnection();
+        const connection = await pool.getConnection();
         await connection.execute(query, safeValues);
         await connection.execute("COMMIT");
-        const [rows] = await connection.execute(selectQuery, [classNo]);
-
-        if (rows.length === 0) {
-            console.error("🚨 INSERT 후 classNo 조회 실패!");
-            return res.status(500).json({ success: false, error: "클래스 번호 조회 실패" });
-        }
-
-        console.log("✅ 응답 데이터:", rows[0]);
+        connection.release();
 
         res.status(200).json({
             success: true,
-            classNo: rows[0].CLASS_NO, // 정확히 DB 컬럼명 사용
+            classNo,
             message: "클래스가 성공적으로 생성되었습니다!",
         });
     } catch (err) {
-        console.error("SQL 에러 발생:", err);
+        console.error("🚨 SQL 에러:", err);
         res.status(500).json({ success: false, error: err.message });
-    } finally {
-        if (connection) connection.release();
     }
 };
+
 
 
 // 예외 처리 및 미처리된 Promise 예외 핸들링
@@ -191,7 +191,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 
 // 컨트롤러 코드
-exports.getClassDetail = async (req, res) => {
+exports.getClassDetail = async (req, res) => { 
     const classNo = req.params.classNo;
 
     try {
@@ -203,25 +203,29 @@ exports.getClassDetail = async (req, res) => {
         connection.release();
 
         if (rows.length === 0) {
-            return res.status(404).send("클래스를 찾을 수 없습니다.");
+            return res.status(404).json({ success: false, message: "클래스를 찾을 수 없습니다." });
         }
 
-        const classData = rows[0];
-        
-        // // 인코딩된 URL
-        // classData.CLASS_THUMBNAIL_IMG = encodeURI(classData.CLASS_THUMBNAIL_IMG);
-        // classData.CLASS_INSTRUCTOR_IMG = encodeURI(classData.CLASS_INSTRUCTOR_IMG);
-        // classData.CLASS_CONTENT_IMG = JSON.parse(classData.CLASS_CONTENT_IMG).map((img) => encodeURI(img));
-        // 데이터베이스에서 가져온 URL을 그대로 사용
-        classData.CLASS_THUMBNAIL_IMG = classData.CLASS_THUMBNAIL_IMG;
-        classData.CLASS_INSTRUCTOR_IMG = classData.CLASS_INSTRUCTOR_IMG;
-        classData.CLASS_CONTENT_IMG = JSON.parse(classData.CLASS_CONTENT_IMG);
-        console.log("📌 인코딩된 상세 페이지 데이터:", classData);
+        let classData = rows[0];
 
-        res.render("detailClass.html", { classData });
+        // JSON 데이터 변환 (CLASS_CONTENT_IMG이 JSON 문자열일 경우 파싱)
+        if (classData.CLASS_CONTENT_IMG) {
+            try {
+                classData.CLASS_CONTENT_IMG = JSON.parse(classData.CLASS_CONTENT_IMG);
+            } catch (error) {
+                console.error("🚨 CLASS_CONTENT_IMG JSON 파싱 오류:", error);
+                classData.CLASS_CONTENT_IMG = [];
+            }
+        } else {
+            classData.CLASS_CONTENT_IMG = [];
+        }
+
+        console.log("📌 상세 페이지 데이터:", classData);
+        res.json({ success: true, classData }); // ✅ JSON으로 반환
     } catch (error) {
         console.error("🚨 클래스 상세 조회 오류:", error);
-        res.status(500).send("서버 오류 발생");
+        res.status(500).json({ success: false, message: "서버 오류 발생" });
     }
 };
+
 

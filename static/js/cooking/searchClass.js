@@ -478,41 +478,6 @@ async function fetchFilteredCards(filters = {}) {
     }
 }
 
-// DOM에 카드 렌더링
-// function renderCards(filteredCards) {
-//     const container = document.getElementById("card-container");
-//     const template = document.getElementById("card-template");
-
-//     // // 기존 카드 삭제
-//     container.innerHTML = "";
-
-//     // 새 카드 추가
-//     filteredCards.forEach((data) => {
-//         const card = template.content.cloneNode(true);
-//         card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
-//         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
-//         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
-//         const resultCount = filteredCards.length;
-//         document.querySelector(".cookinglist-searchresult").textContent = resultCount + "개의 결과";       
-        
-//         // 클래스 ID 부여
-//         const cardLink = card.querySelector("a");
-//         if (!data.classNo) {
-//             console.error("classNo가 존재하지 않음:", data);
-//         }
-//         cardLink.href = `/class/${data.classNo || "undefined"}`;
-//         cardLink.dataset.classNo = data.classNo;
-//         container.appendChild(card);
-//     });
-
-//         // 카드가 없는 경우 메시지 표시
-//         if (filteredCards.length === 0) {
-//             container.innerHTML = "<p>검색 결과가 없습니다.</p>";
-//         }
-// };
-//     //renderCards전역함수 활성화
-//     window.renderCards = renderCards;
-
 function renderCards(filteredCards) {
     const container = document.getElementById("card-container");
     const template = document.getElementById("card-template");

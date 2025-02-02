@@ -5,20 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{classData.CLASS_TITLE}}</title>
     <script defer src="../../static/js/cooking/detailClass.js"></script>
+    <link rel="stylesheet" href="../../static/css/cooking/detailClass.css">
 </head>
 <body>
-    <h1 id="class-title">클래스 제목</h1>
-    <p>카테고리: <span id="class-category"></span></p>
-    <p>주소: <span id="class-address"></span></p>
-    <p>난이도: <span id="class-difficulty"></span></p>
-    <p>가격: <span id="class-price"></span>원</p>
-    <p>수강 가능 인원: <span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span>명</p>
+    <div class="container">
+        <!-- 왼쪽: 이미지 및 상세 설명 -->
+        <div class="left-panel">
+            <!-- 썸네일 이미지 -->
+            <img id="class-thumbnail" src="" alt="클래스 썸네일" class="main-thumbnail">
 
-    <!-- 썸네일 이미지 -->
-    <img id="class-thumbnail" src="" alt="클래스 썸네일" width="300">
+            <!-- 상세 이미지 컨테이너 -->
+            <div id="class-images" class="image-gallery"></div>
+        </div>
 
-    <!-- 상세 이미지 컨테이너 -->
-    <div id="class-images"></div>
-    
+        <!-- 오른쪽: 클래스 정보 -->
+        <div class="right-panel">
+            <h1 id="class-title" class="class-title">클래스 제목</h1>
+            <p class="class-info"><strong>카테고리:</strong> <span id="class-category"></span></p>
+            <p class="class-info"><strong>주소:</strong> <span id="class-address"></span></p>
+            <p class="class-info"><strong>난이도:</strong> <span id="class-difficulty"></span></p>
+            <p class="class-info"><strong>가격:</strong> <span id="class-price"></span>원</p>
+            <p class="class-info"><strong>수강 가능 인원:</strong> <span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span>명</p>
+
+            <!-- 신청 버튼 -->
+            <button class="apply-button">클래스 신청하기</button>
+        </div>
+    </div>
 </body>
 </html>
