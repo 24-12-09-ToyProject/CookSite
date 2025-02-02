@@ -75,11 +75,13 @@
             </div>
         </div>
 
-        <button class="payment-button">결제하기</button>
+        <button class="payment-button" onclick="requestPay()">결제하기</button>
     </div>
 </div>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
     function findPostCode() {
         console.log("주소 검색 버튼이 클릭되었습니다.");
@@ -88,9 +90,32 @@
                 document.getElementById("postcode").value = data.zonecode
                 document.getElementById("address").value = data.address;
                 // document.getElementById("detailAddress").focus();
-                
+
             }
         }).open();
     };
+    function requestPay() {
+        IMP.init('imp25362283');
+        IMP.request_pay({
+            pg: "html5_inicis",
+            pay_method: "card",
+            merchant_uid: 'merchant_' + new Date().getTime(),
+            name: '결제테스트',
+            amount: 100,
+            buyer_email: 'iamport@siot.do',
+            buyer_name: '구매자',
+            buyer_tel: '010-1234-5678',
+            buyer_addr: '서울특별시 강남구 삼성동',
+            buyer_postcode: '123-456'
+        }, function (response) { // callback
+            if (response.success) {
+                var msg = '결제가 완료되었습니다.';
+                alert(msg);
+                location.href = "/store/all"
+            } else {
+                console.log(response.error_code + " " + response.error_msg);
+            }
+        });
+    }
 </script>
 {% endblock %}
