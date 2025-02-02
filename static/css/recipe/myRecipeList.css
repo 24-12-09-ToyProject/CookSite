@@ -1,0 +1,165 @@
+
+.list-container {
+    background-color: white;
+    padding: 50px 25px 20px 25px;
+}
+/* 카테고리 */
+.cate-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+    .cate-list span {
+        font-size: 22px;
+        font-weight: bold;
+        margin-right: 15px;
+        padding: 3px 20px;
+        color: goldenrod;
+        align-self: center;
+    }
+    .cate-button {
+        font-family: 'Pretendard-Regular', sans-serif;
+        border: none;
+        outline: none;
+        border-radius: 30px;
+        padding: 10px 15px;
+        margin: 5px 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .cate-button.selected {
+        background-color: goldenrod;
+        color: white;
+    }
+    .cate-button:not(.selected):hover {
+        color: goldenrod;
+    }
+    .cate-button:focus {
+        outline: none;
+    }
+    #my-recipe-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+    .search-result {
+        padding: 5px 0 30px 10px;
+        font-size: 18px;
+    }
+        #my-recipe-total-count {
+            font-size: 24px;
+            color: goldenrod;
+        }
+
+/* 레시피 목록 */
+#my-recipe-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+}
+    #my-recipe-list li {
+        list-style: none;
+        flex: 1 1 calc(25% - 20px);
+        max-width: 322px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        transition: background-color 0.3s, transform 0.2s;
+        padding-bottom: 5px;
+        position: relative;
+    }
+    #my-recipe-list li::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1;
+        pointer-events: none;
+    }
+    #my-recipe-list li:hover::after {
+        opacity: 1;
+    }
+        #my-recipe-list li img {
+            width: 100%;
+            height: 255px;
+            object-fit: cover;
+            z-index: 2;
+        }
+    .recipe-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 5px 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+    }
+    .update-recipe-btn, .delete-recipe-btn {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Pretendard-Regular', sans-serif;
+        border: none;
+        outline: none;
+        border-radius: 50%;
+        padding: 8px;
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s, opacity 0.2s;
+        color: white;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 4;
+    }
+    .update-recipe-btn {
+        background-color: #4CAF50;
+        margin-left: -40px;
+    }
+    .update-recipe-btn:hover {
+        background-color: #45A049;
+    }
+    .delete-recipe-btn {
+        background-color: #F44336;
+        margin-left: 50px;
+    }
+    .delete-recipe-btn:hover {
+        background-color: #c3302e;
+    }
+    #my-recipe-list li:hover .update-recipe-btn,
+    #my-recipe-list li:hover .delete-recipe-btn {
+        opacity: 1;
+        visibility: visible;
+    }
+
+/* 더보기 버튼 */
+    #load-more {
+        display: block;
+        width: 35%;
+        margin: 40px auto;
+        padding: 14px 50px;
+        font-size: 20px;
+        font-family: 'Pretendard-Regular', sans-serif;
+        background-color: #8e8e8e;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    #load-more:hover {
+        transform: translateY(-5px);
+    }

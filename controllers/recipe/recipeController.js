@@ -7,6 +7,10 @@ async function getRecipeList(req, res) {
     try {
         const connection = await pool.getConnection();
 
+        // 경로를 기준으로 MEMBER_ID 설정
+        const isMyList = req.originalUrl.includes('/myList');
+        const memberId = isMyList ? req.session.user.id : null;
+
         // 카테고리 파라미터 가져오기
         const category = req.query.category;
         const page = parseInt(req.query.page, 10) || 1;
@@ -27,24 +31,36 @@ async function getRecipeList(req, res) {
 
         let query = 'SELECT RECIPE_NO, MEMBER_ID, RECIPE_TITLE, RECIPE_THUMBNAIL FROM RECIPE';
         let countQuery = 'SELECT COUNT(*) AS totalCount FROM RECIPE';
-        if(kCategory) {
-            query += ' WHERE RECIPE_CATEGORY = ?';
-            countQuery += ' WHERE RECIPE_CATEGORY = ?';
-        }
-        query += ' ORDER BY RECIPE_NO DESC LIMIT ? OFFSET ?';
+        const queryParams = [];
 
-        const [rows] = await connection.query(query, kCategory ? [kCategory, boardLimit, offset] : [boardLimit, offset]);
-        const [countRows] = await connection.query(countQuery, kCategory ? [kCategory] : []);
+        if(memberId) {
+            query += ' WHERE MEMBER_ID = ?';
+            countQuery += ' WHERE MEMBER_ID = ?';
+            queryParams.push(memberId);
+        }
+
+        if (kCategory) {
+            query += memberId ? ' AND RECIPE_CATEGORY = ?' : ' WHERE RECIPE_CATEGORY = ?';
+            countQuery += memberId ? ' AND RECIPE_CATEGORY = ?' : ' WHERE RECIPE_CATEGORY = ?';
+            queryParams.push(kCategory);
+        }
+
+        query += ' ORDER BY RECIPE_NO DESC LIMIT ? OFFSET ?';
+        queryParams.push(boardLimit, offset);
+
+        const [rows] = await connection.query(query, queryParams);
+        const [countRows] = await connection.query(countQuery, memberId ? [memberId, ...(kCategory ? [kCategory] : [])] : kCategory ? [kCategory] : []);
         connection.release();
 
         const recipes = rows.map(row => new RecipeDTO(row));
         const totalCount = countRows[0].totalCount;
 
-        // ajax 요청이면 json 객체 반환, 아닐 경우 recipeList 페이지 렌더링
+        // ajax 요청이면 json 객체 반환, 아닐 경우 페이지 렌더링
+        const template = isMyList ? 'myRecipeList' : 'recipeList';
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
             res.json({ recipes , totalCount });
         } else {
-            res.render('recipeList', { recipes , totalCount });
+            res.render(template, { recipes, totalCount });
         }
     } catch (error) {
         console.error('레시피 목록 조회 오류:', error.message);
