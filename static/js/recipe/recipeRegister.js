@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
     let stepCount = 1;
-    const stepsContainer = document.getElementById("steps-container");
-    const addStepBtn = document.getElementById("add-step-btn");
+    const stepsContainer = document.getElementById('steps-container');
+    const addStepBtn = document.getElementById('add-step-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('recipe-form');
 
     // 썸네일 이미지 클릭 이벤트
     const thumbnailImg = document.getElementById('thumbnail-img');
@@ -100,4 +102,32 @@ document.addEventListener("DOMContentLoaded", function() {
         addStepImageClickEvent(stepCount);
     });
     addStepImageClickEvent(1);
+
+    // 폼 제출 시 메시지 표시
+    submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 마이페이지에서 수정 삭제가 가능합니다.")) {
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json().then(data => ({
+                status: response.status,
+                body: data
+            })))
+            .then(({ status, body }) => {
+                if (status === 200) {
+                    alert(body.message);
+                    window.location.href = '/recipe/list';
+                } else {
+                    alert(body.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+                alert('레시피 등록 중 오류가 발생했습니다.');
+            })
+        }
+    });
 });

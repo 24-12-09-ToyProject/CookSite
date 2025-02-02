@@ -113,19 +113,23 @@ async function registerRecipe(req, res) {
         console.log("Request Body:", req.body);
         console.log("Uploaded Files:", req.files);
         console.log(req.session.user.id);
+
         const member_id = req.session.user.id;
 
         // 레시피 데이터 삽입
         const { title, intro, category, serving, difficulty, ingredients, description } = req.body;
 
         // 필수 값 처리
-        if (!title || !intro || !category || !serving || !difficulty || !ingredients || !description) {
+        if (!title || !intro || !category || !serving || !difficulty || !ingredients || !description || description.length === 0) {
             return res.status(400).json({ message: "모든 필수 항목을 입력해주세요." });
         }
 
         // 썸네일 처리 (단일 이미지)
         const thumbnail = req.files['thumbnail'] && req.files['thumbnail'][0] ? req.files['thumbnail'][0].filename : null;
-        const thumbnailUrl = thumbnail ? `http://127.0.0.1:8888/uploads/${thumbnail}` : null;
+        if (!thumbnail) {
+            return res.status(400).json({ message: "썸네일 이미지를 업로드해주세요." });
+        }
+        const thumbnailUrl = `http://127.0.0.1:8888/uploads/${thumbnail}`;
 
         // 레시피 SQL 작성
         const recipeSql = `
@@ -141,7 +145,12 @@ async function registerRecipe(req, res) {
 
         // 조리 순서 데이터 배열 변환 (단일 값일 경우 대비)
         const descriptions = Array.isArray(description) ? description : [description];
-        const recipe_image_paths = Array.isArray(req.files['recipe_image_path[]']) ? req.files['recipe_image_path[]'] : [];
+        const recipe_image_paths = req.files['recipe_image_path[]'] || [];
+
+        // 조리 순서 배열 및 이미지 확인
+        if (descriptions.length === 0 || descriptions.some(desc => !desc.trim()) || recipe_image_paths.length < descriptions.length) {
+            return res.status(400).json({ message: "조리 순서와 이미지를 모두 입력해주세요." });
+        }
 
         // 스텝 데이터 삽입
         const stepSql = `
@@ -151,15 +160,8 @@ async function registerRecipe(req, res) {
         `;
 
         const stepPromises = descriptions.map((desc, index) => {
-            let stepImageUrl = null;
-
-            // 조리순서 이미지가 업로드된 경우 처리
-            if (recipe_image_paths[index]) {
-                const stepImagePath = recipe_image_paths[index].filename;
-                stepImageUrl = `http://127.0.0.1:8888/uploads/${stepImagePath}`;
-            } else {
-                stepImageUrl = null;
-            }
+            const stepImagePath = recipe_image_paths[index].filename;
+            const stepImageUrl = `http://127.0.0.1:8888/uploads/${stepImagePath}`;
 
             const stepValues = [
                 recipeId, 
@@ -175,17 +177,23 @@ async function registerRecipe(req, res) {
         // 트랜잭션 커밋
         await connection.commit();
         res.status(200).json({
-            message: '레시피가 성공적으로 등록되었습니다.',
-            recipeId,
-            thumbnailUrl,  // 썸네일 이미지 URL을 응답에 포함
+            message: '레시피가 성공적으로 등록되었습니다.'
         });
     } catch (error) {
         // 트랜잭션 롤백
-        if (connection) await connection.rollback();
+        if (connection) {
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error('트랜잭션 롤백 오류:', rollbackError.message);
+            }
+        }
         console.error('레시피 등록 오류:', error.message);
         res.status(500).send('Internal Server Error');
     } finally {
-        if (connection) connection.release();
+        if (connection) {
+            connection.release();
+        }
     }
 }
 

@@ -70,7 +70,7 @@ function updateRecipeList(recipes, reset) {
             <a href="/recipe/detail/${recipe.recipe_no}">
                 <img src="${recipe.thumbnail}" alt="${recipe.title}">
             </a>
-            <h3 class="recipe-title">${recipe.title}</h3>
+            <p class="recipe-title">${recipe.title}</p>
             <p>ID: ${recipe.member_id}</p>
         `;
         recipeList.appendChild(li);

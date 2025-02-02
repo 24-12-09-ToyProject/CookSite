@@ -25,8 +25,8 @@
                 <a href="/recipe/detail/{{ recipe.recipe_no }}">
                     <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
                 </a>
-                <p>ID: {{ recipe.member_id }}</p>
                 <p class="recipe-title">{{ recipe.title }}</p>
+                <p>ID: {{ recipe.member_id }}</p>
             </li>
             {% endfor %}
         </ul>
