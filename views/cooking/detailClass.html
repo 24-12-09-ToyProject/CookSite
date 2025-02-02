@@ -16,19 +16,93 @@
 
             <!-- 상세 이미지 컨테이너 -->
             <div id="class-images" class="image-gallery"></div>
+            <p class="class-info"> <span id="class-category"></span></p>
+            <h1 id="class-title" class="class-title">클래스 제목</h1>
+            <div class="class-description">
+                <ul class="description-list">
+                    <li>
+                        <p class="class-info"><img src="../../static/img/cooking/free-icon-pin-8734811.png" alt="" class="class-img"><span id="class-address"></span></p>
+                    </li>
+                    <li>
+                        <p class="class-info"><img src="../../static/img/cooking/free-icon-group-8073854.png" alt="" class="class-img"><span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span>명</p>
+                    </li>
+                    <li>
+                        <p class="class-info"><img src="../../static/img/cooking/free-icon-levels-8610269.png" alt="" class="class-img"><span id="class-difficulty"></span></p>
+                    </li>
+                    <li>
+                        <p class="class-info"><img src="../../static/img/cooking/free-icon-clock-3288819.png" alt="" class="class-img"><span id="class-playingtime"></span></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="MultiTabsScroller">
+                <button class="class-MultiTabs" id="introduce" value="introduce" onclick="ClickTabs(this)">클래스 소개</button>
+                <button class="class-MultiTabs" id="curriculum" value="curriculum" onclick="ClickTabs(this)">커리큘럼</button>
+                <button class="class-MultiTabs" id="instructor" value="instructor" onclick="ClickTabs(this)">호스트 소개</button>
+                <span class="Multitabs-indicator"></span>
+            </div>
+            <div class="MultiTabs-content">
+                <div id="content-introduce" class="content-item"> 
+                    <h2>클래스 소개</h2>
+                    <p class="introduce-content"></p>
+                </div>
+                <div id="content-curriculum" class="content-item" hidden>
+                    <h2>커리큘럼</h2>
+                    <p class="curriculum-content">커리큘럼 내용을 여기에 작성하세요.</p>
+                </div>
+                <div id="content-instructor" class="content-item" hidden>
+                    <h2>호스트 소개</h2>
+                    <p class="instructor-content">호스트 소개 내용을 여기에 작성하세요.</p>
+                </div>
+            </div>
         </div>
-
+        
         <!-- 오른쪽: 클래스 정보 -->
         <div class="right-panel">
-            <h1 id="class-title" class="class-title">클래스 제목</h1>
-            <p class="class-info"><strong>카테고리:</strong> <span id="class-category"></span></p>
-            <p class="class-info"><strong>주소:</strong> <span id="class-address"></span></p>
-            <p class="class-info"><strong>난이도:</strong> <span id="class-difficulty"></span></p>
-            <p class="class-info"><strong>가격:</strong> <span id="class-price"></span>원</p>
-            <p class="class-info"><strong>수강 가능 인원:</strong> <span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span>명</p>
-
-            <!-- 신청 버튼 -->
-            <button class="apply-button">클래스 신청하기</button>
+            <div class="calendar-container">
+                <!-- 달력 버튼 -->
+                <button id="calendar-button" class="calendar-button">
+                    <img src="../../static/img/cooking/free-icon-calendar-check-7955802.png" alt="" class="calendar-icon">
+                    <span id="selected-date">2025.02.04</span>
+                    <img src="../../static/img/cooking/free-icon-down-arrow-748063.png" alt="달력 아이콘" class="calender-dropdown">
+                </button>
+            
+                <!-- 달력 팝업 -->
+                <div id="calendar-popup" class="calendar-popup" hidden>
+                    <div class="calendar-header">
+                        <button id="prev-month" class="calendar-nav">&lt;</button>
+                        <span id="current-month">2025년 2월</span>
+                        <button id="next-month" class="calendar-nav">&gt;</button>
+                    </div>
+                    <table class="calendar-table">
+                        <thead>
+                            <tr>
+                                <th>일</th>
+                                <th>월</th>
+                                <th>화</th>
+                                <th>수</th>
+                                <th>목</th>
+                                <th>금</th>
+                                <th>토</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendar-body">
+                            <!-- 날짜가 JavaScript로 동적으로 채워짐 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ghost"></div>
+            <div class="checkPeople">
+                    <p class="select-people">인원 선택</p>
+                    <div class="people-Calc">
+                        <button class="calc" id="minus" value="minus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-minus-561179.png" alt=""></button>
+                        <div class="showPersonCount">1</div>
+                        <button class="calc" id="plus" value="plus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-plus-4430049.png" alt=""></button>
+                    </div>
+                </div>
+                <p class="class-info" id="classprice"><strong>가격:</strong><span id="class-price"></span>원</p>
+                <button class="apply-button">클래스 신청하기</button>
+            </div>
         </div>
     </div>
 </body>
