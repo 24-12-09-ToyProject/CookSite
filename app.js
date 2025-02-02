@@ -44,14 +44,15 @@ app.use(session({
 }));
 app.use(flash());
 
-// static 경로 설정
-// app.use(express.static('static'));
+// 정적 파일 제공 (브라우저에서 접근 가능하도록 설정 /uploads 경로로 실제 경로의 파일 추적 가능)
+app.use("/uploads", express.static(process.env.FILE_PATH));
 //------------------------
 
 
 //라우터 불러오기 
 const cookingRouter = require('./routes/cooking/cookingRoute.js');
 // - member 라우터
+const naverRouter = require('./routes/member/naverRoute.js');
 const memberRouter = require('./routes/member/memberRoute.js');
 const recipeRouter = require('./routes/recipe/recipeRoute.js');
 
@@ -59,6 +60,7 @@ const recipeRouter = require('./routes/recipe/recipeRoute.js');
 app.use('/cooking' , cookingRouter);
 app.use('/recipe' , recipeRouter);
 // - member 미들웨어
+app.use('/naver', naverRouter);
 app.use('/member' , memberRouter);
 
 // view 모든 하위 폴더 설정

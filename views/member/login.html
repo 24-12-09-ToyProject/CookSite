@@ -3,6 +3,7 @@
 {% block extra_styles %}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+	<link rel="stylesheet" href="/static/css/member/login.css">
 {% endblock %}
 
 
@@ -32,6 +33,10 @@
 		<hr>
 
 		<div>더욱 간편한 로그인/회원가입</div>
+		<div>
+			<img id="naver-logo" src="/static/img/member/naverLogo.png" alt="" onclick="openNaverLogin();">
+		</div>
+		<input type="hidden" id="parentEl">
 		<div>카카오, 네이버..</div>
 
 
@@ -44,7 +49,7 @@
 {% block extra_scripts %}
 <script>
 
-
+	let deleteResult = "{{deleteResult}}";
 	let signupResult = "{{signupResult}}";
 	let loggedInMessage = "{{loggedInMessage}}";
 
@@ -65,6 +70,12 @@
 					icon: 'warning',
 					title: 'Alert가 실행되었습니다.',
 					text: '로그인 후 이용해주세요',
+		});
+	}else if(deleteResult === 'success'){
+		Swal.fire({
+					icon: 'success',
+					title: 'Alert가 실행되었습니다.',
+					text: '탈퇴되었습니다',
 		});
 	}
 
@@ -98,6 +109,36 @@
 	function signin(){
 		checkValidInput();
 	}
+
+
+
+	function openNaverLogin(){
+		const api_url = "{{api_url}}";
+
+		const popup = window.open(
+        api_url,  // 팝업에서 실행할 로그인 페이지
+        '네이버 로그인',
+        'width=500,height=600,top=100,left=100'
+    );
+	}
+
+
+	
+
+	// 팝업창 통해서 로그인 성공 후 값 변경 감지하여 페이지 이동
+	const parentEl = document.getElementById("parentEl");
+
+	// MutationObserver 설정
+	const observer = new MutationObserver(() => {
+			console.log("Value changed:", parentEl.value);
+			if (parentEl.value) {
+					window.location.href = `/member/detail`; // 임시 (index파일 없음)
+			}
+	});
+
+	// 감시할 대상과 설정 (value 변경 감지)
+	observer.observe(parentEl, { attributes: true, attributeFilter: ["value"] });
+
 
 
 </script>
