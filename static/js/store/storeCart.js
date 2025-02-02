@@ -1,28 +1,102 @@
-const promisePool = require('../../../config/db');
+// static/js/store/storeCart.js
+const db = require('../../../config/db');
 
-async function getCartList(productId) {
+// 장바구니 상품 추가
+async function addToCart({ userId, productNo, optionNo, quantity }) {
     try {
-        // 상품 정보 조회
-        const [product] = await promisePool.query(
-            'SELECT * FROM product WHERE PRODUCT_NO = ?;',
-            [productId]
+        // 동일한 상품과 옵션이 있는지 확인
+        const [existing] = await db.execute(
+            `SELECT cart_no, quantity 
+             FROM cart 
+             WHERE member_id = ? AND product_no = ? AND option_no = ?`,
+            [userId, productNo, optionNo]
         );
 
-        // 옵션 정보 조회 (수정된 컬럼에 맞게 조회)
-        const [options] = await promisePool.query(
-            'SELECT OPTION_NO, PRODUCT_NO, OPTION_NAME, OPTION_PRICE_DIFF, OPTION_STOCK FROM productoption WHERE PRODUCT_NO = ?;',
-            [productId]
-        );
+        if (existing.length > 0) {
+            // 이미 존재하면 수량만 업데이트
+            await db.execute(
+                `UPDATE cart 
+                 SET quantity = quantity + ? 
+                 WHERE cart_no = ?`,
+                [quantity, existing[0].cart_no]
+            );
+        } else {
+            // 새로운 상품 추가
+            await db.execute(
+                `INSERT INTO cart (member_id, product_no, option_no, quantity) 
+                 VALUES (?, ?, ?, ?)`,
+                [userId, productNo, optionNo, quantity]
+            );
+        }
 
-        return {
-            product: product[0], // 단일 상품 정보
-            options: options // 해당 상품의 옵션 리스트
-        };
-    } catch (err) {
-        console.error('Error executing query:', err);
-        throw err; // 에러를 던져서 라우터에서 처리할 수 있게 함
+        return true;
+    } catch (error) {
+        console.error('장바구니 추가 에러:', error);
+        throw error;
     }
 }
 
+// 장바구니 목록 조회
+async function getCartItems(userId) {
+    try {
+        const [rows] = await db.execute(
+            `SELECT * FROM CART WHERE MEMBER_ID = ?`,
+            [userId]
+        );
 
-module.exports = { getProductDetails };
+        return rows.map(row => ({
+            cartNo: row.cart_no,
+            productNo: row.product_no,
+            productName: row.product_name,
+            productImg: row.product_img,
+            optionName: row.option_name,
+            quantity: row.quantity,
+            price: row.base_price + (row.option_price_diff || 0)
+        }));
+    } catch (error) {
+        console.error('장바구니 조회 에러:', error);
+        throw error;
+    }
+}
+
+// 장바구니 상품 삭제
+async function removeCartItem(userId, cartNo) {
+    try {
+        await db.execute(
+            `DELETE FROM cart 
+             WHERE cart_no = ? AND member_id = ?`,
+            [cartNo, userId]
+        );
+        return true;
+    } catch (error) {
+        console.error('장바구니 삭제 에러:', error);
+        throw error;
+    }
+}
+
+// 장바구니 수량 업데이트
+async function updateCartQuantity(userId, cartNo, quantity) {
+    try {
+        if (quantity < 1) {
+            return await removeCartItem(userId, cartNo);
+        }
+
+        await db.execute(
+            `UPDATE cart 
+             SET quantity = ? 
+             WHERE cart_no = ? AND member_id = ?`,
+            [quantity, cartNo, userId]
+        );
+        return true;
+    } catch (error) {
+        console.error('수량 업데이트 에러:', error);
+        throw error;
+    }
+}
+
+module.exports = {
+    addToCart,
+    getCartItems,
+    removeCartItem,
+    updateCartQuantity
+};

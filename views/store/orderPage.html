@@ -47,7 +47,7 @@
                     <div class="address-input-group">
                         <div class="postcode-group">
                             <input type="text" id="postcode" placeholder="우편번호" readonly>
-                            <button type='button' onClick=findPostCode() class="address-search-btn">주소검색</button>
+                            <button type='button' onclick="findPostCode()" class="address-search-btn">주소검색</button>
                         </div>
                         <input type="text" id="address" placeholder="기본주소" readonly>
                         <input type="text" id="address-detail" placeholder="상세주소를 입력해주세요">
@@ -84,36 +84,105 @@
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
     function findPostCode() {
-        console.log("주소 검색 버튼이 클릭되었습니다.");
         new daum.Postcode({
             oncomplete: function (data) {
-                document.getElementById("postcode").value = data.zonecode
+                document.getElementById("postcode").value = data.zonecode;
                 document.getElementById("address").value = data.address;
-                // document.getElementById("detailAddress").focus();
-
             }
         }).open();
     };
-    function requestPay() {
+
+    function validateForm() {
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const postcode = document.getElementById('postcode').value;
+        const address = document.getElementById('address').value;
+        const addressDetail = document.getElementById('address-detail').value;
+
+        if (!name) {
+            alert('이름을 입력해주세요.');
+            return false;
+        }
+        if (!phone) {
+            alert('전화번호를 입력해주세요.');
+            return false;
+        }
+        if (!email) {
+            alert('이메일을 입력해주세요.');
+            return false;
+        }
+        if (!postcode || !address || !addressDetail) {
+            alert('주소를 모두 입력해주세요.');
+            return false;
+        }
+
+        return {
+            name,
+            phone,
+            email,
+            postcode,
+            address: `${address} ${addressDetail}`
+        };
+    }
+
+    async function requestPay() {
+        const shippingInfo = validateForm();
+        if (!shippingInfo) return;
+
+        const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+        const totalPrice = parseInt("{{ orderData.totalPrice }}".replace(/[^0-9]/g, ''));
+        const productName = "{{ orderData.productName }}";
+        const optionsParsed = JSON.parse('{{ orderData.options | safe }}');
+
+
+
         IMP.init('imp25362283');
         IMP.request_pay({
-            pg: "html5_inicis",
-            pay_method: "card",
+            pg: paymentMethod === 'card' ? "html5_inicis" : "kakaopay",
+            pay_method: paymentMethod === 'card' ? "card" : "trans",
             merchant_uid: 'merchant_' + new Date().getTime(),
-            name: '결제테스트',
-            amount: 100,
-            buyer_email: 'iamport@siot.do',
-            buyer_name: '구매자',
-            buyer_tel: '010-1234-5678',
-            buyer_addr: '서울특별시 강남구 삼성동',
-            buyer_postcode: '123-456'
-        }, function (response) { // callback
+            name: productName,
+            amount: totalPrice,
+            buyer_email: shippingInfo.email,
+            buyer_name: shippingInfo.name,
+            buyer_tel: shippingInfo.phone,
+            buyer_addr: shippingInfo.address,
+            buyer_postcode: shippingInfo.postcode
+        }, async function (response) {
             if (response.success) {
-                var msg = '결제가 완료되었습니다.';
-                alert(msg);
-                location.href = "/store/all"
+                try {
+                    const orderData = {
+                        imp_uid: response.imp_uid,
+                        merchant_uid: response.merchant_uid,
+                        productInfo: {
+                            name: productName,
+                            options: options,
+                            totalPrice: totalPrice
+                        },
+                        shippingInfo: shippingInfo
+                    };
+
+                    const verifyResponse = await fetch('/payments/complete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    if (verifyResponse.ok) {
+                        alert('결제가 완료되었습니다.');
+                        location.href = "/store/all";
+                    } else {
+                        throw new Error('결제 검증 실패');
+                    }
+                } catch (error) {
+                    console.error('결제 검증 오류:', error);
+                    alert('결제 검증 중 오류가 발생했습니다. 고객센터로 문의해주세요.');
+                }
             } else {
-                console.log(response.error_code + " " + response.error_msg);
+                alert(`결제 실패: ${response.error_msg}`);
             }
         });
     }

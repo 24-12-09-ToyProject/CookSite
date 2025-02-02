@@ -31,7 +31,7 @@
                 <form action="/store/order" method="POST" id="product-form">
                     <input type="hidden" name="productImg" value="{{ details.product.PPODUCT_MAIN_IMG_URL }}">
                     <input type="hidden" name="productName" value="{{ details.product.PRODUCT_NAME }}">
-                    <input type="hidden" name="selectedOptions" id="selectedOptionsData">
+                    <input type="hidden" name="selectedOptionsData" id="selectedOptionsData">
                     <input type="hidden" name="totalPrice" id="totalPriceData">
                     <div class="option-select">
                         <label for="product-option"></label>
@@ -47,7 +47,7 @@
                     </div>
                     <div id="selected-options-container"></div>
                     <p id="total-option">주문금액 <span id="total-price">0 원</span></p>
-                    <button type="button" class="add-to-cart">장바구니</button>
+                    <button type="button" onclick="addCart()" class="add-to-cart">장바구니</button>
                     <button type="submit" class="buy-now">바로구매</button>
                 </form>
                 {% else %}
@@ -65,6 +65,9 @@
 <script>
     const basePrice = {{ details.product.BASE_PRICE }};
     const rewardAmount = basePrice * 0.005;
+    const productImg = document.querySelector("input[name='productImg']").value;
+    const productName = document.querySelector("input[name='productName']").value;
+
     document.getElementById('reward-amount').textContent = rewardAmount.toFixed(0);
 
     const selectedOptions = new Map(); // 선택된 옵션들을 저장할 Map
@@ -73,6 +76,8 @@
     document.getElementById('product-option').addEventListener('change', function () {
         const select = this;
         const selectedOption = select.options[select.selectedIndex];
+
+        // console.log("선택된 옵션:", selectedOption.value);  // 선택된 옵션 로그 출력
 
         // 이미 선택된 옵션인지 확인
         if (selectedOptions.has(selectedOption.value)) {
@@ -89,11 +94,21 @@
             quantity: 1
         };
 
+        // console.log("옵션 데이터 추가:", optionData); // 옵션 데이터 로그 확인
+
         addOptionToContainer(optionData);
-        selectedOptions.set(optionData.id, optionData);
+        selectedOptions.set(optionData.id, optionData);  // 옵션 저장
+
+        // console.log("현재 selectedOptions:", selectedOptions); // 선택된 옵션 전체 출력
+        // console.log("🔢 현재 selectedOptions size:", selectedOptions.size);
+        // console.log("productImg =" + productImg);
+        // console.log("productName = " + productName);
+
         updateTotalPrice();
         select.selectedIndex = 0; // 선택 초기화
     });
+
+
 
     // 옵션 컨테이너에 새로운 옵션 추가
     function addOptionToContainer(optionData) {
@@ -175,30 +190,90 @@
         document.getElementById('total-price').textContent = totalPrice.toLocaleString() + " 원";
     }
 
-    // 폼 제출 전 유효성 검사
+    function addCart() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if (selectedOptions.size === 0) {
+            alert("옵션을 선택해주세요.");
+            return;
+        }
+
+        const selectedOptionsData = Array.from(selectedOptions.values()).map(option => ({
+            productImg: productImg,
+            productName: productName,
+            optionName: option.name,
+            quantity: option.quantity,
+            optionPrice: (basePrice + option.priceDiff) * option.quantity
+        }));
+
+        const totalPrice = selectedOptionsData.reduce((sum, option) => sum + option.optionPrice, 0);
+
+        // 장바구니에 아이템 추가
+        selectedOptionsData.forEach(option => {
+            const existingItem = cart.find(item =>
+                item.productName === productName &&
+                item.optionName === option.optionName // 옵션 이름으로 중복 검사
+            );
+
+            if (existingItem) {
+                existingItem.quantity += option.quantity;
+                existingItem.price = existingItem.price + (option.optionPrice * option.quantity); // 기존 가격 업데이트
+            } else {
+                cart.push({
+                    productImg: productImg,
+                    productName: productName,
+                    optionName: option.optionName,
+                    quantity: option.quantity,
+                    price: option.optionPrice * option.quantity // 가격을 수량만큼 반영
+                });
+            }
+        });
+
+        // 장바구니에 저장
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+
+        // 장바구니에 저장
+        localStorage.setItem("cart", JSON.stringify(cart));
+        const moveToCart = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
+        if (moveToCart) {
+            window.location.href = "/store/cart"; // 장바구니 페이지로 이동
+        }
+
+        // 폼에 데이터를 추가
+        updateFormData(selectedOptionsData, totalPrice);
+    }
+
+    // 폼 데이터 업데이트 함수
+    function updateFormData(selectedOptionsData, totalPrice) {
+        document.getElementById('selectedOptionsData').value = JSON.stringify(selectedOptionsData);
+        document.getElementById('totalPriceData').value = totalPrice;
+    }
     document.getElementById('product-form').addEventListener('submit', function (e) {
         e.preventDefault();
+
         if (selectedOptions.size === 0) {
             alert('상품 옵션을 선택해주세요.');
             return;
         }
-        // 선택된 옵션 데이터 준비
-        const optionsData = Array.from(selectedOptions.values()).map(option => ({
+
+        // 선택된 옵션 데이터를 orderItems 형식으로 준비
+        const orderItems = Array.from(selectedOptions.values()).map(option => ({
             optionName: option.name,
             quantity: option.quantity,
             optionPrice: (basePrice + option.priceDiff) * option.quantity
         }));
 
         // 총 가격 계산
-        const totalPrice = optionsData.reduce((sum, option) => sum + option.optionPrice, 0);
+        const totalPrice = orderItems.reduce((sum, option) => sum + option.optionPrice, 0);
 
-        // hidden 필드에 데이터 설정
-        document.getElementById('selectedOptionsData').value = JSON.stringify(optionsData);
-        document.getElementById('totalPriceData').value = totalPrice;
+        // orderItems와 totalPrice를 hidden 필드에 설정
+        updateFormData(orderItems, totalPrice);
 
         // 폼 제출
         this.submit();
     });
+
+
 
 </script>
 {% endblock %}
