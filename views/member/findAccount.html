@@ -1,0 +1,86 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+<h2>아이디 찾기</h2>
+<form action="/find-id" method="post">
+	<label for="name">이름</label>
+	<input type="text" id="memberName" name="memberName" autocomplete="off" required>
+
+	<label for="email">이메일</label>
+	<input type="email" id="email" name="email" autocomplete="off" required>
+
+	<button type="button" onclick="findMemberId();">아이디 찾기</button>
+</form>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+	const elMemberName = document.querySelector('#memberName');
+	const elEmail = document.querySelector('#email');
+	const findIdForm = document.querySelector('#find-id');
+	
+
+async	function checkValidInput(){
+	let memberName = elMemberName.value;
+	let email = elEmail.value;
+
+	// id 필수입력 체크
+	if(memberName === ""){
+		alert("이름을 입력해주세요");
+		return;
+	}
+	
+	// pw 필수입력 체크
+	if(email === ""){
+		alert("이메일을 입력해주세요");
+		return;
+	}
+
+
+
+	// 서버 검증 -> id, email 확인 후 존재하면 이메일 전송
+	const response = await fetch('/member/api/find-id', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ memberName, email })
+	});
+
+	const result = await response.json();
+
+	console.log("find-id : " + result.success + result.maskedId);
+
+	if (result.success) {
+		Swal.fire({
+				icon: 'success',
+				title: 'Alert가 실행되었습니다.',
+				text: '찾은 아이디 : ' + result.maskedId,
+		});
+	} else {
+		Swal.fire({
+				icon: 'warning',
+				title: 'Alert가 실행되었습니다.',
+				text: "존재하지 않는 계정",
+		});
+	}
+}
+
+
+function findMemberId(){
+	checkValidInput();
+}
+
+
+
+
+</script>
+{% endblock %}
+

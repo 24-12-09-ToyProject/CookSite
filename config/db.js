@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise')
 
 const pool = mysql.createPool({
     connectionLimit : 10, // 최대 10개 만듦
-    host : '0.tcp.jp.ngrok.io', // host 주소는 고정
+    host : 'localhost', // host 주소는 고정
     user : 'cooksite',
     password : 'cooksite',
     database : 'test1',
