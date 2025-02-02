@@ -29,6 +29,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function deleteOneRecipe(recipeNo, recipeElement) {
+    if(confirm('정말 삭제하시겠습니까?')) {
+        fetch(`/recipe/delete/${recipeNo}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            console.log('서버 응답 수신:', response);
+            return response.json().then(body => ({ response, body }));
+        })
+        .then(({ response, body }) => {
+            if(response.ok) {
+                console.log('삭제 성공:', body.message);
+                alert(body.message);
+                recipeElement.remove();
+            } else {
+                console.error('레시피 삭제 실패: ', body.message);
+                alert('레시피 삭제에 실패했습니다. 다시 시도해 주세요.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting recipe:', error);
+            alert('레시피 삭제 중 오류가 발생했습니다.');
+        });
+    }
+}
+
 // 카테고리에 해당하는 레시피를 불러오는 함수
 function fetchRecipes(category, page, reset) {
     fetch(`/recipe/myList?category=${category}&page=${page}`, {
@@ -75,5 +104,13 @@ function updateRecipeList(recipes, reset) {
             <button class="delete-recipe-btn" data-recipe-id="${recipe.recipe_no}">삭제</button>
         `;
         myRecipeList.appendChild(li);
+
+        // 삭제 버튼 클릭 시 함수 호출
+        const deleteButton = li.querySelector('.delete-recipe-btn');
+        deleteButton.addEventListener('click', function() {
+            const recipeNo = this.getAttribute('data-recipe-id');
+            const recipeElement = this.closest('li');
+            deleteOneRecipe(recipeNo, recipeElement);
+        });
     });
 }

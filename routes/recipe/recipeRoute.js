@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../../config/upload')
-const { getRecipeList, getRecipeDetail, registerRecipe } = require('../../controllers/recipe/recipeController');
+const { getRecipeList, getRecipeDetail, registerRecipe, deleteRecipe } = require('../../controllers/recipe/recipeController');
 const { checkLogin } = require('../member/checkLogin');
 
 // 레시피 목록 화면을 출력하는 라우트
@@ -23,5 +23,7 @@ router.post('/register', checkLogin, upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'recipe_image_path[]', maxCount: 20 }
 ]), registerRecipe);
+
+router.delete('/delete/:recipeNo', checkLogin, deleteRecipe);
 
 module.exports = router;

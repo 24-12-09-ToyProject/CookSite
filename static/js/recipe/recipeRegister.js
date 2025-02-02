@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const addStepBtn = document.getElementById('add-step-btn');
     const submitBtn = document.getElementById('submit-btn');
     const form = document.getElementById('recipe-form');
+    const cancelBtn = document.getElementById('cancel-btn');
 
     // 썸네일 이미지 클릭 이벤트
     const thumbnailImg = document.getElementById('thumbnail-img');
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 폼 제출 시 메시지 표시
     submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 마이페이지에서 수정 삭제가 가능합니다.")) {
+        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 내 레시피에서 확인할 수 있습니다.")) {
             const formData = new FormData(form);
             fetch(form.action, {
                 method: 'POST',
@@ -130,4 +131,13 @@ document.addEventListener("DOMContentLoaded", function() {
             })
         }
     });
+
+    // 취소 클릭 시 이전 화면으로 이동
+    cancelBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if(confirm('등록을 취소합니다.')) {
+            history.back();
+        }
+    })
+
 });

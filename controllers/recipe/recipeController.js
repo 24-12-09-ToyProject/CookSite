@@ -130,7 +130,7 @@ async function registerRecipe(req, res) {
         console.log("Uploaded Files:", req.files);
         console.log(req.session.user.id);
 
-        const member_id = req.session.user.id;
+        const memberId = req.session.user.id;
 
         // 레시피 데이터 삽입
         const { title, intro, category, serving, difficulty, ingredients, description } = req.body;
@@ -155,7 +155,7 @@ async function registerRecipe(req, res) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         `;
         
-        const recipeValues = [member_id, title, intro, category, difficulty, serving, ingredients, thumbnailUrl];
+        const recipeValues = [memberId, title, intro, category, difficulty, serving, ingredients, thumbnailUrl];
         const [recipeResult] = await connection.query(recipeSql, recipeValues);
         const recipeId = recipeResult.insertId;
 
@@ -192,9 +192,7 @@ async function registerRecipe(req, res) {
 
         // 트랜잭션 커밋
         await connection.commit();
-        res.status(200).json({
-            message: '레시피가 성공적으로 등록되었습니다.'
-        });
+        res.status(200).json({message: '레시피가 성공적으로 등록되었습니다.'});
     } catch (error) {
         // 트랜잭션 롤백
         if (connection) {
@@ -207,11 +205,32 @@ async function registerRecipe(req, res) {
         console.error('레시피 등록 오류:', error.message);
         res.status(500).send('Internal Server Error');
     } finally {
-        if (connection) {
-            connection.release();
-        }
+        if (connection) connection.release();
     }
 }
 
+// 레시피 삭제하는 함수
+async function deleteRecipe(req, res) {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const recipeNo = req.params.recipeNo;
+        const memberId = req.session.user.id;
 
-module.exports = { getRecipeList, getRecipeDetail, registerRecipe };
+        const query = 'DELETE FROM RECIPE WHERE RECIPE_NO = ? AND MEMBER_ID = ?';
+        const [result] = await connection.query(query, [recipeNo, memberId]);
+
+        if(result.affectedRows === 0) {
+            res.status(404).json({message: '레시피를 찾을 수 없거나 권한이 없습니다.'});
+        } else {
+            res.status(200).json({message: '레시피 삭제가 완료되었습니다.'});
+        }
+    } catch(error) {
+        console.error('레시피 삭제 오류:', error.message);
+        res.status(500).json({message: '레시피 삭제 중 오류가 발생했습니다.'});
+    } finally {
+        if(connection) connection.release();
+    }
+}
+
+module.exports = { getRecipeList, getRecipeDetail, registerRecipe, deleteRecipe };
