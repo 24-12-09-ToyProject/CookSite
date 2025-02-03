@@ -136,6 +136,13 @@ exports.createClass = async (req, res) => {
         return res.status(400).json({ success: false, error: "클래스 이미지가 유효하지 않습니다." });
     }
 
+    // 로그인한 유저 ID 가져오기
+    const userId = req.session?.user?.id;  
+    if (!userId) {
+        return res.status(401).json({ success: false, error: "로그인이 필요합니다." });
+    }
+
+
     const classCount = parseInt(req.body.classCount, 10) || 0;
     const classPrice = parseFloat(req.body.classPrice) || 0;
     const minPeople = parseInt(req.body.minPeople, 10) || 0;
@@ -145,7 +152,7 @@ exports.createClass = async (req, res) => {
     console.log("생성된 classNo:", classNo);
 
     const safeValues = [
-        classNo, 'Test',
+        classNo, userId,
         classType || "미정", classFrequency || "미정",
         classTitle || "제목 없음", category || "기타", classAddress || "위치 없음",
         startTime || "00:00", endTime || "00:00",
@@ -186,9 +193,6 @@ exports.createClass = async (req, res) => {
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection:', reason);
 });
-
-
-
 
 // 컨트롤러 코드
 exports.getClassDetail = async (req, res) => { 

@@ -17,8 +17,9 @@ router.get("/" , (request,response)=>{
 // db 세팅
 const pool = require('../../config/db.js');
 
-//쿠킹 컨트롤러 호출
+//컨트롤러 호출
 const cookingController = require('../../controllers/cooking/cookingController.js');
+const payController = require('../../controllers/cooking/pay/payController.js');
 router.post('/api/cooking/filter',cookingController.searchClass);
 router.post('/api/cooking/insert',cookingController.createClass);
 // multer 설정 가져오기
@@ -55,6 +56,15 @@ router.get("/api/class/:classNo", cookingController.getClassDetail);  // ✅ API
 router.get("/class/:classNo", (req, res) => {
     res.sendFile(path.join(__dirname, "../../views/cooking/detailClass.html"));
 });
+// 결제 준비
+router.post("/api/classMember" , payController.requestClassMemberInfo);
+// 결제 요청
+router.post("/payments/pay",payController.payClass);
+// 결제 정보 검증 요청 
+router.post("/validation/:imp_uid",payController.validatePayment);
+// 결제 후 저장
+router.post("/save/BuyerInfo",payController.savePaymentInfo);
+
 
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));
