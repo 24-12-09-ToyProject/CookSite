@@ -1,0 +1,135 @@
+@font-face {
+    font-family: 'KimjungchulScript-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulScript-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* 인트로 박스 */
+.information-box, .ingredients-box, .steps-box {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 20px;
+    border-radius: 3px;
+    background-color: #fff;
+    text-align: left;
+}
+.information-box {
+    padding: 60px 200px 50px 200px;
+}
+.ingredients-box, .steps-box {
+    padding: 40px;
+}
+    .information-box img {
+        display: block;
+        margin: 0 auto 30px;
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+    }
+    .writer-id {
+        font-size: 20px;
+    }
+    .recipe-title {
+        font-size: 34px;
+        font-weight: 400;
+        margin: 10px 0;
+    }
+    .recipe-intro {
+        letter-spacing: 1px;
+        line-height: 1.4em;
+        padding: 15px 0 5px 0;
+        color: #787878;
+    }
+    .info-inner-box {
+        display: flex;
+        justify-content: space-evenly;
+    }
+        .info-inner-box span {
+            background-size: 50px;
+            color: #787878;
+            padding: 2px 15px 0;
+            text-align: center;
+            padding-top: 70px;
+        }
+        .recipe-serving {
+            background: url(//recipe1.ezmember.co.kr/img/mobile/icon_man.png) center no-repeat;
+        }
+        .recipe-difficulty {
+            background: url(//recipe1.ezmember.co.kr/img/mobile/icon_star.png) center no-repeat;
+        }
+
+/* 재료 박스 */
+.ingre-title, .step-title {
+    font-size: 24px;
+    font-weight: bold;
+    padding-right: 10px;
+}
+.eng-ingre-title, .eng-step-title {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+    color: #787878;
+}
+#ingredients-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+    .ingredients-box li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 20px 10px 10px;
+        border-bottom: 1px solid #ddd;
+        width: 48%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+    .ingredients-box li:nth-child(even) {
+        margin-left: 2%; /* 짝수 번째 항목에 여백 추가 */
+    }
+    .ingredients-box li:nth-child(odd) {
+        margin-right: 2%; /* 홀수 번째 항목에 여백 추가 */
+    }
+        .ingredients-box li span {
+            text-align: left;
+        }
+        .ingredients-box li span.amount {
+            text-align: right;
+            color: #787878;
+        }
+
+    /* 조리 순서 */
+    .steps-box {
+        margin-bottom: 0;
+    }
+    .steps-box ul {
+        padding: 0;
+    }
+        .steps-box li {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 10px 40px;
+        }
+            .step-num {
+                font-family: 'KimjungchulScript-Bold';
+                font-size: 28px;
+                font-weight: bold;
+                color: goldenrod;
+            }
+            .step-desc {
+                font-size: 20px;
+                letter-spacing: 0.1em;
+                line-height: 1.3em;
+            }
+            .steps-box li img {
+                width: 35%;
+                height: auto;
+                border-radius: 5px;
+                margin-left: 10px;
+            }
+
+        .steps-box li .step-text {
+            width: 50%;
+            padding-right: 10px;
+        }

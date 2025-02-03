@@ -1,0 +1,46 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="/static/css/recipe/myRecipeList.css">
+{% endblock %}
+
+{% block content %}
+    <div class="list-container">
+        <div class="cate-list">
+            <span><b>종류</b></span>
+            <button class="cate-button" data-category="all">전체</button>
+            <button class="cate-button" data-category="sidedish">밑반찬</button>
+            <button class="cate-button" data-category="maindish">메인반찬</button>
+            <button class="cate-button" data-category="soup">국/탕/찌개</button>
+            <button class="cate-button" data-category="noodle">면/만두</button>
+            <button class="cate-button" data-category="rice">밥/죽/떡</button>
+            <button class="cate-button" data-category="western">양식/샐러드</button>
+        </div>
+        <p id="my-recipe-title">나의 레시피</p>
+        {% if recipes and recipes|length > 0 %}
+            <div class="search-result">
+                등록된 레시피 총 <b id="my-recipe-total-count">{{ totalCount }}</b> 개
+            </div>
+            <ul id="my-recipe-list">
+                {% for recipe in recipes %}
+                <li>
+                    <a href="/recipe/detail/{{ recipe.recipe_no }}">
+                        <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}">
+                    </a>
+                    <p class="recipe-title">{{ recipe.title }}</p>
+                    <button type="button" class="update-recipe-btn" data-recipe-id="{{ recipe.recipe_no }}">수정</button>
+                    <button type="button" class="delete-recipe-btn" data-recipe-id="{{ recipe.recipe_no }}">삭제</button>
+                </li>
+                {% endfor %}
+            </ul>
+            <button id="load-more" data-page="1">더보기</button>
+        {% else %}
+            <ul>
+                <li class="no-recipe-message">아직 등록하신 레시피가 없습니다.</li>
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="/static/js/recipe/myRecipeList.js"></script>
+{% endblock %}

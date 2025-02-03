@@ -1,0 +1,49 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="/static/css/recipe/recipeDetail.css">
+{% endblock %}
+
+{% block content %}
+    <div class="information-box">
+        <img src="{{ detail.thumbnail }}" alt="{{ detail.title }}">
+        <p><b class="writer-id">{{ detail.member_id }}</b> 님의 레시피</p>
+        <p class="recipe-title">{{ detail.title }}</p>
+        <p class="recipe-intro">{{ detail.intro }}</p>
+        <div class="info-inner-box">
+            <span class="recipe-serving">{{ detail.serving }}</span>
+            <span class="recipe-difficulty">{{ detail.difficulty }}</span>
+        </div>
+    </div>
+    <div class="ingredients-box">
+        <span class="ingre-title">재료</span><span class="eng-ingre-title">Ingredients</span>
+        <br><br>
+        <ul id="ingredients-list"></ul> <!-- 재료 목록을 표시할 리스트 -->
+    </div>
+    <div class="steps-box">
+        <span class="step-title">조리 순서</span><span class="eng-step-title">Steps</span>
+        <br><br>
+        <ul>
+            {% for step in detail.steps %}
+            <li>
+                <div class="step-text">
+                    <p class="step-num">Step {{ step.step }}</p>
+                    <br>
+                    <p class="step-desc">{{ step.description }}</p>
+                </div>
+                {% if step.recipe_image_path %}
+                <img src="{{ step.recipe_image_path }}" alt="Step {{ step.step }} image">
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="/static/js/recipe/recipeDetail.js"></script>
+    <script>
+        window.recipeData = {
+            ingredients: "{{ detail.ingredients }}"
+        };
+    </script>
+{% endblock %}

@@ -6,6 +6,8 @@
     <title>Cooksite</title>
     <link rel="stylesheet" href="/static/css/reset.css">
     <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/common/header.css">
+    <link rel="stylesheet" href="/static/css/common/footer.css">
 
     <!-- 각 페이지의 css 작성 위치 -->
     {% block extra_styles %}{% endblock %}
@@ -19,6 +21,7 @@
     {% include "common/footer.html" %}
 
     <!-- 각 페이지의 script 작성 위치 -->
+    <script src="/static/js/common/header.js"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
