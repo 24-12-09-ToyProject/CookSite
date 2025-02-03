@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 폼 제출 시 메시지 표시
     submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 내 레시피에서 확인할 수 있습니다.")) {
+        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 나의 레시피에서 확인할 수 있습니다.")) {
             const formData = new FormData(form);
             fetch(form.action, {
                 method: 'POST',

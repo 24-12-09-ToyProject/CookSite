@@ -20,7 +20,7 @@ header {
         cursor: pointer;
     }
     .nav-menu {
-        margin-left: 10px;
+        margin-left: 15px;
         display: flex;
         justify-content: space-evenly;
         gap: 60px;

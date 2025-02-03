@@ -23,10 +23,15 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// 레시피 등록 화면으로 이동하는 이벤트
+// 레시피 등록 화면으로 이동
 document.querySelector("#header-write-recipe").addEventListener("click", (e) => {
     e.preventDefault();
     if(confirm('레시피 작성 화면으로 이동합니다.')) {
         window.location.href = '/recipe/register';
     }
 });
+
+// 나의 레시피로 이동
+function goToMyRecipe() {
+    window.location.href = '/recipe/myList';
+}
