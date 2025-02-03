@@ -11,12 +11,11 @@ const path = require('path');
 const fs = require('fs');
 // db 세팅
 const pool = require('./config/db.js');
-<<<<<<< HEAD
+
 //Cors 세팅
 const cors = require('cors');
 app.use(cors());
-=======
->>>>>>> main
+
 
 //body 파싱 하기위한 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
@@ -61,14 +60,8 @@ function getAllSubfolders(directory) {
         .filter(file => fs.statSync(path.join(directory, file)).isDirectory())
         .map(folder => path.join(directory, folder));
 }
-<<<<<<< HEAD
-
 //view 하위 폴더 설정 2
-=======
-// view 모든 하위 폴더 지정 2
->>>>>>> main
 const viewPaths = [path.join(__dirname, 'views'), ...getAllSubfolders(path.join(__dirname, 'views'))];
-
 // static 모든 하위 폴더 지정
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
@@ -81,47 +74,9 @@ nunjucks.configure(viewPaths, {
     express: app,
     watch: true
 })
-
 // http 서버 실행
 app.listen(port, () =>{
     console.log("서버가 정상적으로 실행 되었습니다" + port);
-<<<<<<< HEAD
 });
-
-
 // static의 모든 하위 폴더 지정
 app.use('/static', express.static(path.join(__dirname, 'static')));
-
-//DB 테스트 
-// pool.getConnection((err, conn)=>{
-
-//     const exec = conn.query('select * from users;',
-//         // 쿼리문을 실행한 이후 콜백 실행 됨
-
-//         (err, rows)=>{
-//             conn.release();
-//             console.log("실행된 SQL query : " + exec.sql);
-            
-
-//             // rows에 내장된 속성들이 있음
-//             if(rows.length > 0){
-//                 console.log("데이터 하나 이상 있음");
-//                 console.log(rows[0]);
-                
-//                 return;
-                
-//             }else{
-//                 console.log("데이터 없음");
-                
-//                 return;
-//             }
-//         }
-//     )
-// })
-
-
-
-
-=======
-});
->>>>>>> main
