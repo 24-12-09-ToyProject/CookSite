@@ -18,12 +18,17 @@ router.get('/register', checkLogin, (req, res) => {
     res.render('recipeRegister');
 });
 
+// 레시피 수정 화면을 출력하는 라우트
+
 // 레시피 등록하는 라우트  (multer 미들웨어 추가)
 router.post('/register', checkLogin, upload.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'recipe_image_path[]', maxCount: 20 }
 ]), registerRecipe);
 
+// 레시피를 수정하는 라우트
+
+// 레시피 삭제하는 라우트
 router.delete('/delete/:recipeNo', checkLogin, deleteRecipe);
 
 module.exports = router;

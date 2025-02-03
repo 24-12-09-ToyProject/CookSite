@@ -1,7 +1,9 @@
 
 .list-container {
+    min-width: 1400px;
+    min-height: 850px;
     background-color: white;
-    padding: 50px 25px 20px 25px;
+    padding: 40px 25px 20px 25px;
 }
 /* 카테고리 */
 .cate-list {
@@ -15,7 +17,7 @@
         font-weight: bold;
         margin-right: 15px;
         padding: 3px 20px;
-        color: goldenrod;
+        color: #ddb73b;
         align-self: center;
     }
     .cate-button {
@@ -30,11 +32,11 @@
         transition: background-color 0.3s;
     }
     .cate-button.selected {
-        background-color: goldenrod;
+        background-color: #ddb73b;
         color: white;
     }
     .cate-button:not(.selected):hover {
-        color: goldenrod;
+        color: #ddb73b;
     }
     .cate-button:focus {
         outline: none;
@@ -50,7 +52,7 @@
     }
         #my-recipe-total-count {
             font-size: 24px;
-            color: goldenrod;
+            color: #ddb73b;
         }
 
 /* 레시피 목록 */
@@ -64,6 +66,7 @@
         list-style: none;
         flex: 1 1 calc(25% - 20px);
         max-width: 322px;
+        height: 340px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 3px;
         overflow: hidden;
@@ -106,7 +109,7 @@
     }
     .update-recipe-btn, .delete-recipe-btn {
         position: absolute;
-        top: 40%;
+        top: 35%;
         left: 50%;
         transform: translateX(-50%);
         font-family: 'Pretendard-Regular', sans-serif;
@@ -144,6 +147,11 @@
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
+    }
+    .no-recipe-message {
+        text-align: center;
+        padding: 150px;
+        font-size: 30px;
     }
 
 /* 더보기 버튼 */

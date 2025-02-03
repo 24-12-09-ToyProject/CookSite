@@ -1,7 +1,7 @@
 
 .list-container {
     background-color: white;
-    padding: 50px 25px 20px 25px;
+    padding: 40px 25px 20px 25px;
 }
 /* 카테고리 */
 .cate-list {
@@ -15,7 +15,7 @@
         font-weight: bold;
         margin-right: 15px;
         padding: 3px 20px;
-        color: goldenrod;
+        color: #ddb73b;
         align-self: center;
     }
     .cate-button {
@@ -30,11 +30,11 @@
         transition: background-color 0.3s;
     }
     .cate-button.selected {
-        background-color: goldenrod;
+        background-color: #ddb73b;
         color: white;
     }
     .cate-button:not(.selected):hover {
-        color: goldenrod;
+        color: #ddb73b;
     }
     .cate-button:focus {
         outline: none;
@@ -45,7 +45,7 @@
     }
         #recipe-total-count {
             font-size: 26px;
-            color: goldenrod;
+            color: #ddb73b;
         }
 
 /* 레시피 목록 */
