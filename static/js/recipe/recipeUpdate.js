@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    let stepCount = 1;
+    let stepCount = document.querySelectorAll(".step").length; // 초기 step 개수로 설정
     const stepsContainer = document.getElementById('steps-container');
     const addStepBtn = document.getElementById('add-step-btn');
     const submitBtn = document.getElementById('submit-btn');
@@ -27,14 +27,16 @@ document.addEventListener("DOMContentLoaded", function() {
     // Step 삭제 버튼 이벤트를 추가하는 함수
     function addDeleteStepEvent(stepElement) {
         const deleteBtn = stepElement.querySelector(".delete-step-btn");
-        deleteBtn.addEventListener("click", function() {
-            stepElement.classList.add('fade-out');
-            setTimeout(() => {
-                // Step 삭제 후 번호 업데이트
-                stepElement.remove();
-                updateStepLabels();
-            }, 400);
-        });
+        if (deleteBtn) { // deleteBtn이 있을 경우에만 이벤트 추가
+            deleteBtn.addEventListener("click", function() {
+                stepElement.classList.add('fade-out');
+                setTimeout(() => {
+                    // Step 삭제 후 번호 업데이트
+                    stepElement.remove();
+                    updateStepLabels();
+                }, 400);
+            });
+        }
     }
 
     // Step 번호를 업데이트하는 함수
@@ -78,6 +80,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // 기존 step에 삭제 버튼 추가 및 이미지 클릭 이벤트 추가
+    document.querySelectorAll(".step").forEach((step, index) => {
+        if (index > 0) { // 첫 번째 step을 제외한 모든 step에 삭제 버튼 추가
+            addDeleteStepEvent(step);
+        }
+        addStepImageClickEvent(index + 1);
+    });
+
     // Step 추가 버튼 클릭 이벤트
     addStepBtn.addEventListener("click", function() {
         stepCount++;
@@ -102,14 +112,33 @@ document.addEventListener("DOMContentLoaded", function() {
         addDeleteStepEvent(newStep);
         addStepImageClickEvent(stepCount);
     });
-    addStepImageClickEvent(1);
 
     // 폼 제출 시 메시지 표시
     submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 나의 레시피에서 확인할 수 있습니다.")) {
-            submitBtn.disabled = true;
+        if(confirm("레시피 수정을 완료하시겠습니까?")) {
+            const descriptions = document.querySelectorAll("textarea[name='description[]']");
+            const imageInputs = document.querySelectorAll("input[name='recipe_image_path[]']");
+
+            // 검증 로직 추가
+            for (let i = 0; i < descriptions.length; i++) {
+                if (!descriptions[i].value.trim()) {
+                    alert("조리 순서를 입력해주세요.");
+                    return;
+                }
+            }
+
+            for (let i = 0; i < imageInputs.length; i++) {
+                if (!imageInputs[i].files.length) {
+                    alert("조리 순서 이미지를 업로드해주세요.");
+                    return;
+                }
+            }
             const formData = new FormData(form);
+            for (let pair of formData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]);
+            }
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData
@@ -121,16 +150,14 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(({ status, body }) => {
                 if (status === 200) {
                     alert(body.message);
-                    window.location.href = '/recipe/list';
+                    window.location.href = '/recipe/myList';
                 } else {
                     alert(body.message);
-                    submitBtn.disabled = false;
                 }
             })
             .catch(error => {
                 console.error('Error: ', error);
-                alert('레시피 등록 중 오류가 발생했습니다.');
-                submitBtn.disabled = false;
+                alert('레시피 수정 중 오류가 발생했습니다.');
             })
         }
     });
@@ -138,9 +165,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // 취소 클릭 시 이전 화면으로 이동
     cancelBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if(confirm('등록을 취소합니다.')) {
+        if(confirm('수정을 취소합니다.')) {
             history.back();
         }
-    })
-
+    });
 });

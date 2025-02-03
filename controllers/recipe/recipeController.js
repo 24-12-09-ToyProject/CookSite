@@ -118,6 +118,39 @@ async function getRecipeDetail(req, res) {
     }
 }
 
+// 수정할 레시피 정보 가져오는 함수
+async function getOneRecipeInfo(req, res) {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const recipeNo = req.params.recipeNo;
+
+        // 레시피 정보 가져오기
+        const recipeQuery = 'SELECT * FROM RECIPE WHERE RECIPE_NO = ?';
+        const [recipeRows] = await connection.query(recipeQuery, [recipeNo]);
+
+        if (recipeRows.length > 0) {
+            const recipe = new RecipeDetailDTO(recipeRows[0]);
+
+            // 조리 순서 정보 가져오기
+            const stepsQuery = 'SELECT * FROM STEPS WHERE RECIPE_NO = ? ORDER BY STEP';
+            const [stepsRows] = await connection.query(stepsQuery, [recipeNo]);
+
+            stepsRows.forEach(step => recipe.addStep(step));
+
+            console.log(recipe);
+            res.render('recipeUpdate', { recipe });
+        } else {
+            res.status(404).json({ message: '레시피를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('레시피 정보 가져오기 오류:', error.message);
+        res.status(500).json({ message: '레시피 정보를 가져오는 중 오류가 발생했습니다.' });
+    } finally {
+        if (connection) connection.release();
+    }
+}
+
 // 레시피 등록하는 함수
 async function registerRecipe(req, res) {
     let connection;
@@ -164,7 +197,8 @@ async function registerRecipe(req, res) {
         const recipe_image_paths = req.files['recipe_image_path[]'] || [];
 
         // 조리 순서 배열 및 이미지 확인
-        if (descriptions.length === 0 || descriptions.some(desc => !desc.trim()) || recipe_image_paths.length < descriptions.length) {
+        const validDescriptions = descriptions.filter(desc => desc.trim());
+        if (validDescriptions.length === 0 || recipe_image_paths.length < validDescriptions.length) {
             return res.status(400).json({ message: "조리 순서와 이미지를 모두 입력해주세요." });
         }
 
@@ -175,7 +209,7 @@ async function registerRecipe(req, res) {
             VALUES (?, ?, ?, ?)
         `;
 
-        const stepPromises = descriptions.map((desc, index) => {
+        const stepPromises = validDescriptions.map((desc, index) => {
             const stepImagePath = recipe_image_paths[index].filename;
             const stepImageUrl = `http://127.0.0.1:8888/uploads/${stepImagePath}`;
 
@@ -209,6 +243,64 @@ async function registerRecipe(req, res) {
     }
 }
 
+// 레시피 수정하는 함수
+async function updateRecipe(req, res) {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const memberId = req.session.user.id;
+        const recipeNo = req.params.recipeNo;
+        const { title, intro, category, serving, difficulty, ingredients, description } = req.body;
+        
+        if (!title || !intro || !category || !serving || !difficulty || !ingredients || !description || description.length === 0) {
+            return res.status(400).json({ message: "모든 필수 항목을 입력해주세요." });
+        }
+        const thumbnail = req.files['thumbnail'] && req.files['thumbnail'][0] ? req.files['thumbnail'][0].filename : null;
+        const thumbnailUrl = thumbnail ? `http://127.0.0.1:8888/uploads/${thumbnail}` : null;
+        
+        // recipe 정보 업데이트
+        const updateRecipeQuery = `
+            UPDATE RECIPE 
+            SET RECIPE_TITLE = ?, RECIPE_INTRO = ?, RECIPE_CATEGORY = ?, 
+                RECIPE_DIFFICULTY = ?, SERVING = ?, INGREDIENTS = ?, 
+                RECIPE_THUMBNAIL = ?
+            WHERE RECIPE_NO = ? AND MEMBER_ID = ?`;
+        await connection.query(updateRecipeQuery, [title, intro, category, difficulty, serving, ingredients, thumbnailUrl, recipeNo, memberId]);
+
+        // 기존 step 삭제
+        const deleteStepsQuery = 'DELETE FROM STEPS WHERE RECIPE_NO = ?';
+        await connection.query(deleteStepsQuery, recipeNo);
+
+        const descriptions = Array.isArray(description) ? description : [description];
+        const recipe_image_paths = req.files['recipe_image_path[]'] || [];
+        const validDescriptions = descriptions.filter(desc => desc.trim());
+        if (validDescriptions.length === 0 || recipe_image_paths.length < validDescriptions.length) {
+            return res.status(400).json({ message: "조리 순서와 이미지를 모두 입력해주세요." });
+        }
+
+        // 새 step 데이터 삽입
+        const insertStepQuery = `
+            INSERT INTO STEPS (RECIPE_NO, STEP, DESCRIPTION, RECIPE_IMAGE_PATH) 
+            VALUES (?, ?, ?, ?)`;
+        for (let i = 0; i < descriptions.length; i++) {
+            const stepImagePath = recipe_image_paths[i].filename;
+            const stepImageUrl = `http://127.0.0.1:8888/uploads/${stepImagePath}`;
+            await connection.query(insertStepQuery, [recipeNo, i + 1, descriptions[i], stepImageUrl]);
+        }
+        
+        await connection.commit();
+        res.json({ message: '레시피가 성공적으로 업데이트되었습니다.' });
+    } catch(error) {
+        console.error('레시피 업데이트 오류:', error.message);
+        if (connection) await connection.rollback();
+        res.status(500).json({ message: '레시피 업데이트 중 오류가 발생했습니다.'});
+    } finally {
+        if (connection) connection.release();
+    }
+}
+
 // 레시피 삭제하는 함수
 async function deleteRecipe(req, res) {
     let connection;
@@ -225,7 +317,7 @@ async function deleteRecipe(req, res) {
         } else {
             res.status(200).json({message: '레시피 삭제가 완료되었습니다.'});
         }
-    } catch(error) {
+    } catch (error) {
         console.error('레시피 삭제 오류:', error.message);
         res.status(500).json({message: '레시피 삭제 중 오류가 발생했습니다.'});
     } finally {
@@ -233,4 +325,11 @@ async function deleteRecipe(req, res) {
     }
 }
 
-module.exports = { getRecipeList, getRecipeDetail, registerRecipe, deleteRecipe };
+module.exports = { 
+    getRecipeList, 
+    getRecipeDetail, 
+    getOneRecipeInfo,
+    registerRecipe,
+    updateRecipe,
+    deleteRecipe
+};

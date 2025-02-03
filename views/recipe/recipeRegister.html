@@ -7,7 +7,6 @@
 {% block content %}
         <span class="regi-title">레시피 등록</span> <span class="regi-sub-title">여러분의 레시피를 소개해주세요</span>
         <form id="recipe-form" action="/recipe/register" method="POST" enctype="multipart/form-data" class="form-section">
-            <!-- <input type="hidden" id="member_id" name="member_id"> -->
             <div class="information-box">
                 <div class="information-left">
                     <div class="form-group">
@@ -79,7 +78,7 @@
                             <div id="step1-photoBox-div">
                                 <!-- 조리 순서 이미지 등록 -->
                                 <img id="step1-photo" src="https://recipe1.ezmember.co.kr/img/pic_none2.gif">
-                                <input type="file" id="step1-photo-file" name="recipe_image_path[]" accept="image/*" style="display:none;">
+                                <input type="file" id="step1-photo-file" name="recipe_image_path[]" accept="image/*" style="display:none;" required>
                             </div>
                         </div>
                     </div>
@@ -87,7 +86,7 @@
                 <button type="button" id="add-step-btn" class="add-step-btn">순서 추가</button>
             </div>
             <div class="form-group" id="button-group">
-                <button type="submit" class="common-btn" id="submit-btn" style="margin-right: 40px;">등록</button>
+                <button type="button" class="common-btn" id="submit-btn" style="margin-right: 40px;">등록</button>
                 <button type="button" class="common-btn" id="cancel-btn">취소</button>
             </div>
         </form>

@@ -1,14 +1,9 @@
-@font-face {
-    font-family: 'KimjungchulScript-Bold';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulScript-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 /* 인트로 박스 */
 .information-box, .ingredients-box, .steps-box {
     width: 100%;
-    max-width: 1400px;
+    width: 1400px;
     margin: 0 auto 20px;
     border-radius: 3px;
     background-color: #fff;
@@ -112,10 +107,9 @@
             padding: 10px 40px;
         }
             .step-num {
-                font-family: 'KimjungchulScript-Bold';
-                font-size: 28px;
-                font-weight: bold;
-                color: goldenrod;
+                font-family: "Outfit", serif;
+                font-size: 30px;
+                color: #ddb73b;
             }
             .step-desc {
                 font-size: 20px;
