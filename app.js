@@ -37,7 +37,7 @@ app.use(session({
     }
 }));
 app.use((req, res, next) => {
-    console.log("현재 세션 데이터:", req.session);
+    // console.log("현재 세션 데이터:", req.session);
     res.locals.session = req.session;
     next();
 });

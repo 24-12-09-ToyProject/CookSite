@@ -8,42 +8,40 @@
 
 
 {% block content %}
-<h1>login 페이지</h1>
-
-		<!-- login 실행 form -->
-		<form id="signin-form" action="/member/login" method="post">
-			<div>
-				아이디
+<div id="login-main">
+	<h1>안녕하세요 :) <br>식탁의비밀입니다.</h1>
+	<h3>회원가입을 하시면 다양하고 특별한 혜택이 준비되어 있습니다.</h3>
+	<!-- login 실행 form -->
+	<form id="signin-form" action="/member/login" method="post">
+		<div id="login-container">
+			<div id="idPw-container">
 				<input id="memberId" type="text" name="memberId" placeholder="아이디" required autocomplete="off">
-			</div>
-			<div>
-				비밀번호
 				<input id="memberPw" type="password" name="memberPw" placeholder="패스워드" required autocomplete="off">
 			</div>
-			<button type="button" onclick="signin();">로그인</button>
-		</form>
-
-		<a href="">아이디 찾기</a>
-		<a href="">비밀번호 찾기</a>
-		<a href="/member/signUp">
-			<div>회원가입</div>
-		</a>
-
-		<hr>
-		<hr>
-
-		<div>더욱 간편한 로그인/회원가입</div>
-		<div>
-			<img id="naver-logo" src="/static/img/member/naverLogo.png" alt="" onclick="openNaverLogin();">
+			<button id="signin-btn" type="button" onclick="signin();">로그인</button>
 		</div>
-		<input type="hidden" id="parentEl">
-		<div>카카오, 네이버..</div>
+	</form>
+	<div id="find-container">
+		<a href="/member/findAccount">아이디 찾기</a>
+		<a href="/member/findPassword">비밀번호 찾기</a>
+	</div>
+	<a href="/member/signUp" style="text-decoration: none; color: black;">
+		<div id="goSignup-container">
+			<div>아직 회원이 아니세요?</div>
+			<div>회원가입 <i class="fa-solid fa-chevron-right"></i></div>
+		</div>
+	</a>
 
 
-		<hr>
-		<hr>
+	<div id="snsLogin-line">
+		<span>더욱 간편한 로그인 / 회원가입</span>
+	</div>
+	<div id="social-login-container">
+		<img id="naver-logo" src="/static/img/member/naver.ico" alt="" onclick="openNaverLogin();">
+	</div>
+	<input type="hidden" id="parentEl">
 
-		회사소개, 이용약관, 이용안내, 개인정보처리방침
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -55,27 +53,31 @@
 
 	if(signupResult === 'success'){
 		Swal.fire({
-					icon: 'success',
-					title: 'Alert가 실행되었습니다.',
-					text: '회원가입 성공',
+			icon: 'success',
+			title: '가입 완료!',
+			text: '회원가입이 성공적으로 완료되었습니다.',
+			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 		});
 	}else if(signupResult === 'fail'){
 		Swal.fire({
-					icon: 'warning',
-					title: 'Alert가 실행되었습니다.',
-					text: '회원가입 오류 발생',
+			icon: 'warning',
+			title: '가입이 완료되지 않았어요!',
+			text: '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.',
+			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 		});
 	}else if(loggedInMessage === '로그아웃상태'){
 		Swal.fire({
-					icon: 'warning',
-					title: 'Alert가 실행되었습니다.',
-					text: '로그인 후 이용해주세요',
+			icon: 'warning',
+			title: '로그인이 필요합니다!',
+			text: '로그인 후 이용해주세요.',
+			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 		});
 	}else if(deleteResult === 'success'){
 		Swal.fire({
-					icon: 'success',
-					title: 'Alert가 실행되었습니다.',
-					text: '탈퇴되었습니다',
+			icon: 'success',
+			title: '탈퇴가 완료되었습니다.',
+			text: '그동안 이용해주셔서 감사합니다.',
+			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 		});
 	}
 

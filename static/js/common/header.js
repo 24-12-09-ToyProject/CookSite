@@ -1,5 +1,14 @@
 let myExpandVisible = false;
 
+// 로그인 페이지 이동
+const loggedOutDiv = document.querySelector('#logged-out-div');
+if(loggedOutDiv){
+    loggedOutDiv.addEventListener('click', ()=>{
+        location.href = '/member/login';
+    })
+}
+
+
 // 프로필 사진 클릭하면 메뉴 열고 닫기
 const profileDropdownContainer = document.querySelector("#profile-dropdown-container");
 if(profileDropdownContainer){
@@ -15,6 +24,7 @@ if(profileDropdownContainer){
         myExpandVisible = !myExpandVisible;
     });
 }
+
 
 // 페이지 내 다른 곳을 클릭하면 메뉴 닫기
 document.addEventListener("click", (e) => {

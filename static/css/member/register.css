@@ -327,6 +327,10 @@ select option{
 
 #timer{
 	color: tomato;
+	position: absolute; 
+	top: 17px; 
+	right: 60px; 
+	user-select: none;
 }
 
 #default-address, #zonecode{
