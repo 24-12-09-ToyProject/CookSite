@@ -494,6 +494,7 @@ function renderCards(filteredCards) {
         card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
+        card.querySelector(".class-instructor").textContent = data.CLASS_INSTRUCTOR_NICKNAME;
         // ✅ classNo가 있는지 확인 후 반영
             const cardLink = card.querySelector("a");
             cardLink.href = `/class/${data.CLASS_NO}`;

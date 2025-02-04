@@ -287,6 +287,9 @@ a {
 }
 
 /* 바디 - 바디 */
+.template-ghost{
+    height: 800px;
+}
 #card-container {
     width:100%;
     margin-left:55px;
@@ -294,6 +297,9 @@ a {
     flex-wrap: wrap;
     justify-content: flex-start;
     gap : 30px;
+}
+#card-container a{
+    height: 200px;
 }
 /* .cookinglist-body{
     display: flex;
