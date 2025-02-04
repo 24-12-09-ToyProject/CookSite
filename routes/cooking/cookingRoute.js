@@ -56,6 +56,8 @@ router.get("/api/class/:classNo", cookingController.getClassDetail);  // ✅ API
 router.get("/class/:classNo", (req, res) => {
     res.sendFile(path.join(__dirname, "../../views/cooking/detailClass.html"));
 });
+//클래스 상세페이지에서 클래스 등록확인 위한 아이디체크
+router.get("/api/completed-classes",cookingController.selectClassInfo);
 // 결제 준비
 router.post("/api/classMember" , payController.requestClassMemberInfo);
 // 결제 요청

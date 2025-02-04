@@ -1,18 +1,61 @@
+main{
+    margin:0;
+    padding:0;
+    width:100%;
+    box-sizing: border-box;
+
+}
 .main-top{
     border:1px solid black;
+    height:370px;
+    box-sizing: border-box;
 }
-.select-option{
+.ghost-panel{
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
 }
-.option1,.option3 {
-    position: relative;
-    width: 200px;
+.left-panel{
+    flex:1;
 }
+.left-panel div{
+    padding:10px;
+    margin-left:20px;
+}
+.right-panel{
+    position:relative;
+    top:39px;
+    flex:1;
+}
+.option5,.option6,.option7,.option8{
+    padding:10px;
+    margin-left:20px;
+}
+
 /*-----------------------옵션----------------------*/
+
+
+.search-class{
+    padding:10px;
+}
+.select-class{
+    padding:10px;
+}
 /* 지역 */
+.option1,.option2,.option3,.option4,.option5,.option6,.option7,.option8{
+    position:relative;
+    min-width: 0px;
+    margin:0px;
+    border:0px;
+    vertical-align: top;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
 .dropdown-header,.dropdown-header2,.dropdown-header3{
     padding: 10px;
+    width:200px;
+    height: 50px;
     background: white;
     border: 1px solid #ddd;
     cursor: pointer;
@@ -24,13 +67,14 @@
 .dropdown-content,.dropdown-content2,.dropdown-content3{
     display: none;
     position: absolute;
-    /* width: 100%; */
+    width:200px;
     max-width: 350px;
     background: white;
     border: 1px solid #ddd;
     border-top: none;
     max-height: 300px;
     overflow-y: auto;
+    z-index: 1000;
 }
 
 .dropdown-content.show ,.dropdown-content2.show,.dropdown-content3.show{
@@ -38,19 +82,19 @@
 }
 
 .dropdown-item{
-    padding: 10px;
+    padding:10px 15px;
     cursor: pointer;
-    width:auto; /* 또는 고정된 width 설정 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    box-sizing: border-box;
 }
 
 .dropdown-item:hover {
     background: #f5f5f5;
 }
 
-.arrow {
+.arrow,.arrow2,.arrow3 {
     border: solid #666;
     border-width: 0 2px 2px 0;
     display: inline-block;
@@ -59,23 +103,23 @@
     transition: transform 0.2s;
 }
 
-.arrow.up {
+.arrow.up,.arrow2.up,.arrow3.up {
     transform: rotate(-135deg);
 }
 /* 유형 */
-.oneDay,.regular{
+.oneDay,.regular,.weekdays,.saturday,.sunday,.basic,.middle,.hard{
     cursor: pointer;
     background-color: white;
     border:1px solid black;
 }
-.oneDay,.regular:hover{
+.oneDay:hover,.regular:hover{
     background-color: #f5f5f5;
 }
 
 
 .slider-container {
     position: relative;
-    width: 300px;
+    width: 200px;
     height: 50px;
 }
 
@@ -108,11 +152,69 @@
     transform: translate(-50%, -50%);
     cursor: pointer;
 }
-
+.class span{
+    display: inline-flex;
+    width: 50px;
+    height: 30px;
+    border: 1px solid gray;
+    cursor: pointer;
+    margin-right: 5px;
+    text-align: center;
+    border-radius: 5px;
+    justify-content: center; 
+    align-items: center;
+}
+.day{
+    margin-left:30px;
+}
+.day span{
+    display: inline-flex;
+    width: 50px;
+    height: 30px;
+    border: 1px solid gray;
+    cursor: pointer;
+    margin-right: 5px;
+    text-align: center;
+    border-radius: 5px;
+    justify-content: center; 
+    align-items: center;
+}
 .time-label {
     text-align: center;
     font-size: 14px;
-    margin-top: 10px;
+    width:150px;
+}
+.difficulty{
+    margin-left:30px;
+}
+.difficulty span{
+    border-radius: 5px;
+    height: 30px;
+    border: 1px solid gray;
+    display: inline-flex;;
+    margin-right:5px;
+    cursor: pointer;
+    text-align: center;
+    justify-content: center; 
+    align-items: center;
+    width: 50px;
+}
+
+/* 버튼 영역 */
+.searchButton {
+    grid-column: span 4; /* 4열 전체를 차지 */
+    text-align: center;
+}
+
+.searchButton button {
+    padding: 10px 20px;
+    background-color: orange;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width:200px;
 }
 /* 옵션 끝 */
 
@@ -121,17 +223,22 @@
 
 .main-mid {
     display: block;   /*이거 전체 공통 설정으로 변경 해야함*/
-    margin: 0 auto;
-    width:1000px;
+    width:100%;
     border: 1px solid black;
 }
 .main-top-recommandKeyword {
-    width: 1000px;
-    margin:0 auto;
-    border: 1px solid blue;
+    width: 100%;
+    margin: 10px auto 20px;
+    text-align: center;
 }
 .Keyword-div {
     margin:0 auto;
+}
+.Keyword-div span {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+    display: block;
 }
 a {
     text-decoration: none;
@@ -145,12 +252,34 @@ a {
 .recommandKeyword-keywordType ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Optional: adds space between items */
-    list-style-type: none; /* Optional: removes bullet points */
-    padding: 0; /* Optional: removes default padding */
+    justify-content: center; /* 가운데 정렬 */
+    gap: 10px; /* 아이템 간 간격 */
+    list-style-type: none; /* 기본 점 제거 */
+    padding: 0;
+    margin: 10px 0;
 }
 .recommandKeyword-keywordType ul li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #800020; /* 테두리 색상 */
+    border-radius: 20px; /* 둥근 테두리 */
+    padding: 5px 15px; /* 내부 여백 */
     cursor: pointer;
+    font-size: 14px;
+    color: #333; /* 텍스트 색상 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* 키워드 Hover 스타일 */
+.recommandKeyword-keywordType ul li:hover {
+    background-color: orange;
+    color: white;
+}
+
+/* 텍스트 스타일 */
+.recommandKeyword-keywordType ul li p {
+    margin: 0; /* 기본 여백 제거 */
 }
 .ghost {
     display: flex;
@@ -159,10 +288,12 @@ a {
 
 /* 바디 - 바디 */
 #card-container {
-    margin-left:20px;
+    width:100%;
+    margin-left:55px;
     display: flex;
     flex-wrap: wrap;
-    gap : 30% 30px;
+    justify-content: flex-start;
+    gap : 30px;
 }
 /* .cookinglist-body{
     display: flex;
@@ -173,7 +304,6 @@ a {
     justify-content: space-between;
 } 
 .cookinglist-content {
-    margin-bottom:20px;
     width: 300px;
     height: 250px;
 }

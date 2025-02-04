@@ -4,36 +4,54 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <link rel="stylesheet" href="../../static/css/common/footer.css">
+        <link rel="stylesheet" href="../../static/css/common/header.css">
         <link rel="stylesheet" href="../../static/css/reset.css">
         <link rel="stylesheet" href="../../static/css/layout.css">
-        <link rel="stylesheet" href="/static/css/cooking/registerClass.css">
+        <link rel="stylesheet" href="../../static/css/cooking/registerClass.css">
     </head>
     <body>
         <header>
-            <div class="header-top">
-                <h1>헤더 영역입니다.</h1>
-            </div>
-            <div class="header-bottom">
+            <div class="header-left">
+                <img id="header-logo" src="../../static/img/main-logo.png" alt="main logo"/>
                 <nav class="nav-menu">
-                    <a href="#">레시피</a>
+                    <a href="/recipe/list">레시피</a>
                     <a href="#">스토어</a>
                     <a href="#">쿠킹클래스</a>
                 </nav>
             </div>
+            <!-- 로그인 상태에 따른 영역 표시 -->
+            <div class="header-right">
+                <div class="header-login-area">
+                    <img id="header-login" src="../../static/img/login.png" alt="login">
+                    <img id="header-write-recipe" src="../../static/img/write-recipe.png" alt="write recipe">
+                </div>
+                <div class="header-my-expand">
+                    <p>내 정보</p>
+                    <p>장바구니</p>
+                    <p onclick="goToMyRecipe();">나의 레시피</p>
+                    <p>구매내역</p>
+                    <p>예약내역</p>
+                    <p>로그아웃</p>
+                </div>
+            </div>
         </header>
         <main>
             <div class="main">
-                <div class="sidebar">
-                    <ul>
-                        <li><a href="#">클래스 생성</a></li>
-                        <li><a href="#">등록 완료 클래스</a></li>
-                        <li><a href="#">단체 클래스 등록</a></li>
-                    </ul>
-                </div>
-                <div class="content">
-                    <h2>클래스 생성</h2>
-                    <div class="create-card">
-                        <p>클래스 생성하기</p>
+                    <div class="sidebar">
+                        <ul>
+                            <li class="sidebar-class active"><p id="createClass">클래스 생성</p></li>
+                            <li class="sidebar-class"><p id="completedClass">등록 완료 클래스</p></li>
+                        </ul>
+                    </div>
+                    <div class="content">
+                        <div id="createContent" class="createContent">
+                            <h2>클래스 생성</h2>
+                            <div class="create-card">
+                                <a href="/createClass"><p>클래스 생성하기</p></a>
+                            </div>
+                        </div>
+                        <div id="contentArea" style="padding: 20px;"></div>
                     </div>
                 </div>
             </div>
@@ -42,4 +60,6 @@
             <p>cooksite@cooksite.com<br>Copyright ⓒ 2025 CookSite. All Rights Reserved.</p>
         </footer>
     </body>
+    <script src="/static/js/common/header.js"></script>
+    <script defer src="../../static/js/cooking/registerClass.js"></script>
 </html>

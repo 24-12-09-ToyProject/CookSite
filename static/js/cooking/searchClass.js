@@ -2,9 +2,9 @@
 
 // 지역 나열
 const regions = [
-'서울','경기도','인천','대구','울산','광주',
-'대전','부산','세종','경상남도','경상북도','전라남도','전라북도','충청남도','충청북도'
-,'강원도','제주도'
+'서울','경기','인천','대구','울산','광주',
+'대전','부산','세종','경남','경북','전남','전북','충남','충북'
+,'강원','제주'
 ]
 
 //카테고리 나열
@@ -26,7 +26,7 @@ const arrow2 = document.querySelector('.arrow2');
 
 // 인원 나열
 const visitors =[
-    '1명','2명','3명','4명','5명','6명','7명','8명','9명','10명이상','20명이상','30명이상']
+    '1명','2명','3명','4명','5명','6명','7명','8명','9명','10명이상','20명이상']
 // 인원 드롭다운 변수 생성
 const visitorSpan = document.querySelector('.visitor');
 const dropdownHeader3 = document.querySelector('.dropdown-header3');
@@ -155,16 +155,17 @@ function createChangeColortoForm(item) {
 
 // 날짜 옵션 색깔 변경
 function createChangeColortoDay(item) {
-    item.addEventListener('click', () => {
-        // 모든 버튼의 배경색 초기화
+item.addEventListener("click", () => {
         Days.forEach(button => {
-            button.style.backgroundColor ="";
-            button.classList.remove('selected');
+            button.style.backgroundColor = ""; // 이전 버튼 색상 초기화
+            button.style.color = "";          // 텍스트 색상 초기화
+            button.classList.remove("selected"); // selected 클래스 제거
         });
-        // 클릭된 버튼의 배경색 변경
-        item.style.backgroundColor = "red";
-        // item.className ="selected";
-        item.classList.add('selected');
+
+        // 현재 클릭된 버튼에 스타일 및 클래스 추가
+        item.classList.add("selected");
+        item.style.backgroundColor = "#800020";
+        item.style.color = "white";
     });
 }
 
@@ -290,16 +291,18 @@ const classType = [
 ]
 
 // 클래스 클릭 시 색깔 변경
-function createChangeColortoClass(item){
-    item.addEventListener('click' , () => {
+function createChangeColortoClass(item) {
+    item.addEventListener("click", () => {
         classType.forEach(button => {
-            button.style.backgroundColor ="";
-            button.classList.remove=('selected');
+            button.style.backgroundColor = ""; // 이전 버튼 색상 초기화
+            button.style.color = "";          // 텍스트 색상 초기화
+            button.classList.remove("selected"); // selected 클래스 제거
         });
-        item.classList.add('selected');
-        // item.className ="selected";
-        item.style.backgroundColor = "red";
-        
+
+        // 현재 클릭된 버튼에 스타일 및 클래스 추가
+        item.classList.add("selected");
+        item.style.backgroundColor = "#800020";
+        item.style.color = "white";
     });
 }
 // 함수 실행
@@ -317,7 +320,7 @@ async function loadCards() {
         const template = document.getElementById("card-template");
 
         //카드 개수 슬라이스
-        const show_count = 9;
+        const show_count = 12;
         let currentCount = 0;
 
         function renderdefaultCards(count){ // createClass js 에서 쓰기 위해 windows 로 전역 함수로 변경

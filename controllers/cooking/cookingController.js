@@ -8,7 +8,7 @@ const { bucket } = require('../../config/googlecloud.js');
 exports.searchClass = async (req, res) => {
     const { classTitle, region, classType, classFrequency, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_NO , CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_NO , CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY , CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM cooking WHERE 1=1`;
     const params = [];
     if (classTitle) {
         query += ` AND CLASS_TITLE LIKE ? COLLATE utf8mb4_general_ci`;
@@ -16,8 +16,8 @@ exports.searchClass = async (req, res) => {
     }
 
     if (region) {
-        query += ` AND CLASS_LOCATION = ? `;
-        params.push(region);
+        query += ` AND CLASS_ADDRESS LIKE ?`;
+        params.push(`%${region}%`);
     }
 
     if (priceMin !== undefined && priceMax !== undefined) {
@@ -31,7 +31,7 @@ exports.searchClass = async (req, res) => {
     }
 
     if (visitor) {
-        query += ` AND CLASS_PEOPLE_RECRUITED = ?`;
+        query += ` AND CLASS_MINPEOPLE >= ?`;
         params.push(visitor);
     }
 
@@ -194,7 +194,7 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection:', reason);
 });
 
-// 컨트롤러 코드
+// 상세페이지 
 exports.getClassDetail = async (req, res) => { 
     const classNo = req.params.classNo;
 
@@ -232,4 +232,19 @@ exports.getClassDetail = async (req, res) => {
     }
 };
 
+// 등록 페이지에서 본인이 만든 클래스 조회
+exports.selectClassInfo =  async (req,res) =>{
+    const userId = req.session?.user?.id;
+    console.log("id 확인" , userId);
+    const query = `SELECT CLASS_THUMBNAIL_IMG , CLASS_TITLE FROM COOKING WHERE CLASS_MEMBER_ID = ?`
+    try {
+        // 쿼리 실행 (파라미터 바인딩)
+        const [rows] = await pool.execute(query, [userId]);
+
+        res.status(200).json({ classes: rows }); // 결과 반환
+    } catch (error) {
+        console.error("DB 조회 오류:", error);
+        res.status(500).json({ error: "데이터를 가져오는 중 오류가 발생했습니다." });
+    }
+}
 

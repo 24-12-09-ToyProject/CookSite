@@ -8,14 +8,33 @@
     <link rel="stylesheet" href="../../static/css/layout.css">
     <link rel="stylesheet" href="../../static/css/cooking/createClass.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-    <script defer src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-    <script defer src = "../../static/js/cooking/searchClass.js"></script>
-    <script defer src="../../static/js/cooking/createClass.js"></script>
+    <link rel="stylesheet" href="../../static/css/common/footer.css">
+    <link rel="stylesheet" href="../../static/css/common/header.css">
 </head>
 <body>
     <header>
-        <div class="header-top">
-            <h1>헤더 영역입니다.</h1>
+        <div class="header-left">
+            <img id="header-logo" src="../../static/img/main-logo.png" alt="main logo"/>
+            <nav class="nav-menu">
+                <a href="/recipe/list">레시피</a>
+                <a href="#">스토어</a>
+                <a href="#">쿠킹클래스</a>
+            </nav>
+        </div>
+        <!-- 로그인 상태에 따른 영역 표시 -->
+        <div class="header-right">
+            <div class="header-login-area">
+                <img id="header-login" src="../../static/img/login.png" alt="login">
+                <img id="header-write-recipe" src="../../static/img/write-recipe.png" alt="write recipe">
+            </div>
+            <div class="header-my-expand">
+                <p>내 정보</p>
+                <p>장바구니</p>
+                <p onclick="goToMyRecipe();">나의 레시피</p>
+                <p>구매내역</p>
+                <p>예약내역</p>
+                <p>로그아웃</p>
+            </div>
         </div>
     </header>
         <main>
@@ -32,8 +51,8 @@
                     <div id="step-1" class="step">
                         <h3>온라인/오프라인 <span style="color: red;">(필수)</span></h3>
                         <div class="options">
-                            <div class="option">오프라인</div>
-                            <div class="option">온라인</div>
+                            <div class="option">오프라인 클래스</div>
+                            <div class="option">온라인 클래스</div>
                         </div>
                         <h3>원데이/정기 <span style="color: red;">(필수)</span></h3>
                         <div class="options">
@@ -279,7 +298,8 @@
         let quizContent="";
         let answerContent="";
     </script>
-
-
+    <script defer src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script defer src = "../../static/js/cooking/searchClass.js"></script>
+    <script defer src="../../static/js/cooking/createClass.js"></script>
 </body>
 </html>
