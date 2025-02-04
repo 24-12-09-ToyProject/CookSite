@@ -8,144 +8,151 @@
 
 
 {% block content %}
-<h2>회원정보</h2>
-<form id="update-form">
-		<div id="basic-info">
-			<div class="basic-info-header">
-				<div>기본정보</div>
-				<div class="essential"><span class="essential-mark">*</span> 필수</div>
-			</div>
-
-			<div class="main-info-container">
-				<div class="profile-container">
-					<div id="profile-img">
-						<img src="{{filePath}}" id="imagePreview" alt="미리보기">
-					</div> 
-					<label id="image-upload-btn" for="file-upload" class="img-btn upload-btn">이미지 업로드</label>
-					<input type="file" id="file-upload" name="profileImage" accept="image/*"  onchange="addUploadData(this);" style="display: none;">
-					<button class="img-btn img-remove-btn" type="button" onclick="removeProfile();">이미지 제거</button>
+<div id="detail-container">
+	<h2 id="page-subject">회원 정보</h2>
+	<form id="update-form">
+			<div id="basic-info">
+				<div class="basic-info-header">
+					<div>기본정보</div>
+					<div class="essential"><span class="essential-mark">*</span> 필수</div>
 				</div>
-				<div class="idPw-container">
-					<div class="id-container">
-						<div class="container-head">아이디<span class="essential-mark"> *</span></div>
-						<div type="text" id="memberId">
+	
+				<div class="main-info-container">
+					<div class="profile-container">
+						<div id="profile-img">
+							<img src="{{filePath}}" id="imagePreview" alt="미리보기">
+						</div> 
+						<label id="image-upload-btn" for="file-upload" class="img-btn upload-btn">이미지 업로드</label>
+						<input type="file" id="file-upload" name="profileImage" accept="image/*"  onchange="addUploadData(this);" style="display: none;">
+						<button class="img-btn img-remove-btn" type="button" onclick="removeProfile();">이미지 제거</button>
+					</div>
+					<div class="idPw-container">
+						<div class="id-container">
+							<div class="container-head">아이디<span class="essential-mark"> *</span></div>
+							<div type="text" id="memberId">
+								{% if provider === 'naver' %}
+									naver 소셜회원
+								{% else %}
+									{{member_id}}
+								{% endif %}
+							</div>
+						</div>
+						<div class="pw-container">
+							<div class="container-head">비밀번호<span class="essential-mark"> *</span></div>
 							{% if provider === 'naver' %}
-								naver 소셜회원
 							{% else %}
-								{{member_id}}
+								<button type="button" id="reset-pw-btn" onclick="openConfirmPwPage();">
+									비밀번호 변경
+								</button>
 							{% endif %}
 						</div>
 					</div>
-					<div class="pw-container">
-						<div class="container-head">비밀번호<span class="essential-mark"> *</span></div>
-						{% if provider === 'naver' %}
-						{% else %}
-							<button type="button" id="reset-pw-btn" onclick="openConfirmPwPage();">
-								비밀번호 변경
-							</button>
-						{% endif %}
+				</div>
+				
+	
+				<div class="small-container name-container">
+					<div class="container-head">이름<span class="essential-mark"> *</span></div>
+					<div>
+						<input id="memberName" type="text" class="required" name="memberName" value="{{member_name}}" autocomplete="off" oninput="addNewData(this)" readonly>
 					</div>
+					
+					<button class="edit-btn edit-name" type="button" onclick="changeReadOnly('memberName', 'remove'); changeBtn(this, 'edit-name', 'update-name');">변경</button>
+					<button class="update-btn update-name hide" type="button" onclick="changeReadOnly('memberName', 'add'); changeBtn(this, 'edit-name', 'update-name');">수정</button>
+				</div>
+	
+				<div class="small-container address-container">
+					<div class="container-head">주소</div>
+					<div class="address-container-inputBox">
+						<input id="zonecode" type="text" placeholder="우편번호" name="zonecode" value="{{zone_code}}" readonly><button type="button" id="address-search-btn" onclick="searchAddress(); addNewData(this)" disabled>주소검색</button><br>
+						<input id="default-address" type="text" placeholder="기본주소" name="defaultAddress" value="{{default_address}}" readonly><br>
+						<input id="detail-address" type="text" placeholder="나머지 주소(선택 입력 가능)" name="detailAddress" value="{{detail_address}}" oninput="addNewData(this)" readonly>
+					</div>
+					<button class="edit-btn edit-address" type="button" onclick="changeReadOnly('detail-address', 'remove'); changeBtn(this, 'edit-address', 'update-address'); rotateSearchAddressBtn(false)">변경</button>
+					<button class="update-btn update-address hide" type="button" onclick="changeReadOnly('detail-address', 'add'); changeBtn(this, 'edit-address', 'update-address'); rotateSearchAddressBtn(true)">수정</button>
+				</div>
+	
+				<div class="small-container phone-container">
+					<div class="container-head">휴대전화<span class="essential-mark"> *</span></div>
+					<div class="phone-flexBox">
+						<input type="text" class="required" name="phone" value="010" readonly>
+						<div> - </div>
+						<input id="first-phone" type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off" oninput="addNewData(this)" readonly>
+						<div> - </div>
+						<input id="second-phone" type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off" oninput="addNewData(this)" readonly>
+					</div>
+	
+					<button class="edit-btn edit-phone" type="button" onclick="changeReadOnly('edit-phone', 'remove'); changeBtn(this, 'edit-phone', 'update-phone');">변경</button>
+					<button class="update-btn update-phone hide" type="button" onclick="changeReadOnly('update-phone', 'add'); changeBtn(this, 'edit-phone', 'update-phone');">수정</button>
+	
+				</div>
+				<div class="small-container email-container">
+					<div class="container-head">이메일<span class="essential-mark"> *</span></div>
+					<div>
+						<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()" oninput="addNewData(this); setEmailVerified();" readonly>@
+						<select name="emailDomain" id="email-domain" onchange="addNewData(this); setEmailVerified();"  disabled>
+							<option value="@naver.com">naver.com</option>
+						</select>
+						<span id="send-code-btn" class="disabled" onclick="sendEmailCode();">인증요청</span>
+						<div style="position: relative;">
+							<div id="timer" style="position: absolute; top: 17px; right: 58px; user-select: none;"></div>
+							<input type="text" id="email-code" name="emailCode" disabled="false">
+							<span id="email-verify-btn" class="disabled" data-emailVerified="true" onclick="verifyEmailCode();">인증</span>
+						</div>
+					</div>
+					
+					<button class="edit-btn edit-email" type="button" onclick="changeReadOnly('email', 'remove'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(false);">변경</button>
+					<button class="update-btn update-email hide" type="button" onclick="changeReadOnly('email', 'add'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(true);">수정</button> 
+					
 				</div>
 			</div>
 			
-
-			<div class="small-container name-container">
-				<div class="container-head">이름<span class="essential-mark"> *</span></div>
-				<div>
-					<input id="memberName" type="text" class="required" name="memberName" value="{{member_name}}" autocomplete="off" oninput="addNewData(this)" readonly>
+			<div id="add-info">
+				<div class="add-info-header">
+					<div>추가정보</div>
 				</div>
-				
-				<button class="edit-btn edit-name" type="button" onclick="changeReadOnly('memberName', 'remove'); changeBtn(this, 'edit-name', 'update-name');">변경</button>
-				<button class="update-btn update-name hide" type="button" onclick="changeReadOnly('memberName', 'add'); changeBtn(this, 'edit-name', 'update-name');">수정</button>
-			</div>
-
-			<div class="small-container address-container">
-				<div class="container-head">주소</div>
-				<div class="address-container-inputBox">
-					<input id="zonecode" type="text" placeholder="우편번호" name="zonecode" value="{{zone_code}}" readonly><button type="button" id="address-search-btn" onclick="searchAddress(); addNewData(this)" disabled>주소검색</button><br>
-					<input id="default-address" type="text" placeholder="기본주소" name="defaultAddress" value="{{default_address}}" readonly><br>
-					<input id="detail-address" type="text" placeholder="나머지 주소(선택 입력 가능)" name="detailAddress" value="{{detail_address}}" oninput="addNewData(this)" readonly>
+				<div class="small-container gender-container">
+					<div class="container-head">성별</div>
+					<input id="male-radio" type="radio" name="gender" value="male" oninput="addNewData(this)">
+					<label for="male-radio">
+						남자
+					</label>
+					<input id="female-radio" type="radio" name="gender" value="female" oninput="addNewData(this)">
+					<label for="female-radio">
+						여자
+					</label>
 				</div>
-				<button class="edit-btn edit-address" type="button" onclick="changeReadOnly('detail-address', 'remove'); changeBtn(this, 'edit-address', 'update-address'); rotateSearchAddressBtn(false)">변경</button>
-				<button class="update-btn update-address hide" type="button" onclick="changeReadOnly('detail-address', 'add'); changeBtn(this, 'edit-address', 'update-address'); rotateSearchAddressBtn(true)">수정</button>
-			</div>
-
-			<div class="small-container phone-container">
-				<div class="container-head">휴대전화<span class="essential-mark"> *</span></div>
-				<div class="phone-flexBox">
-					<input type="text" class="required" name="phone" value="010" readonly>
-					<div> - </div>
-					<input id="first-phone" type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off" oninput="addNewData(this)" readonly>
-					<div> - </div>
-					<input id="second-phone" type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off" oninput="addNewData(this)" readonly>
-				</div>
-
-				<button class="edit-btn edit-phone" type="button" onclick="changeReadOnly('edit-phone', 'remove'); changeBtn(this, 'edit-phone', 'update-phone');">변경</button>
-				<button class="update-btn update-phone hide" type="button" onclick="changeReadOnly('update-phone', 'add'); changeBtn(this, 'edit-phone', 'update-phone');">수정</button>
-
-			</div>
-			<div class="small-container email-container">
-				<div class="container-head">이메일<span class="essential-mark"> *</span></div>
-				<div>
-					<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()" oninput="addNewData(this); setEmailVerified();" readonly>@
-					<select name="emailDomain" id="email-domain" onchange="addNewData(this); setEmailVerified();"  disabled>
-						<option value="@naver.com">naver.com</option>
-					</select>
-					<span id="send-code-btn" class="disabled" onclick="sendEmailCode();">인증요청</span>
-					<div style="position: relative;">
-						<div id="timer" style="position: absolute; top: 17px; right: 55px; user-select: none;"></div>
-						<input type="text" id="email-code" name="emailCode" disabled="false">
-						<span id="email-verify-btn" class="disabled" data-emailVerified="true" onclick="verifyEmailCode();">인증</span>
+				<div class="small-container year-container">
+					<div class="container-head">생년월일</div>
+					<div>
+						<div class="select-box">
+							<input id="solar-radio" type="radio" name="calenderType" value="solar" oninput="addNewData(this)">
+							<label for="solar-radio">
+								양력
+							</label>
+							<input id="lunar-radio" type="radio" name="calenderType" value="lunar" oninput="addNewData(this)">
+							<label for="lunar-radio">
+								음력
+							</label>
+						</div>
+						<div class="date-input-box">
+							<input name="dateOfBirth" type="number" id="year" min="1900" autocomplete="off" oninput="addNewData(this)">년
+							<input name="dateOfBirth" type="number" id="month" min="1" max="12" autocomplete="off" oninput="addNewData(this)">월
+							<input name="dateOfBirth" type="number" id="day" min="1" max="31" autocomplete="off" oninput="addNewData(this)">일
+						</div>
 					</div>
+	
 				</div>
-				
-				<button class="edit-btn edit-email" type="button" onclick="changeReadOnly('email', 'remove'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(false);">변경</button>
-				<button class="update-btn update-email hide" type="button" onclick="changeReadOnly('email', 'add'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(true);">수정</button> 
-				
 			</div>
-		</div>
-		
-		<div id="add-info">
-			<div class="add-info-header">
-				<div>추가정보</div>
+			<div id="update-info-btn-div">
+				<button id="cancel-update-btn" type="button" onclick="location.href='/member/detail'">취소</button>
+				<button id="update-info-btn" type="button" onclick="confirmRequired();">수정하기</button>
 			</div>
-			<div class="small-container gender-container">
-				<div class="container-head">성별</div>
-				<input id="male-radio" type="radio" name="gender" value="male" oninput="addNewData(this)">
-				<label for="male-radio">
-					남자
-				</label>
-				<input id="female-radio" type="radio" name="gender" value="female" oninput="addNewData(this)">
-				<label for="female-radio">
-					여자
-				</label>
-			</div>
-			<div class="small-container year-container">
-				<div class="container-head">생년월일</div>
-				<div>
-					<div class="select-box">
-						<input id="solar-radio" type="radio" name="calenderType" value="solar" oninput="addNewData(this)">
-						<label for="solar-radio">
-							양력
-						</label>
-						<input id="lunar-radio" type="radio" name="calenderType" value="lunar" oninput="addNewData(this)">
-						<label for="lunar-radio">
-							음력
-						</label>
-					</div>
-					<div class="date-input-box">
-						<input name="dateOfBirth" type="number" id="year" min="1900" autocomplete="off" oninput="addNewData(this)">년
-						<input name="dateOfBirth" type="number" id="month" min="1" max="12" autocomplete="off" oninput="addNewData(this)">월
-						<input name="dateOfBirth" type="number" id="day" min="1" max="31" autocomplete="off" oninput="addNewData(this)">일
-					</div>
-				</div>
+		</form>
+</div>
 
-			</div>
-		</div>
-		<button id="signUp-btn" type="button" onclick="confirmRequired();">수정하기</button>
-	</form>
-
-	<button type="button" onclick="deleteAccount();">탈퇴하기</button>
+	<div id="delete-member-btn-div">
+		<button id="delete-member-btn" type="button" onclick="deleteAccount();">회원탈퇴</button>
+	</div>
 	<button type="button" onclick="logout();">로그아웃</button>
 	
 	<script>

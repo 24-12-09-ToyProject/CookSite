@@ -42,7 +42,7 @@ router.post('/login', async (req, res)=>{
 
 		// console.log("resultMessage :" + resultMessage);
 		
-		let filePath = result.info.file_rename ? `/uploads/member/${result.info.file_rename}` : "/static/img/member/user-thumbnail.png";
+		let filePath = result.info.file_rename ? `/uploadFile/member/${result.info.file_rename}` : "/static/img/member/user-thumbnail.png";
 
 		
 		if(result.success){
@@ -52,6 +52,7 @@ router.post('/login', async (req, res)=>{
 				fileRename:result.info.file_rename,
 				loggedIn : true
 			}
+			
 
 			res.send("로그인 성공");
 
@@ -441,13 +442,13 @@ router.post('/api/upload-profile', checkLogin, upload.single('profileImage'), as
 		const result = await addProfile(fileInfo);
 		if(result.success){
 			// 세션에 즉시 수정
-			req.session.user.filePath=`/uploads/member/${req.file.filename}`;
+			req.session.user.filePath=`/uploadFile/member/${req.file.filename}`;
 			req.session.user.fileRename=`${req.file.filename}`;
 			// 클라이언트에 업로드된 파일 경로 응답
 			res.json({
 				success:true,
 				message: '프로필 이미지가 성공적으로 업로드되었습니다.',
-				filePath: `/uploads/member/${req.file.filename}` // url에서 사용할 주소 (경로 변환됨)
+				filePath: `/uploadFile/member/${req.file.filename}` // url에서 사용할 주소 (경로 변환됨)
 			});
 		}else{
 			res.json({

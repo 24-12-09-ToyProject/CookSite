@@ -36,8 +36,14 @@ app.use(session({
         maxAge: 1000 * 60 * 60 // 1시간 이후 session 파괴
     }
 }));
+app.use((req, res, next) => {
+    console.log("현재 세션 데이터:", req.session);
+    res.locals.session = req.session;
+    next();
+});
+
 app.use(flash());
-// 정적 파일 제공 (브라우저에서 접근 가능하도록 설정 /uploads 경로로 실제 경로의 파일 추적 가능)
+// 정적 파일 제공 (브라우저에서 접근 가능하도록 설정 /uploadFile 경로로 실제 경로의 파일 추적 가능)
 app.use("/uploadFile", express.static(process.env.FILE_PATH));
 //라우터 불러오기 
 const cookingRouter = require('./routes/cooking/cookingRoute.js');

@@ -1,18 +1,36 @@
-/* *{
-	font-family: 'Pretendard-Regular';
-} */
-
+*{
+	box-sizing: border-box;
+	font-family: 'Pretended-Regular';
+}
 
 input{
 	padding-left: 10px;
+	transition: all 300ms;
+	background-color: #f1f1f2;
+}
+
+#basic-info input:hover{
+	border: 1px solid black;
+}
+
+#detail-container{
+	width: 1100px;
+	margin: 30px 0;
+}
+
+#page-subject{
+	/* font-size: 22px; */
+	text-align: center;
+	margin: 50px 0;
 }
 
 #basic-info, #add-info{
-	width: 430px;
+	width: 550px;
 	border-radius: 10px;
 	border: 2px solid #e9e9e9;
 	color: #63666e;
-	font-size: 13px;
+	font-size: 15px;
+	margin: 0 auto;
 	margin-top: 10px;
 	overflow: hidden;
 }
@@ -21,7 +39,7 @@ input{
 	padding: 15px 15px;
 	background-color: #f1f1f1;
 	border-radius: 10px 10px 0 0;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 	color: black;
 	display: flex;
@@ -32,13 +50,13 @@ input{
 	padding: 15px 15px;
 	background-color: #f1f1f1;
 	border-radius: 10px 10px 0 0;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 	color: black;
 }
 
 .essential{
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: normal;
 }
 .essential-mark{
@@ -47,10 +65,10 @@ input{
 
 #basic-info input{
 	border: 1px solid #e9e9e9;
-	width: 300px;
+	width: 360px;
 	height: 40px;
 	border-radius: 5px;
-	font-size: 11px;
+	font-size: 14px;
 }
 
 .small-container{
@@ -60,7 +78,7 @@ input{
 }
 
 .container-head{
-	width: 80px;
+	width: 150px;
 	padding-top: 10px;
 	padding-left: 12px;
 	margin-right: 5px;
@@ -79,6 +97,7 @@ input{
 
 .address-container{
 	height: 160px;
+	padding-top: 4px;
 }
 
 .address-container input{
@@ -86,11 +105,11 @@ input{
 }
 
 .address-container-inputBox{
-	padding-top: 5px;
+	width: 330px;
 }
 
 #basic-info .address-container-inputBox input:first-child{
-	width: 70px;
+	width: 100px;
 }
 
 #address-search-btn{
@@ -104,7 +123,7 @@ input{
 	line-height: 40px;
 	cursor: pointer;
 	margin-left: 10px;
-	font-size: 11px;
+	font-size: 14px;
 }
 
 
@@ -114,16 +133,19 @@ input{
 
 
 #year{
-	width: 50px;
+	width: 70px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid #e9e9e9;
 }
 #month, #day{
-	width: 40px;
+	width: 60px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid #e9e9e9;
+}
+#year:hover, #month:hover, #day:hover{
+	border: 1px solid black;
 }
 
 input[type="radio"] {
@@ -138,12 +160,11 @@ input[type="radio"] {
 
 input[type="radio"]:checked {
 	background-color: #000;   /* 선택된 상태 */
-	border: 4px solid white;
+	border: 4px solid #f1f1f2;
 	box-shadow: 0 0 0 1px #000;
 }
 
 label[for="male-radio"], label[for="female-radio"]{
-	padding-top: 3px;
 	padding-left: 4px;
 	padding-right: 6px;
 	cursor: pointer;
@@ -154,6 +175,9 @@ label[for="male-radio"], label[for="female-radio"]{
 	align-items: center;
 	margin: 5px 0;
 	margin-bottom: 10px;
+}
+.select-box input {
+	margin: 0 10px;
 }
 
 label[for="lunar-radio"], label[for="solar-radio"]{
@@ -179,17 +203,39 @@ label[for="lunar-radio"], label[for="solar-radio"]{
 	padding-top: 5px;
 }
 
+.gender-container input{
+	margin: 0 10px;
+}
 
-#signUp-btn{
-	width: 430px;
+#cancel-update-btn{
+	width: 200px;
+	height: 48px;
+	border: none;
+	border-radius: 5px;
+	color: rgb(0, 0, 0);
+	background-color: #f1f1f2;
+	border: 1px solid rgb(167, 167, 167);
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 0 10px;
+	margin-top: 30px;
+	padding: 0;
+}
+#cancel-update-btn:hover{
+	border-color: black;
+}
+#update-info-btn{
+	width: 200px;
 	height: 48px;
 	border: none;
 	border-radius: 5px;
 	color: white;
-	background-color: tomato;
+	background-color: #800020;
 	cursor: pointer;
 	font-size: 16px;
 	font-weight: 500;
+	margin: 0 10px;
 	margin-top: 30px;
 	padding: 0;
 }
@@ -201,60 +247,71 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 
 .phone-flexBox{
 	display: flex;
-	width: 250px;
+	width: 330px;
 	align-items: center;
 }
 
 #basic-info .phone-flexBox input{
-	width: 65px;
-	font-size: 13px;
+	width: 80px;
+	font-size: 15px;
 	color: #353535;
 }
 
 .phone-flexBox div{
-	font-size: 20px;
+	font-size: 22px;
 	font-weight: 1000;
 	margin: 0 10px;
+}
+
+#basic-info #first-phone, #basic-info #second-phone{
+	width: 95px;
 }
 
 
 #check-duplicate-btn, #send-code-btn, #email-verify-btn{
 	display: inline-block;
 	border-radius: 5px;
-	background-color: rgb(144, 144, 144);
+	/* background-color: rgb(144, 144, 144); */
+	background-color: #a33e57;
 	opacity: 0.5;
 	padding: 10px 5px;
-	font-size: 11px;
+	font-size: 14px;
 	font-weight: 1000;
 	color: white;
 	pointer-events: none;
 	user-select: none;
+	/* margin-left: 20px; */
 }
 
 
 #check-duplicate-btn:not(.disabled), #email-verify-btn:not(.disabled), #send-code-btn:not(.disabled) {
-	background-color: rgb(120, 120, 120);
+	/* background-color: rgb(120, 120, 120); */
+	background-color: 	#a33e57;
 	opacity: 1;
 	cursor: pointer; /* 활성화 상태에서 클릭 가능 */
 	pointer-events: auto; /* 클릭 이벤트 허용 */
 }
 
 #check-duplicate-btn:hover, #send-code-btn:hover, #email-verify-btn:hover{
-	background-color: rgb(31, 31, 31);
+	/* background-color: rgb(31, 31, 31); */
+	background-color: #800020;
+	color: #dcbe5d;
 	opacity: 1;
 }
 
 #basic-info #email{
-	width: 100px;
+	width: 130px;
 	margin-right: 5px;
 }
 
 #email-domain{
+	background-color: #f1f1f2;
 	color: #63666e;
 	border: 1px solid #e9e9e9;
 	border-radius: 5px;
 	outline: none;
 	height: 40px;
+	padding: 0 10px;
 }
 
 select option{
@@ -268,18 +325,22 @@ select option{
 
 #basic-info #email-code{
 	margin-top: 8px;
-	margin-left: 65px;
-	width: 155px;
+	margin-left: 140px;
+	width: 137px;
 }
 
 #timer{
 	color: tomato;
 }
 
+#basic-info #default-address, #basic-info #zonecode{
+	cursor: not-allowed;
+}
+
 
 .main-info-container{
 	width: 100%;
-	height: 200px;
+	height: 245px;
 	border: 1px solid #e9e9e9;
 	display: flex;
 }
@@ -292,6 +353,7 @@ select option{
 	justify-content: center;
 	align-items: center;
 	border: 1px solid #e9e9e9;
+	border-left: none;
 	text-align: center;
 }
 
@@ -306,6 +368,7 @@ select option{
 	padding-top: 10px;
 	display: flex;
 	border: 1px solid #e9e9e9;
+	border-right: none;
 }
 
 .idPw-container .pw-container{
@@ -314,14 +377,15 @@ select option{
 	padding-top: 10px;
 	display: flex;
 	border: 1px solid #e9e9e9;
+	border-right: none;
 }
 
 #memberId{
 	margin-top: 10px;
 }
 #reset-pw-btn{
-	background-color: white;
-	color: tomato;
+	background-color: #f1f1f2;
+	color: #800020;
 	width: 100px;
 	height: 30px;
 	border: none;
@@ -346,14 +410,14 @@ select option{
 }
 
 #basic-info .upload-btn{
-	background-color: tomato;
+	background-color: #800020;
 	color: white;
 	margin-bottom: 5px;
 	padding-top: 4px;
 }
 .img-remove-btn{
-	color: tomato;
-	background-color: white;
+	color: #800020;
+	background-color: #f1f1f2;
 }
 .img-remove-btn:hover{
 	background-color: #e1e1e1;
@@ -373,14 +437,15 @@ select option{
 /* 변경, 수정 버튼 */
 .edit-btn{
 	border: none;
-	background-color: white;
-	color: tomato;
+	/* background-color: white; */
+	color: #800020;
 	text-decoration: underline;
 	cursor: pointer;
-	padding: 4px;
+	padding: 5px;
 	width: 40px;
 	height: 25px;
-	margin-left: 25px;
+	margin-left: 10px;
+	font-size: 14px;
 }
 .update-btn{
 	color: white;
@@ -388,10 +453,11 @@ select option{
 	border-radius: 3px;
 	padding: 4px;
 	cursor: pointer;
-	background-color: tomato;
+	background-color: #800020;
 	width: 40px;
 	height: 25px;
-	margin-left: 25px;
+	margin-left: 10px;
+	font-size: 14px;
 }
 
 .update-btn.hide{
@@ -410,19 +476,49 @@ select option{
 
 
 #basic-info #memberName{
-	width: 270px;
+	width: 330px;
 }
 
 #basic-info #default-address, #basic-info #detail-address{
-	width: 270px;
+	width: 330px;
 }
 
 .edit-btn.edit-phone, .update-btn.update-phone{
-	margin-left: 41px;
+	margin-left: 10px;
 }
 
 #imagePreview {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+#update-info-btn-div{
+	width: 550px; 
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+}
+
+#delete-member-btn-div{
+	width: 550px;
+	margin: 0 auto;
+}
+#delete-member-btn{
+	width: 80px;
+	height: 36px;
+	border: none;
+	border-radius: 5px;
+	color: rgb(0, 0, 0);
+	background-color: #f1f1f2;
+	border: 1px solid rgb(167, 167, 167);
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 0 10px;
+	margin-top: 30px;
+	padding: 0;
+}
+#delete-member-btn:hover{
+	border-color: black;
 }
