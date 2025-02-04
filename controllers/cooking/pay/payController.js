@@ -192,3 +192,63 @@ exports.savePaymentInfo = async (req, res) => {
         if (connection) connection.release();
     }
 };
+
+exports.ImpuidFromReservationNo = async (req, res) => {
+    try {
+        const { reservationNo } = req.body; // 요청에서 reservationNo 받기
+
+        if (!reservationNo) {
+            return res.status(400).json({ error: "예약 번호가 필요합니다." });
+        }
+
+        const query = `SELECT IMP_UID FROM COOKINGPAYMENT WHERE RESERVATION_NO = ?`;
+        
+        // 기존의 pool을 사용하여 쿼리 실행
+        const [rows] = await pool.execute(query, [reservationNo]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "해당 예약 번호의 결제 정보가 없습니다." });
+        }
+        const imp_uid = rows[0].IMP_UID;
+        // imp_uid 반환
+        res.status(200).json(imp_uid);
+    } catch (error) {
+        console.error("데이터베이스 조회 중 오류 발생:", error);
+        res.status(500).json({ error: "서버 오류" });
+    }
+};
+//결제 취소 요청
+exports.cancelPayment = async (req, res) => {
+    try {
+        const { imp_uid, reason } = req.body;
+
+        if (!imp_uid || !reason) {
+            return res.status(400).json({ error: "imp_uid와 reason은 필수입니다." });
+        }
+
+        const accessToken = await getAccessToken();
+
+        const response = await fetch("https://api.iamport.kr/payments/cancel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                imp_uid: imp_uid, // 결제번호
+                reason: reason   // 취소 사유
+            })
+        });
+
+        const result = await response.json();
+        if (result.code === 0) {
+            console.log("결제 취소 성공:", result.response);
+            res.status(200).json({ success: true, data: result.response });
+        } else {
+            throw new Error(`결제 취소 실패: ${result.message}`);
+        }
+    } catch (error) {
+        console.error("결제 취소 중 오류 발생:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

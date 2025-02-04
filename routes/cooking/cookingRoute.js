@@ -63,7 +63,11 @@ router.post("/payments/pay",payController.payClass);
 // 결제 정보 검증 요청 
 router.post("/validation/:imp_uid",payController.validatePayment);
 // 결제 후 저장
-router.post("/save/BuyerInfo",payController.savePaymentInfo);
+router.post("/payments/save",payController.savePaymentInfo);
+// 예약번호 조회
+router.post("/api/getImpUid",payController.ImpuidFromReservationNo);
+// 결제 취소
+router.post("/api/payments/cancel",payController.cancelPayment);
 
 
 // 상세 페이지 조회 위한 설정

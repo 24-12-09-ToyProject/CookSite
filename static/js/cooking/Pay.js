@@ -78,7 +78,8 @@ async function requestPay() {
 
                     if (payResult.success) {
                         console.log("✅ 서버 결제 요청 성공:", payResult);
-                        alert("결제가 완료 되었습니다");
+                        const reservationNo = 
+                        alert("결제가 완료 되었습니다 \n예약 번호는 마이페이지에서 확인 가능합니다.");
                         // 결제 검증 요청
                         const validationResponse = await fetch(`/validation/${rsp.imp_uid}`, {
                             method: "POST",
@@ -125,7 +126,7 @@ async function requestPay() {
                             console.log("✅ 최종 저장할 reserveInfo:", reserveInfo);
                             console.log("✅ JSON 변환 후 데이터:", JSON.stringify({ buyerInfo, reserveInfo }));
 
-                            const saveResponse = await fetch("/save/BuyerInfo", {
+                            const saveResponse = await fetch("/payments/save", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ buyerInfo, reserveInfo }),
@@ -159,189 +160,63 @@ async function requestPay() {
     );
 }
 
-// async function requestPay() {
-//     if (!classMemberData) {
-//         alert("결제 데이터를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-//         return;
-//     }
-
-//     // 결제 요청
-//     IMP.request_pay(
-//         {
-//             pg: "html5_inicis.INIpayTest", // KG이니시스
-//             pay_method: "card",
-//             merchant_uid: "merchant_" + new Date().getTime(),
-//             name: classMemberData.CLASS_TITLE, // ✅ 전역 변수에서 가져오기
-//             amount: classMemberData.CLASS_PRICE * reservationVisitor,
-//             buyer_email: classMemberData.email,
-//             buyer_name: classMemberData.member_name,
-//             buyer_tel: classMemberData.phone,
-//         },
-//         async function (rsp) {
-//             if (rsp.success) {
-//                 console.log("✅ 결제 성공, imp_uid:", rsp.imp_uid);
-
-//                 try {
-//                     // ✅ 결제 요청 정보를 서버로 전송 (payClass API 호출)
-//                     const response = await fetch("/payments/pay", {
-//                         method: "POST",
-//                         headers: { "Content-Type": "application/json" },
-//                         body: JSON.stringify({
-//                             imp_uid: rsp.imp_uid,
-//                             merchant_uid: rsp.merchant_uid,
-//                             amount: rsp.paid_amount,
-//                         }),
-//                     });
-
-//                     const result = await response.json();
-
-//                     if (result.success) {
-//                         alert("결제가 완료되었습니다!");
-//                         swal({
-//                             title: "결제가 완료되었습니다!",
-//                             icon: "success",
-//                             closeOnClickOutside: false,
-//                         }).then(() => {
-//                             location.href = "/";
-//                         });
-//                         // 결제 검증 요청
-//                         fetch(`/validation/${rsp.imp_uid}`, {
-//                             method: "POST",
-//                             headers: { "Content-Type": "application/json" },
-//                             body: JSON.stringify({
-//                                 imp_uid: rsp.imp_uid,
-//                                 merchant_uid: rsp.merchant_uid,
-//                             })
-//                         })
-//                         console.log("✅ 서버 응답:", result);
-
-//                         // buyerInfo 객체 (결제 정보)
-//                         const buyerInfo = {
-//                             imp_uid: rsp.imp_uid,
-//                             reservationNo: classMemberData.reservationNo,
-//                             CLASS_TITLE: classMemberData.CLASS_TITLE, // ✅ 전역 변수에서 가져오기
-//                             pay_method: 'card',
-//                             merchant_uid: rsp.merchant_uid,
-//                             amount: parseInt(rsp.paid_amount, 10),
-//                             buyer_email: rsp.buyer_email,
-//                             buyer_tel: rsp.buyer_tel,
-//                             MEMBER_ID: rsp.buyer_name,
-//                         };
-//                         // reserveInfo 객체 (예매 정보)
-//                         const reserveInfo = {
-//                             reservationNo: data.reservationNo,
-//                             reservationVisitor: reservationVisitor, // ✅ 전역 변수에서 가져오기
-//                             imp_uid: rsp.imp_uid,
-//                             reservationDate: classMemberData.reservationDate, // ✅ 전역 변수에서 가져오기
-//                             MEMBER_ID: classMemberData.memberId, // ✅ 전역 변수에서 가져오기
-//                             CLASS_TITLE: classMemberData.CLASS_TITLE, // ✅ 전역 변수에서 가져오기
-//                         };
-//                         // 결제 정보 저장 요청
-//                         return fetch("/save/BuyerInfo", {
-//                             method: "POST",
-//                             headers: { "Content-Type": "application/json" },
-//                             body: JSON.stringify({ buyerInfo, reserveInfo })
-//                         });
-//                     } else {
-//                         console.error("🚨 결제 실패:", result.error);
-//                         alert(`결제 실패: ${result.error}`);
-//                     }
-//                 } catch (error) {
-//                     console.error("🚨 API 호출 에러:", error);
-//                     alert("결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
-//                 }
-//             } else {
-//                 // 결제 실패 처리
-//                 console.error("🚨 결제 실패:", rsp.error_msg);
-//                 alert(`결제가 실패했습니다: ${rsp.error_msg}`);
-//             }
-//         }
-//     );
-// }
-
-// async function requestPay() {
-//     if (!classMemberData) {
-//         alert("결제 데이터를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
-//         return;
-//     }
-
-//     // 결제 요청
-//     IMP.request_pay({
-//         pg: 'html5_inicis.INIpayTest', // KG이니시스
-//         pay_method: 'card',
-//         merchant_uid: 'merchant_' + new Date().getTime(),
-//         name: classMemberData.CLASS_MEMBER_ID, // ✅ 전역 변수에서 가져오기
-//         amount: classMemberData.CLASS_PRICE * reservationVisitor,
-//         buyer_email: classMemberData.email,
-//         buyer_name: classMemberData.member_name,
-//         buyer_tel: classMemberData.phone,
-//     }, function (rsp) {
-//         if (rsp.success) {
-//             // 결제 검증 요청
-//             fetch(`/validation/${rsp.imp_uid}`, {
-//                 method: "POST",
-//                 headers: { "Content-Type": "application/json" },
-//                 body: JSON.stringify({
-//                     imp_uid: rsp.imp_uid,
-//                     merchant_uid: rsp.merchant_uid,
-//                 })
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 alert("결제가 완료되었습니다!");
-//                 swal({
-//                     title: "예약번호는 " + data.reservationNo + "입니다",
-//                     icon: "success",
-//                     closeOnClickOutside: false
-//                 }).then(() => {
-//                     location.href = '/';
-//                 });
-
-//                 console.log("✅ 결제 검증 응답 데이터:", data);
-
-//                 // buyerInfo 객체 (결제 정보)
-//                 const buyerInfo = {
-//                     imp_uid: rsp.imp_uid,
-//                     reservationNo: classMemberData.reservationNo,
-//                     CLASS_TITLE: classMemberData.CLASS_TITLE, // ✅ 전역 변수에서 가져오기
-//                     pay_method: 'card',
-//                     merchant_uid: rsp.merchant_uid,
-//                     amount: parseInt(rsp.paid_amount, 10),
-//                     buyer_email: rsp.buyer_email,
-//                     buyer_tel: rsp.buyer_tel,
-//                     MEMBER_ID: rsp.buyer_name,
-//                 };
-
-//                 // reserveInfo 객체 (예매 정보)
-//                 const reserveInfo = {
-//                     reservationNo: data.reservationNo,
-//                     reservationVisitor: reservationVisitor, // ✅ 전역 변수에서 가져오기
-//                     imp_uid: rsp.imp_uid,
-//                     reservationDate: classMemberData.reservationDate, // ✅ 전역 변수에서 가져오기
-//                     MEMBER_ID: classMemberData.memberId, // ✅ 전역 변수에서 가져오기
-//                     CLASS_TITLE: classMemberData.CLASS_TITLE, // ✅ 전역 변수에서 가져오기
-//                 };
-
-//                 // 결제 정보 저장 요청
-//                 return fetch("/save_buyerInfo", {
-//                     method: "POST",
-//                     headers: { "Content-Type": "application/json" },
-//                     body: JSON.stringify({ buyerInfo, reserveInfo })
-//                 });
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 console.log("✅ 결제정보 저장 완료:", data);
-//             })
-//             .catch(error => {
-//                 console.error("🚨 에러 발생:", error);
-//             });
-//         }
-//     });
-// }
-
 document.querySelector(".apply-button").addEventListener("click", async function () {
     requestPay();
+});
+
+async function cancelPay() {
+    const reservationNo = prompt("예약 번호를 입력해주세요").trim();
+    if (!reservationNo) {
+        alert("올바른 예약 번호를 입력해야 합니다.");
+        return;
+    }
+
+    try {
+        // 서버에서 imp_uid를 가져옴.
+        const response = await fetch("/api/getImpUid", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ reservationNo }) // JSON 형식으로 데이터 전송
+        });
+
+        if (!response.ok) {
+            throw new Error("예약 정보를 가져오는데 실패했습니다.");
+        }
+
+        const imp_uid = await response.json();
+        console.log("잘 왔니??" , imp_uid);
+        if (imp_uid) {
+            const isConfirmed = confirm("정말 취소 하시겠습니까?");
+            if (isConfirmed) {
+                // 결제 취소 요청 (POST 요청)
+                const cancelResponse = await fetch("/api/payments/cancel", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        imp_uid: imp_uid,
+                        reason: "고객 요청으로 취소" // 취소 사유 추가
+                    })
+                });
+            if (!cancelResponse.ok) {
+                throw new Error("결제 취소에 실패했습니다.");
+            }
+
+                alert("취소가 완료되었습니다!");
+                console.log(await cancelResponse.json());
+            }
+        } else {
+            alert("유효한 예약 번호가 아닙니다.");
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+}
+document.querySelector(".cancel-button").addEventListener("click", async function () {
+    cancelPay();
 });
 
 // // 결제 취소하는 함수 작성자 기준 예매번호로 imp_uid 조회해서 맞으면 삭제 하는 코드
