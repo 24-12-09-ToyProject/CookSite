@@ -1,0 +1,130 @@
+#login-main{
+	width: 450px;
+	margin: 0 auto;
+	margin-top: 50px;
+}
+
+#login-main h3{
+	color: gray;
+	font-weight: normal;
+	font-size: 17px;
+	margin-bottom: 50px;
+	margin-top: 10px;
+}
+
+#login-container{
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+#idPw-container{
+	width: 76%;
+}
+
+#memberId, #memberPw{
+	outline: none;
+	width: 100%;
+	height: 45px;
+	border: 1px solid #e9e9e9;
+	border-radius: 5px;
+	margin: 3px 0;
+	padding-left: 15px;
+	font-size: 15px;
+	transition: all 200ms;
+}
+#memberId:hover, #memberPw:hover,#memberId:focus, #memberPw:focus{
+	border-color: black;
+}
+
+#signin-btn{
+	border: none;
+	border-radius: 10px;
+	width: 100px;
+	cursor: pointer;
+	background-color: #535353;
+	color: white;
+	font-size: 15px;
+}
+#signin-btn:hover{
+	background-color: #333;
+}
+
+#find-container{
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	margin-top: 30px;
+	
+}
+#find-container a:first-child{
+	border-right: 2px solid #DFDFDF;
+}
+
+#find-container a{
+	color: #8a8a8a;
+	text-decoration: none;
+	padding: 0 10px;
+	font-size: 14px;
+}
+#find-container a:hover{
+	color: #333;
+}
+
+#goSignup-container{
+	border: 1px solid #DFDFDF;
+	border-radius: 5px;
+	width: 100%;
+	height: 50px;
+	display: flex;
+	justify-content: space-between;
+	padding: 0 15px;
+	margin-top: 30px;
+}
+
+#goSignup-container div{
+	align-self: center;
+}
+
+#snsLogin-line{
+	margin-top: 40px;
+	position: relative; 
+	text-align: center;
+}
+#snsLogin-line::before{
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	height: 1px;
+	background-color: #DFDFDF;
+	transform: translateY(-50%);
+	content: "";
+}
+#snsLogin-line span{
+	display: inline-block;
+	padding: 0 12px;
+	position: relative;
+	z-index: 1;
+	font-size: 14px;
+	font-weight: 500;
+	color: #9a9a9a;
+	background: #f1f1f2;
+}
+
+#social-login-container{
+	width: 100%;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+	margin-bottom: 100px;
+}
+
+#naver-logo{
+	width: 50px;
+	height: 50px;
+	border-radius: 6px;
+	object-fit: cover;
+	cursor: pointer;
+}

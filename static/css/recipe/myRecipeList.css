@@ -1,5 +1,7 @@
 
 .list-container {
+    min-width: 1400px;
+    min-height: 850px;
     background-color: white;
     padding: 40px 25px 20px 25px;
 }
@@ -39,42 +41,62 @@
     .cate-button:focus {
         outline: none;
     }
-    .search-result {
-        padding: 30px 0 30px 10px;
-        font-size: 20px;
+    #my-recipe-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-left: 10px;
     }
-        #recipe-total-count {
-            font-size: 26px;
+    .search-result {
+        padding: 5px 0 30px 10px;
+        font-size: 18px;
+    }
+        #my-recipe-total-count {
+            font-size: 24px;
             color: #ddb73b;
         }
 
 /* 레시피 목록 */
-#recipe-list {
+#my-recipe-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 20px;
 }
-    #recipe-list li {
+    #my-recipe-list li {
         list-style: none;
         flex: 1 1 calc(25% - 20px);
         max-width: 322px;
+        height: 340px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 3px;
         overflow: hidden;
-        transition: transform 0.2s;
+        transition: background-color 0.3s, transform 0.2s;
         padding-bottom: 5px;
+        position: relative;
     }
-    #recipe-list li:hover {
-        transform: translateY(-5px);
+    #my-recipe-list li::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1;
+        pointer-events: none;
     }
-        #recipe-list li img {
+    #my-recipe-list li:hover::after {
+        opacity: 1;
+    }
+        #my-recipe-list li img {
             width: 100%;
             height: 255px;
             object-fit: cover;
-            border-bottom: 1px solid #ddd;
+            z-index: 2;
         }
-    #recipe-list .recipe-title {
+    .recipe-title {
         font-size: 18px;
         font-weight: bold;
         margin: 5px 10px;
@@ -84,9 +106,52 @@
         overflow: hidden;
         text-overflow: ellipsis;
         word-wrap: break-word;
-}
-    #recipe-list p {
-        margin: 5px 10px;
+    }
+    .update-recipe-btn, .delete-recipe-btn {
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Pretendard-Regular', sans-serif;
+        border: none;
+        outline: none;
+        border-radius: 50%;
+        padding: 8px;
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.2s, opacity 0.2s;
+        color: white;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 10;
+        pointer-events: auto;
+    }
+    .update-recipe-btn {
+        background-color: #4CAF50;
+        margin-left: -40px;
+    }
+    .update-recipe-btn:hover {
+        background-color: #3d8d41;
+    }
+    .delete-recipe-btn {
+        background-color: #F44336;
+        margin-left: 50px;
+    }
+    .delete-recipe-btn:hover {
+        background-color: #b82d2b;
+    }
+    #my-recipe-list li:hover .update-recipe-btn,
+    #my-recipe-list li:hover .delete-recipe-btn {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    .no-recipe-message {
+        text-align: center;
+        padding: 150px;
+        font-size: 30px;
     }
 
 /* 더보기 버튼 */
