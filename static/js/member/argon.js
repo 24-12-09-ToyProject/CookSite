@@ -46,7 +46,9 @@ async function allVerifyValue(results, plainvalue){
 
 		for(let i = 0; i < results.length; i++){
 			// 입력된 비밀번호가 해시된 비밀번호와 일치하는지 검증
-			match = await argon2.verify(results[i].password, plainvalue);
+			// 소셜회원은 db에 null이기 때문에 임의의 데이터 넣어줌
+			let password = results[i].password || '$argon2id$v=19$m=65536,t=2,p=1$invalidhash$invalidsalt';
+			match = await argon2.verify(password, plainvalue);
 			
 			if (match) {
 					//일치하는 경우

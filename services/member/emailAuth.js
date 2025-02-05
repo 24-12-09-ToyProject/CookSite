@@ -10,7 +10,7 @@ const generateRandom = function (min, max) {
 
 
 const mailAuth = { //객체에 함수를 담음.
-    SendMail : async (req, res)=>{ // 라우터에서 호출하는 함수. SendMail
+    SendMailCode : async (req, res)=>{ // 라우터에서 호출하는 함수. SendMail
         const number = generateRandom(111111,999999); //number변수에 랜덤숫자 생성
 
         const email = `${req.body.email}${req.body.emailDomain}`;  //사용자가 입력한 이메일을 가져옴.
@@ -21,7 +21,7 @@ const mailAuth = { //객체에 함수를 담음.
             to : email,  //사용자가 입력한 이메일 즉 도착할 주소
             subject : '인증코드 발급 관련 메일입니다.', //메일의 제목  
             //메일의 내용
-            html : '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + number //text를 전달할려면 key값을 html을 text로 바꿔주면된다. 
+            html : '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + `<h3>${number}</h3>` //text를 전달할려면 key값을 html을 text로 바꿔주면된다. 
         }
 
         // 인증번호 service
@@ -54,11 +54,42 @@ const mailAuth = { //객체에 함수를 담음.
             res.json({success:false, message:'인증번호 insert 실패'})
         }
         
+    },
 
+
+    SendMailLink : async (req, res, resetLink)=>{ // 라우터에서 호출하는 함수. SendMailLink
+
+        const email = `${req.body.email}`;  //사용자가 입력한 이메일을 가져옴.
+
+        const mailOptions = {  //메일 옵션설정
+            from : `${process.env.EMAIL_USER}@naver.com`, // 보내는 사람
+            to : email,  // 도착 주소(회원 이메일)
+            subject : '비밀번호 재설정 링크입니다', //메일의 제목  
+            html : '<h1>비밀번호 재설정 링크 \n\n\n\n\n\n</h1>' + `<h3>${resetLink}</h3>` //메일의 내용
+        }
+
+        // 새로운 smtpTransport 연결을 생성
+        const smtpTransport = createNewTransport();
+
+        await smtpTransport.sendMail(mailOptions, (err, response) => {
+            console.log(mailOptions);
+
+            console.log("response : " + response); //info 출력
+
+            //첫 번째 인자 : mailOptions, 두 번쨰 인자 : 콜백함수
+            if (err) { //에러시
+                res.json({ success: false, message: '메일전송에 실패하였습니다' });
+                smtpTransport.close(); //전송종료
+                console.log(err);
+
+                return;
+            } else { //에러가 아닐시 
+                res.json({ success: true, message: '메일전송하였습니다' });
+                smtpTransport.close(); //전송종료
+                return;
+            }
+        })
         
-
-        
-
     }
 }
 

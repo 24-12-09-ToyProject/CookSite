@@ -1,0 +1,282 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="../../static/css/store/storeDetail.css">
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <section class="product-info">
+        <div class="product-image">
+            <img src="{{ details.product.PPODUCT_MAIN_IMG_URL }}" alt="{{ details.product.PRODUCT_NAME }}">
+        </div>
+        <div class="product-text">
+            <div class="product-header">
+                <span>{{ details.product.PRODUCT_NAME }}</span>
+            </div>
+
+            <div class="product-price">
+                <p><strong>{{ details.product.BASE_PRICE }} 원</strong></p>
+            </div>
+            <div class="shipping-info">
+                <img src="../../static/img/store/van.png" alt="" class="shipping-icon">
+                <p>배송 <strong>3,500원</strong> (70,000원 이상 무료배송)</p>
+            </div>
+            <div class="reward-info">
+                <img src="../../static/img/store/coin.png" alt="" class="reward-icon">
+                <p>적립 <strong><span id="reward-amount"></span></strong> 원 적립 (구매액의 0.5% 적립)</p>
+            </div>
+            <section class="product-options">
+                {% if details.options and details.options|length > 0 %}
+                <form action="/store/order" method="POST" id="product-form">
+                    <input type="hidden" name="productImg" value="{{ details.product.PPODUCT_MAIN_IMG_URL }}">
+                    <input type="hidden" name="productName" value="{{ details.product.PRODUCT_NAME }}">
+                    <input type="hidden" name="selectedOptionsData" id="selectedOptionsData">
+                    <input type="hidden" name="totalPrice" id="totalPriceData">
+                    <div class="option-select">
+                        <label for="product-option"></label>
+                        <select name="option" id="product-option">
+                            <option value="" disabled selected>[선택] 옵션을 선택하세요.</option>
+                            {% for option in details.options %}
+                            <option value="{{ option.OPTION_NO }}" data-name="{{ option.OPTION_NAME }}"
+                                data-price="{{ option.OPTION_PRICE_DIFF }}" data-stock="{{ option.OPTION_STOCK }}">
+                                {{ option.OPTION_NAME }} (재고수량 : {{ option.OPTION_STOCK }} 개)
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="selected-options-container"></div>
+                    <p id="total-option">주문금액 <span id="total-price">0 원</span></p>
+                    <button type="button" onclick="addCart()" class="add-to-cart">장바구니</button>
+                    <button type="submit" class="buy-now">바로구매</button>
+                </form>
+                {% else %}
+                <p>옵션이 없습니다.</p>
+                {% endif %}
+            </section>
+        </div>
+    </section>
+</div>
+<div class="section-line"></div>
+<div class="product-sub-image">
+    <img src="{{ details.product.PPODUCT_SUB_IMG_URL }}" alt="{{ details.product.PRODUCT_NAME }}">
+</div>
+
+<script>
+    const basePrice = {{ details.product.BASE_PRICE }};
+    const rewardAmount = basePrice * 0.005;
+    const productImg = document.querySelector("input[name='productImg']").value;
+    const productName = document.querySelector("input[name='productName']").value;
+
+    document.getElementById('reward-amount').textContent = rewardAmount.toFixed(0);
+
+    const selectedOptions = new Map(); // 선택된 옵션들을 저장할 Map
+
+    // 옵션 선택 시 실행되는 함수
+    document.getElementById('product-option').addEventListener('change', function () {
+        const select = this;
+        const selectedOption = select.options[select.selectedIndex];
+
+        console.log("선택된 옵션:", selectedOption);  // 선택된 옵션 로그 출력
+
+        // 이미 선택된 옵션인지 확인
+        if (selectedOptions.has(selectedOption.value)) {
+            alert('이미 선택된 옵션입니다.');
+            select.selectedIndex = 0;
+            return;
+        }
+
+        const optionData = {
+            id: selectedOption.value,
+            name: selectedOption.getAttribute('data-name'),
+            priceDiff: parseInt(selectedOption.getAttribute('data-price'), 10),
+            stock: parseInt(selectedOption.getAttribute('data-stock'), 10),
+            quantity: 1
+        };
+
+        // console.log("옵션 데이터 추가:", optionData); // 옵션 데이터 로그 확인
+
+        addOptionToContainer(optionData);
+        selectedOptions.set(optionData.id, optionData);  // 옵션 저장
+
+        // console.log("현재 selectedOptions:", selectedOptions); // 선택된 옵션 전체 출력
+        // console.log("🔢 현재 selectedOptions size:", selectedOptions.size);
+        // console.log("productImg =" + productImg);
+        // console.log("productName = " + productName);
+
+        updateTotalPrice();
+        select.selectedIndex = 0; // 선택 초기화
+    });
+
+
+
+    // 옵션 컨테이너에 새로운 옵션 추가
+    function addOptionToContainer(optionData) {
+        const container = document.getElementById('selected-options-container');
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'selected-option-details';
+        optionDiv.dataset.optionId = optionData.id;
+
+        const totalOptionPrice = basePrice + optionData.priceDiff;
+
+        optionDiv.innerHTML = `
+        <div class="option-info">
+    <div class="option-header">
+        <div class="option-name">${optionData.name}</div>
+        <span class="option-delete">×</span>
+    </div>
+    <div class="option-details">
+        <div class="option-price">${totalOptionPrice.toLocaleString()}원</div>
+        <div class="count-btn">
+            <button type="button" class="decrease-btn">-</button>
+            <span class="quantity">1</span>
+            <button type="button" class="increase-btn">+</button>
+        </div>
+    </div>
+    <input type="hidden" name="options[]" value="${optionData.id}">
+    <input type="hidden" name="quantities[]" value="1">
+</div>
+
+        `;
+
+        container.appendChild(optionDiv);
+
+        // 수량 증가 버튼
+        optionDiv.querySelector('.increase-btn').addEventListener('click', function () {
+            const optionData = selectedOptions.get(optionDiv.dataset.optionId);
+            if (optionData.quantity < optionData.stock) {
+                optionData.quantity++;
+                optionDiv.querySelector('.quantity').textContent = optionData.quantity;
+                optionDiv.querySelector('input[name="quantities[]"]').value = optionData.quantity;
+                updateOptionPrice(optionDiv, optionData);
+                updateTotalPrice();
+            } else {
+                alert('재고가 부족합니다.');
+            }
+        });
+
+        // 수량 감소 버튼
+        optionDiv.querySelector('.decrease-btn').addEventListener('click', function () {
+            const optionData = selectedOptions.get(optionDiv.dataset.optionId);
+            if (optionData.quantity > 1) {
+                optionData.quantity--;
+                optionDiv.querySelector('.quantity').textContent = optionData.quantity;
+                optionDiv.querySelector('input[name="quantities[]"]').value = optionData.quantity;
+                updateOptionPrice(optionDiv, optionData);
+                updateTotalPrice();
+            }
+        });
+
+        // 삭제 버튼
+        optionDiv.querySelector('.option-delete').addEventListener('click', function () {
+            selectedOptions.delete(optionDiv.dataset.optionId);
+            optionDiv.remove();
+            updateTotalPrice();
+        });
+    }
+
+    // 개별 옵션의 가격 업데이트
+    function updateOptionPrice(optionDiv, optionData) {
+        const optionBasePrice = basePrice + optionData.priceDiff;
+        optionDiv.querySelector('.option-price').textContent = `${optionBasePrice.toLocaleString()}원`;
+    }
+    
+    // 총 가격 업데이트
+    function updateTotalPrice() {
+        let totalPrice = 0;
+        selectedOptions.forEach(option => {
+            totalPrice += (basePrice + option.priceDiff) * option.quantity;
+        });
+        document.getElementById('total-price').textContent = totalPrice.toLocaleString() + " 원";
+    }
+
+    function addCart() {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if (selectedOptions.size === 0) {
+            alert("옵션을 선택해주세요.");
+            return;
+        }
+
+        const selectedOptionsData = Array.from(selectedOptions.values()).map(option => ({
+            productImg: productImg,
+            productName: productName,
+            optionName: option.name,
+            quantity: option.quantity,
+            price: (basePrice + option.priceDiff)
+        }));
+
+        const totalPrice = selectedOptionsData.reduce((sum, option) => sum + option.optionPrice, 0);
+
+
+        // 장바구니에 아이템 추가 로직 수정
+        selectedOptionsData.forEach(option => {
+            const existingItemIndex = cart.findIndex(item =>
+                item.productName === productName &&
+                item.optionName === option.optionName
+            );
+
+            if (existingItemIndex !== -1) {
+                // 이미 존재하는 옵션이면 수량과 가격 업데이트
+                cart[existingItemIndex].quantity += option.quantity;
+                cart[existingItemIndex].price += option.price;
+            } else {
+                // 새로운 옵션이면 추가
+                cart.push(option);
+            }
+        });
+        // 장바구니에 저장
+        localStorage.setItem("cart", JSON.stringify(cart));
+        const moveToCart = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
+        if (moveToCart) {
+            window.location.href = "/store/cart"; // 장바구니 페이지로 이동
+        }
+
+        // 폼에 데이터를 추가
+        updateFormData(selectedOptionsData, totalPrice);
+    }
+
+    // 폼 데이터 업데이트 함수 개선
+    function updateFormData(selectedOptionsData, totalPrice) {
+        const selectedOptionsWithDetails = selectedOptionsData.map(option => ({
+            productImg: productImg,  // 전역 변수로 선언된 이미지 URL 사용
+            productName: productName,  // 전역 변수로 선언된 상품명 사용
+            optionName: option.name || option.optionName,
+            quantity: option.quantity,
+            optionPrice: (basePrice + option.priceDiff)
+        }));
+
+        document.getElementById('selectedOptionsData').value = JSON.stringify(selectedOptionsWithDetails);
+        document.getElementById('totalPriceData').value = totalPrice;
+    }
+
+    // 바로구매 시 폼 제출 이벤트 리스너 개선
+    document.getElementById('product-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (selectedOptions.size === 0) {
+            alert('상품 옵션을 선택해주세요.');
+            return;
+        }
+
+        // 선택된 옵션 데이터를 orderItems 형식으로 준비
+        const orderItems = Array.from(selectedOptions.values()).map(option => ({
+            productImg: productImg,  // 상품 이미지 추가
+            productName: productName,  // 상품명 추가
+            optionName: option.name,
+            quantity: option.quantity,
+            optionPrice: (basePrice + option.priceDiff)
+        }));
+
+        // 총 가격 계산
+        const totalPrice = orderItems.reduce((sum, option) => sum + option.optionPrice, 0);
+
+        // orderItems와 totalPrice를 hidden 필드에 설정
+        updateFormData(orderItems, totalPrice);
+
+        // 폼 제출
+        this.submit();
+    });
+
+
+</script>
+{% endblock %}
