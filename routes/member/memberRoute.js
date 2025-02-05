@@ -17,6 +17,8 @@ router.get('/login', (req, res)=>{
 	let signupResult = req.flash('signupResult');
 	// checkLogin 메세지
 	let loggedInMessage = req.flash('loggedInMessage');
+	// loginResult 메세지
+	let loginResult = req.flash('loginResult');
 	// 삭제결과
 	let { deleteResult } = req.query;
 
@@ -27,7 +29,7 @@ router.get('/login', (req, res)=>{
 	if (!req.session.user) {
 		// console.log("flashMessage_signupResult : " + signupResult);
 		
-		res.render('login.html', {signupResult:signupResult, loggedInMessage:loggedInMessage, deleteResult:deleteResult, api_url:api_url});  // 로그인 페이지 내용
+		res.render('login.html', {signupResult:signupResult, loggedInMessage:loggedInMessage, deleteResult:deleteResult, api_url:api_url, loginResult:loginResult});  // 로그인 페이지 내용
 	} else {
 			res.redirect('/member/mypage'); // 임시
 	}
@@ -39,32 +41,25 @@ router.post('/login', async (req, res)=>{
 	try {
 		// 아이디, 패스워드 검증 service
 		let result = await checkAccount(memberId, memberPw);
-
-		// console.log("resultMessage :" + resultMessage);
-		
-		let filePath = result.info.file_rename ? `/uploadFile/member/${result.info.file_rename}` : "/static/img/member/user-thumbnail.png";
-
 		
 		if(result.success){
+			let filePath = result.info.file_rename ? `/uploadFile/member/${result.info.file_rename}` : "/static/img/member/user-thumbnail.png";
+
 			req.session.user = {
 				id : memberId,
 				filePath:filePath,
 				fileRename:result.info.file_rename,
 				loggedIn : true
 			}
-			
 
-			res.send("로그인 성공");
+			res.send("로그인 성공"); // index 페이지로 이동하도록 바꿔야함
 
-		}else if(resultMessage === "존재하지 않는 계정"){
-			res.send("로그인 실패")
-		}else if(resultMessage === "존재하지 않는 아이디"){
-			res.send("존재하지 않는 아이디")
 		}else{
-			res.send("로그인 중 오류발생");
+			req.flash('loginResult', 'fail')
+			res.redirect('/member/login');
 		}
 	} catch (error) {
-		res.send("로그인 중 오류발생");
+		res.send("로그인 중 오류발생" + error);
 	}
 
 	

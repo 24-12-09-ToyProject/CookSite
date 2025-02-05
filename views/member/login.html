@@ -50,6 +50,7 @@
 	let deleteResult = "{{deleteResult}}";
 	let signupResult = "{{signupResult}}";
 	let loggedInMessage = "{{loggedInMessage}}";
+	let loginResult = "{{loginResult}}";
 
 	if(signupResult === 'success'){
 		Swal.fire({
@@ -79,6 +80,13 @@
 			text: '그동안 이용해주셔서 감사합니다.',
 			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 		});
+	}else if(loginResult === 'fail'){
+		Swal.fire({
+			icon: 'success',
+			title: "로그인에 실패하였습니다.",
+			text: "아이디 또는 비밀번호가 올바르지 않습니다. 다시 확인해주세요.",
+			confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
+		});
 	}
 
 	
@@ -104,13 +112,24 @@
 
 		// 서버 검증
 		signinForm.submit();
-
-
 	}
 
 	function signin(){
 		checkValidInput();
 	}
+
+
+	// 아이디 입력창 포커스
+	document.querySelector('#memberId').focus();
+	// 아이디, 비밀번호 입력창에서 enter 누를 시 로그인실행
+	document.querySelectorAll("#memberId, #memberPw").forEach(input => {
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("signin-btn").click();
+        }
+    });
+	});
 
 
 
