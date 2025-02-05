@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{classData.CLASS_TITLE}}</title>
+    <title>상세페이지</title>
     <link rel="stylesheet" href="../../static/css/cooking/detailClass.css">
     <link rel="stylesheet" href="../../static/css/reset.css">
     <link rel="stylesheet" href="../../static/css/layout.css">
@@ -53,13 +53,16 @@
                             <p class="class-info"><img src="../../static/img/cooking/free-icon-pin-8734811.png" alt="" class="class-img"><span id="class-address"></span></p>
                         </li>
                         <li>
-                            <p class="class-info"><img src="../../static/img/cooking/free-icon-group-8073854.png" alt="" class="class-img"><span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span>명</p>
+                            <p class="class-info"><img src="../../static/img/cooking/free-icon-group-8073854.png" alt="" class="class-img"><span id="class-minpeople"></span> ~ <span id="class-maxpeople"></span></p>
                         </li>
                         <li>
                             <p class="class-info"><img src="../../static/img/cooking/free-icon-levels-8610269.png" alt="" class="class-img"><span id="class-difficulty"></span></p>
                         </li>
                         <li>
                             <p class="class-info"><img src="../../static/img/cooking/free-icon-clock-3288819.png" alt="" class="class-img"><span id="class-playingtime"></span></p>
+                        </li>
+                        <li>
+                            <p class="class-info"><img src="../../static/img/cooking/history.png" alt="" class="class-img"><span class="class-start"></span>~<span class="class-end"></span></p>
                         </li>
                     </ul>
                 </div>
@@ -120,18 +123,24 @@
                         </table>
                     </div>
                 </div>
-                <div class="ghost"></div>
-                <div class="checkPeople">
-                        <p class="select-people">인원 선택</p>
-                        <div class="people-Calc">
-                            <button class="calc" id="minus" value="minus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-minus-561179.png" alt=""></button>
-                            <div class="showPersonCount">1</div>
-                            <button class="calc" id="plus" value="plus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-plus-4430049.png" alt=""></button>
+            
+                <div class="ghost">
+                    <div class="checkPeople">
+                        <div class="people-div">
+                            <p class="select-people">인원 선택</p>
+                            <div class="people-Calc">
+                                <button class="calc" id="minus" value="minus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-minus-561179.png" alt=""></button>
+                                <div class="showPersonCount">1</div>
+                                <button class="calc" id="plus" value="plus" onclick="PlusMinus(this)"><img src="../../static/img/cooking/free-icon-plus-4430049.png" alt=""></button>
+                            </div>
                         </div>
+                        <div class="price-div">
+                            <p class="class-info" id="classprice"><strong>가격:</strong><span id="class-price"></span>원</p>
+                        </div>   
                     </div>
-                    <p class="class-info" id="classprice"><strong>가격:</strong><span id="class-price"></span>원</p>
-                    <button class="apply-button">클래스 신청하기</button>
-                    <button class="cancel-button">취소하기</button>
+                    <div class="button-div">
+                        <button class="apply-button">클래스 신청하기</button>
+                    </div>
                 </div>
             </div>
         </div>

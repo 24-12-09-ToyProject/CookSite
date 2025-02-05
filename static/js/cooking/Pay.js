@@ -78,7 +78,6 @@ async function requestPay() {
 
                     if (payResult.success) {
                         console.log("✅ 서버 결제 요청 성공:", payResult);
-                        const reservationNo = 
                         alert("결제가 완료 되었습니다 \n예약 번호는 마이페이지에서 확인 가능합니다.");
                         // 결제 검증 요청
                         const validationResponse = await fetch(`/validation/${rsp.imp_uid}`, {
@@ -100,8 +99,8 @@ async function requestPay() {
 
                         if (validationResult.success) {
                             console.log("결제검증이 완료되었습니다!");
-
-                            // ✅ 결제 정보 저장 요청
+                            const selectedDateElement = document.getElementById("selected-date");
+                            const selectedDate = selectedDateElement ? selectedDateElement.innerText : null;                            // ✅ 결제 정보 저장 요청
                             const buyerInfo = {
                                 imp_uid: rsp.imp_uid,
                                 reservationNo: validationResult.data.reservationNo,
@@ -121,6 +120,7 @@ async function requestPay() {
                                 reservationDate: validationResult.data.reservationDate,
                                 MEMBER_ID: rsp.buyer_name,
                                 CLASS_TITLE: classMemberData.CLASS_TITLE,
+                                selectedDate,
                             };
                             console.log("✅ 최종 저장할 buyerInfo:", buyerInfo);
                             console.log("✅ 최종 저장할 reserveInfo:", reserveInfo);

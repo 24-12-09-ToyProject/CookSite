@@ -140,7 +140,7 @@ exports.savePaymentInfo = async (req, res) => {
 
     // ✅ SQL 쿼리 정의
     const paymentQuery = `INSERT INTO COOKINGPAYMENT VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const reservationQuery = `INSERT INTO COOKINGRESERVATION VALUES (?, ?, ?, ?, ?, ?)`;
+    const reservationQuery = `INSERT INTO COOKINGRESERVATION VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
     let connection;
 
@@ -173,6 +173,7 @@ exports.savePaymentInfo = async (req, res) => {
             safeValue(reserveInfo.reservationDate, new Date().toISOString().split("T")[0]), // 기본값: 오늘 날짜
             safeValue(reserveInfo.MEMBER_ID),
             safeValue(reserveInfo.CLASS_TITLE),
+            safeValue(reserveInfo.selectedDate),
         ]);
 
         // ✅ 커밋

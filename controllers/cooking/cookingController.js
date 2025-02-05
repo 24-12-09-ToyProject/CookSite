@@ -248,3 +248,14 @@ exports.selectClassInfo =  async (req,res) =>{
     }
 }
 
+exports.showAllClass = async (req,res) =>{
+    const query = `SELECT CLASS_NO , CLASS_THUMBNAIL_IMG , CLASS_TITLE, CLASS_CATEGORY ,CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM COOKING`;
+    try{
+        const [rows] = await pool.execute(query);
+        res.status(200).json(rows);
+    }
+    catch(error){
+        console.error("DB 조회 오류:", error);
+        res.status(500).json({ error: "데이터를 가져오는 중 오류가 발생했습니다." });
+    }
+}

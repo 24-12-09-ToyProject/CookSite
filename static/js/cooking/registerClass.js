@@ -55,9 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     // 이미지 경로가 절대 경로인지 확인 후 설정
                     const imageUrl = cls.CLASS_THUMBNAIL_IMG;
                         const thumbnail = `
+                        <div style="width: 300px; height: 320px;">
                         <div class="thumbnail" style="position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; background-color: #f9f9f9;">
                             <img src="${imageUrl}" alt="${cls.CLASS_TITLE}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                            <p style="position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; margin: 0; font-style:bold;">${cls.CLASS_TITLE}</p>
+                        </div>
+                        <p style="width: 100%; text-align: center; margin: 0; font-style:bold;">${cls.CLASS_TITLE}</p>
                         </div>
                             `;
                     

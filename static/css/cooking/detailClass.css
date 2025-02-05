@@ -1,16 +1,22 @@
+main{
+    width: 100%;
+}
 .container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 20px;
     gap: 30px;
+    margin-top:20px;
 }
 
 /* 왼쪽 패널: 이미지 */
 .left-panel {
     width: 60%;
 }
-
+.left-panel #class-thumbnail{
+    height: 400px;
+    object-fit: contain;
+}
 .main-thumbnail {
     width: 100%;
     border-radius: 8px;
@@ -55,7 +61,6 @@
     position: sticky;
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* 모든 요소를 오른쪽 정렬 */
     height: 400px;
     width: 35%;
     background-color: #fff;
@@ -63,6 +68,13 @@
     padding: 20px;
     justify-content: space-between;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.ghost{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 200px;
+    width:100%;
 }
 .class-title {
     font-size: 24px;
@@ -177,12 +189,19 @@
     margin-top: 10px;
 }
 .description-list{
+    height: 35px;
     margin:0;
     display: flex;
     padding:3px;
     list-style: none;
 }
-
+.description-list li {
+    background-color: white;
+}
+.description-list li span,.description-list li img{
+    position: relative;
+    top:4px;
+}
 .class-MultiTabs.active {
     font-weight: bold;
     color: black;
@@ -190,8 +209,11 @@
 
 .content-item {
     display: none; /* 기본적으로 숨김 */
+    margin-top:30px;
 }
-
+.content-item p{
+    margin-top:10px;
+}
 .content-item[hidden] {
     display: none; /* hidden 속성이 있으면 숨김 */
 }
@@ -291,18 +313,33 @@
     margin-left: 10px;
 }
 .checkPeople {
-    display: flex;
     position: relative;
-    top:130px;
-    left:1px;
-    text-align: right; 
     margin-bottom: 20px; 
     right: 20px; 
 }
-#classprice{
+.people-div,.price-div{
+    display: flex;
+    font-weight: bold;
+    justify-content: right;
     position: relative;
-    left:10px;
-    top:50px;
+    top:70px;
+}
+.price-div{
+    width:100%;
+    scale: 1.1;
+    font-size:20%;
+}
+.people-div p {
+    position: relative;
+    top:5px;
+}
+
+#classprice{
+    margin-top:10px;
+    justify-content: right;
+}
+#classprice strong{
+    margin-right:5px;
 }
 .checkPeople-firstDiv {
     text-align: right; 

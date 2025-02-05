@@ -48,7 +48,8 @@ router.get("/createClass",(req,res)=>
 {
     res.render("createClass.html")
 });
-
+// 클래스 메인 페이지
+router.post("/api/cooking/class", cookingController.showAllClass);
 // ✅ 클래스 상세 페이지 조회 라우터 추가
 router.get("/api/class/:classNo", cookingController.getClassDetail);  // ✅ API URL을 명확히 구분
 
@@ -75,90 +76,90 @@ router.post("/api/payments/cancel",payController.cancelPayment);
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));
 // 실제 데이터는 데이터베이스에서 가져오거나 동적으로 생성
-router.get("/api/cooking",(req,res)=>{
-    let query = ` `
-    const cardData = [
-        {
-            img: "../../static/img/cooking/화면 캡처 2025-01-12 135101.png",
-            title: "의류패턴제작과 수선",
-            category: "핸드메이드",
-            price: "260,000원",
-            location: "서울",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/화면 캡처 2025-01-11 174248-fotor-20250111175520.png",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        {
-            img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
-            title: "드라이플라워 디퓨저 무드등",
-            category: "플라워·가드닝",
-            price: "55,000원",
-            link : "#"
-        },
-        ];
-        res.json(cardData);
-})
+// router.get("/api/cooking",(req,res)=>{
+//     let query = ` `
+//     const cardData = [
+//         {
+//             img: "../../static/img/cooking/화면 캡처 2025-01-12 135101.png",
+//             title: "의류패턴제작과 수선",
+//             category: "핸드메이드",
+//             price: "260,000원",
+//             location: "서울",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/화면 캡처 2025-01-11 174248-fotor-20250111175520.png",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         {
+//             img: "../../static/img/cooking/Seul컴_에스파_Drama_카리나29.jpg",
+//             title: "드라이플라워 디퓨저 무드등",
+//             category: "플라워·가드닝",
+//             price: "55,000원",
+//             link : "#"
+//         },
+//         ];
+//         res.json(cardData);
+// })
 
 
 module.exports = router;

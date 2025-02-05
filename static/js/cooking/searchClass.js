@@ -481,6 +481,10 @@ async function fetchFilteredCards(filters = {}) {
     }
 }
 
+
+
+
+//검색 기록에 대한 결과 렌더링
 function renderCards(filteredCards) {
     const container = document.getElementById("card-container");
     const template = document.getElementById("card-template");
@@ -513,10 +517,86 @@ function renderCards(filteredCards) {
 // ✅ 전역함수 활성화
 window.renderCards = renderCards;
 
+
+
 // 등록버튼 div 활성화
 document.querySelector('.goRegisterClass').addEventListener('click', function () {
     const link = this.querySelector('a');
     if (link) {
       link.click(); // a 태그 실행
     }
+});
+
+async function fetchTotalClassCards() {
+    try {
+        const response = await fetch("/api/cooking/class", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}), // 빈 필터 데이터
+        });
+
+        if (!response.ok) {
+            throw new Error(`API 요청 실패 - 상태 코드: ${response.status}`);
+        }
+
+        allData = await response.json(); // 전체 데이터를 로드
+        console.log("전체 데이터 로드 완료:", allData);
+
+        if (allData.length === 0) {
+            document.getElementById("card-container").innerHTML = "<p>클래스 데이터가 없습니다.</p>";
+            document.getElementById("load-more").style.display = "none"; // "더보기" 버튼 숨김
+        }
+    } catch (error) {
+        console.error("API 호출 오류:", error);
+        document.getElementById("card-container").innerHTML = "<p>데이터를 불러오는 중 오류가 발생했습니다.</p>";
+        document.getElementById("load-more").style.display = "none"; // "더보기" 버튼 숨김
+    }
+}
+
+// 상태 변수
+let currentPage = 1; // 현재 페이지
+const itemsPerPage = 12; // 한 번에 표시할 카드 개수
+let allData = []; // 서버에서 가져온 전체 데이터
+
+// 초기 데이터 로드
+document.addEventListener("DOMContentLoaded", async () => {
+    await fetchTotalClassCards(); // 데이터를 가져옴
+    renderPageData(); // 첫 번째 페이지 데이터를 렌더링
+});
+function renderPageData() {
+    const container = document.getElementById("card-container");
+    const template = document.getElementById("card-template");
+
+    // 현재 페이지의 데이터 가져오기
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = currentPage * itemsPerPage;
+    const pageData = allData.slice(start, end);
+
+    // 새 카드 추가
+    pageData.forEach((data) => {
+        const card = template.content.cloneNode(true);
+        card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
+        card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
+        card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
+        card.querySelector(".class-instructor").textContent = data.CLASS_INSTRUCTOR_NICKNAME;
+
+        const cardLink = card.querySelector("a");
+        cardLink.href = `/class/${data.CLASS_NO}`;
+        cardLink.dataset.classNo = `${data.CLASS_NO}`;
+
+        container.appendChild(card);
+    });
+
+    // "더보기" 버튼 처리
+    if (end >= allData.length) {
+        document.getElementById("load-more").style.display = "none"; // 데이터가 더 이상 없으면 버튼 숨김
+    }
+}
+
+// "더보기" 버튼 클릭 이벤트
+document.getElementById("load-more").addEventListener("click", () => {
+    currentPage++; // 다음 페이지로 이동
+    renderPageData(); // 다음 페이지 데이터 렌더링
 });

@@ -43,7 +43,7 @@
                     <input type="text" placeholder="클래스 입력" id="class-input" value=""> <br>
                 </div>
                 <div class="goRegisterClass">
-                    <a href="/registerClass"><span>등록하러가기</span></a>
+                    <a href="/registerClass"><span>클래스 등록하기</span></a>
                 </div>
             </div>
             <div class="main-top">
@@ -148,6 +148,7 @@
                     <button value="검색하기" id="searchButton">검색</button>
                 </div>
             </div>
+            <hr class="mainSlash">
             
             <!-- 메인 바디 -->
             <div class="main-mid">
@@ -169,26 +170,26 @@
                 </div>
                 <div class="main-mid-cookinglist">
                     <div class="template-ghost">
-            <!-- 게시글 템플릿 -->
-                    <template id="card-template">
-                        <a href="">
-                            <div class="cookinglist-content">
-                                <div class="list-head">
-                                    <img src="" alt="클래스 이미지" class="class-img">
-                                </div>
-                                <div class="list-body">
-                                    <div class="class-content">
-                                        <p class="class-Tag"></p>
-                                        <p class="class-instructor"></p>
-                                        <p class="class-Name"></p>
+                        <!-- 게시글 템플릿 -->
+                        <template id="card-template">
+                            <a href="">
+                                <div class="cookinglist-content">
+                                    <div class="list-head">
+                                        <img src="" alt="클래스 이미지" class="class-img">
+                                    </div>
+                                    <div class="list-body">
+                                        <div class="class-content">
+                                            <p class="class-Tag"></p>
+                                            <p class="class-instructor"></p>
+                                            <p class="class-Name"></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>    
-                    </template>
+                            </a>    
+                        </template>
+                    </div>
                     <div id="card-container" class="card-container"></div>
                     <button id="load-more" class="load-more">더보기</button>
-                    </div>
                 </div>
             </div>
         </div>
