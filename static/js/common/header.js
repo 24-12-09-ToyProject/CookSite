@@ -1,18 +1,30 @@
 let myExpandVisible = false;
 
+// 로그인 페이지 이동
+const loggedOutDiv = document.querySelector('#logged-out-div');
+if(loggedOutDiv){
+    loggedOutDiv.addEventListener('click', ()=>{
+        location.href = '/member/login';
+    })
+}
+
+
 // 프로필 사진 클릭하면 메뉴 열고 닫기
-// 드롭다운 해보려고 로그인 버튼에 이벤트 달아본거니 프로필 사진 넣고 프사에 이벤트 걸어야됨!!
-document.querySelector("#header-login").addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    let expand = document.querySelector(".header-my-expand");
-    if(myExpandVisible) {
-        expand.style.display = 'none';
-    } else {
-        expand.style.display = 'block';
-    }
-    myExpandVisible = !myExpandVisible;
-});
+const profileDropdownContainer = document.querySelector("#profile-dropdown-container");
+if(profileDropdownContainer){
+    profileDropdownContainer.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let expand = document.querySelector(".header-my-expand");
+        if(myExpandVisible) {
+            expand.style.display = 'none';
+        } else {
+            expand.style.display = 'block';
+        }
+        myExpandVisible = !myExpandVisible;
+    });
+}
+
 
 // 페이지 내 다른 곳을 클릭하면 메뉴 닫기
 document.addEventListener("click", (e) => {

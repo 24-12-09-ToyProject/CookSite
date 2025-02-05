@@ -36,17 +36,29 @@ app.use(session({
         maxAge: 1000 * 60 * 60 // 1시간 이후 session 파괴
     }
 }));
-app.use(flash());
+app.use((req, res, next) => {
+    // console.log("현재 세션 데이터:", req.session);
+    res.locals.session = req.session;
+    next();
+});
 
+app.use(flash());
+// 정적 파일 제공 (브라우저에서 접근 가능하도록 설정 /uploadFile 경로로 실제 경로의 파일 추적 가능)
+app.use("/uploadFile", express.static(process.env.FILE_PATH));
 //라우터 불러오기 
 const cookingRouter = require('./routes/cooking/cookingRoute.js');
-const memberRouter = require('./routes/member/memberRoute.js');
 const recipeRouter = require('./routes/recipe/recipeRoute.js');
+const memberRouter = require('./routes/member/memberRoute.js');
+const naverRouter = require('./routes/member/naverRoute.js');
+const storeRouter = require('./routes/store/storeRoute.js');
 
 // 라우터 미들웨어 등록
 app.use('/cooking' , cookingRouter);
 app.use('/recipe' , recipeRouter);
+app.use('/store', storeRouter);
+// - member 미들웨어
 app.use('/member' , memberRouter);
+app.use('/naver', naverRouter);
 
 // view 모든 하위 폴더 지정
 function getAllSubfolders(directory) {

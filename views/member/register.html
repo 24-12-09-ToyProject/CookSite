@@ -11,125 +11,130 @@
 {% endblock %}
 
 {% block content %}
-<h2>가입을 시작합니다!</h2>
-	<form id="signUp-form" action="/member/signUp" method="post">
-		<div id="basic-info">
-			<div class="basic-info-header">
-				<div>기본정보</div>
-				<div class="essential"><span class="essential-mark">*</span> 필수</div>
-			</div>
-			<div class="small-container id-container">
-				<div class="container-head">아이디<span class="essential-mark"> *</span></div>
-				<div>
-					<input type="text" class="required" id="memberId" name="memberId" autocomplete="off" onkeyup="checkValid('id');">
-					<span id="check-duplicate-btn" class="disabled" data-valid="" onclick="checkDuplicate();">중복확인</span>
-					<div class="notice id-notice success-message hide">사용할 수 있는 아이디입니다</div>
-					<div class="notice id-notice failure-message-data hide">아이디를 입력해주세요</div>
-					<div class="notice id-notice failure-message-length hide">아이디는 6~12글자이어야 합니다</div>
-					<div class="notice id-notice failure-message-type hide">영어, 숫자를 포함하며 영어로 시작해야 합니다 (특수문자 X)</div>
-					<div class="notice id-notice faliure-message-duplicate hide">이미 사용중인 아이디입니다</div>
-				</div>
-			</div>
-			<div class="small-container pw-container">
-				<div class="container-head">비밀번호<span class="essential-mark"> *</span></div>
-				<div>
-					<input type="password" name="memberPw" class="required" id="memberPw" autocomplete="off" onkeyup="checkValid('pw');">
-					<div class="notice pw-notice success-message hide">사용할 수 있는 비밀번호입니다</div>
-					<div class="notice pw-notice failure-message-data hide">비밀번호를 입력해주세요</div>
-					<div class="notice pw-notice failure-message-length hide">비밀번호는 8글자 이상이어야 합니다</div>
-					<div class="notice pw-notice failure-message-type hide">최소 하나의 문자, 숫자 및 특수 문자를 포함해야 합니다</div>
-				</div>
-			</div>
-			<div class="small-container confirm-container">
-				<div class="container-head">비밀번호 확인<span class="essential-mark"> *</span></div>
-				<div>
-					<input type="password" class="required" id="confirmPw" onkeyup="checkPasswordRetype();">
-					<div class="notice confirm-notice failure-message-data hide">비밀번호를 확인해주세요</div>
-					<div class="notice confirm-notice failure-message-mismatch hide">비밀번호가 일치하지 않습니다</div>
-					<div class="notice confirm-notice success-message hide">비밀번호가 일치합니다</div>
-				</div>
-			</div>
-			<div class="small-container name-container">
-				<div class="container-head">이름<span class="essential-mark"> *</span></div>
-				<div>
-					<input type="text" class="required" name="memberName" autocomplete="off">
-				</div>
-			</div>
-			<div class="small-container address-container">
-				<div class="container-head">주소</div>
-				<div class="address-container-inputBox">
-					<input id="zonecode" type="text" placeholder="우편번호" name="zonecode" readonly><button type="button" id="address-search-btn" onclick="searchAddress();">주소검색</button><br>
-					<input id="default-address" type="text" placeholder="기본주소" name="defaultAddress" readonly><br>
-					<input id="detail-address" type="text" placeholder="나머지 주소(선택 입력 가능)" name="detailAddress">
-				</div>
-			</div>
-			<div class="small-container phone-container">
-				<div class="container-head">휴대전화<span class="essential-mark"> *</span></div>
-				<div class="phone-flexBox">
-					<input type="text" class="required" name="phone" value="010" readonly>
-					<div> - </div>
-					<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
-					<div> - </div>
-					<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
-				</div>
-			</div>
-			<div class="small-container email-container">
-				<div class="container-head">이메일<span class="essential-mark"> *</span></div>
-				<div>
-					<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()">@
-					<select name="emailDomain" id="email-domain">
-						<option value="@naver.com">naver.com</option>
-						<!-- <option value="@gmail.com">gmail.com</option> -->
-					</select>
-					<span id="send-code-btn" class="disabled" onclick="sendEmailCode();">인증요청</span>
-					<div style="position: relative;">
-						<div id="timer" style="position: absolute; top: 17px; right: 55px; user-select: none;"></div>
-						<input type="text" id="email-code" name="emailCode" disabled="false">
-						<span id="email-verify-btn" class="disabled" data-emailVerified="false" onclick="verifyEmailCode();">인증</span>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div id="add-info">
-			<div class="add-info-header">
-				<div>추가정보</div>
-			</div>
-			<div class="small-container gender-container">
-				<div class="container-head">성별</div>
-				<input id="male-radio" type="radio" name="gender" value="male">
-				<label for="male-radio">
-					남자
-				</label>
-				<input id="female-radio" type="radio" name="gender" value="female">
-				<label for="female-radio">
-					여자
-				</label>
-			</div>
-			<div class="small-container year-container">
-				<div class="container-head">생년월일</div>
-				<div>
-					<div class="select-box">
-						<input id="solar-radio" type="radio" name="calenderType" value="solar">
-						<label for="solar-radio">
-							양력
-						</label>
-						<input id="lunar-radio" type="radio" name="calenderType" value="lunar">
-						<label for="lunar-radio">
-							음력
-						</label>
-					</div>
-					<div class="date-input-box">
-						<input name="dateOfBirth" type="number" id="year" min="1900" autocomplete="off">년
-						<input name="dateOfBirth" type="number" id="month" min="1" max="12" autocomplete="off">월
-						<input name="dateOfBirth" type="number" id="day" min="1" max="31" autocomplete="off">일
-					</div>
-				</div>
+<div id="register-container">
 
+	<h2 id="page-subject">회원가입</h2>
+		<form id="signUp-form" action="/member/signUp" method="post">
+			<div id="basic-info">
+				<div class="basic-info-header">
+					<div>기본정보</div>
+					<div class="essential"><span class="essential-mark">*</span> 필수</div>
+				</div>
+				<div class="small-container id-container">
+					<div class="container-head">아이디<span class="essential-mark"> *</span></div>
+					<div>
+						<input type="text" class="required" id="memberId" name="memberId" autocomplete="off" onkeyup="checkValid('id');">
+						<span id="check-duplicate-btn" class="disabled" data-valid="" onclick="checkDuplicate();">중복확인</span>
+						<div class="notice id-notice success-message hide">사용할 수 있는 아이디입니다</div>
+						<div class="notice id-notice failure-message-data hide">아이디를 입력해주세요</div>
+						<div class="notice id-notice failure-message-length hide">아이디는 6~12글자이어야 합니다</div>
+						<div class="notice id-notice failure-message-type hide">영어, 숫자를 포함하며 영어로 시작해야 합니다 (특수문자 X)</div>
+						<div class="notice id-notice faliure-message-duplicate hide">이미 사용중인 아이디입니다</div>
+					</div>
+				</div>
+				<div class="small-container pw-container">
+					<div class="container-head">비밀번호<span class="essential-mark"> *</span></div>
+					<div>
+						<input type="password" name="memberPw" class="required" id="memberPw" autocomplete="off" onkeyup="checkValid('pw');">
+						<div class="notice pw-notice success-message hide">사용할 수 있는 비밀번호입니다</div>
+						<div class="notice pw-notice failure-message-data hide">비밀번호를 입력해주세요</div>
+						<div class="notice pw-notice failure-message-length hide">비밀번호는 8글자 이상이어야 합니다</div>
+						<div class="notice pw-notice failure-message-type hide">최소 하나의 문자, 숫자 및 특수 문자를 포함해야 합니다</div>
+					</div>
+				</div>
+				<div class="small-container confirm-container">
+					<div class="container-head">비밀번호 확인<span class="essential-mark"> *</span></div>
+					<div>
+						<input type="password" class="required" id="confirmPw" onkeyup="checkPasswordRetype();">
+						<div class="notice confirm-notice failure-message-data hide">비밀번호를 확인해주세요</div>
+						<div class="notice confirm-notice failure-message-mismatch hide">비밀번호가 일치하지 않습니다</div>
+						<div class="notice confirm-notice success-message hide">비밀번호가 일치합니다</div>
+					</div>
+				</div>
+				<div class="small-container name-container">
+					<div class="container-head">이름<span class="essential-mark"> *</span></div>
+					<div>
+						<input type="text" class="required" name="memberName" autocomplete="off">
+					</div>
+				</div>
+				<div class="small-container address-container">
+					<div class="container-head">주소</div>
+					<div class="address-container-inputBox">
+						<input id="zonecode" type="text" placeholder="우편번호" name="zonecode" readonly><button type="button" id="address-search-btn" onclick="searchAddress();">주소검색</button><br>
+						<input id="default-address" type="text" placeholder="기본주소" name="defaultAddress" readonly><br>
+						<input id="detail-address" type="text" placeholder="나머지 주소(선택 입력 가능)" name="detailAddress">
+					</div>
+				</div>
+				<div class="small-container phone-container">
+					<div class="container-head">휴대전화<span class="essential-mark"> *</span></div>
+					<div class="phone-flexBox">
+						<input type="text" class="required" name="phone" value="010" readonly>
+						<div> - </div>
+						<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
+						<div> - </div>
+						<input type="number" class="required" name="phone" min="1000" max="9999" autocomplete="off">
+					</div>
+				</div>
+				<div class="small-container email-container">
+					<div class="container-head">이메일<span class="essential-mark"> *</span></div>
+					<div>
+						<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()">@
+						<select name="emailDomain" id="email-domain">
+							<option value="@naver.com">naver.com</option>
+							<!-- <option value="@gmail.com">gmail.com</option> -->
+						</select>
+						<span id="send-code-btn" class="disabled" onclick="sendEmailCode();">인증요청</span>
+						<div style="position: relative;">
+							<div id="timer"></div>
+							<input type="text" id="email-code" name="emailCode" disabled="false">
+							<span id="email-verify-btn" class="disabled" data-emailVerified="false" onclick="verifyEmailCode();">인증</span>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-		<button id="signUp-btn" type="button" onclick="finalSignUp();">가입하기</button>
-	</form>
+			
+			<div id="add-info">
+				<div class="add-info-header">
+					<div>추가정보</div>
+				</div>
+				<div class="small-container gender-container">
+					<div class="container-head">성별</div>
+					<input id="male-radio" type="radio" name="gender" value="male">
+					<label for="male-radio">
+						남자
+					</label>
+					<input id="female-radio" type="radio" name="gender" value="female">
+					<label for="female-radio">
+						여자
+					</label>
+				</div>
+				<div class="small-container year-container">
+					<div class="container-head">생년월일</div>
+					<div>
+						<div class="select-box">
+							<input id="solar-radio" type="radio" name="calenderType" value="solar">
+							<label for="solar-radio">
+								양력
+							</label>
+							<input id="lunar-radio" type="radio" name="calenderType" value="lunar">
+							<label for="lunar-radio">
+								음력
+							</label>
+						</div>
+						<div class="date-input-box">
+							<input name="dateOfBirth" type="number" id="year" min="1900" autocomplete="off">년
+							<input name="dateOfBirth" type="number" id="month" min="1" max="12" autocomplete="off">월
+							<input name="dateOfBirth" type="number" id="day" min="1" max="31" autocomplete="off">일
+						</div>
+					</div>
+	
+				</div>
+			</div>
+			<div style="width: 550px;margin: 0 auto;">
+				<button id="signUp-btn" type="button" onclick="finalSignUp();">가입하기</button>
+			</div>
+		</form>
+</div>
 
 
 	<script>
@@ -258,6 +263,13 @@
 		function checkPasswordRetype(){
 			let elInputPasswordRetype = document.querySelector('#confirmPw').value;
 			let valMemberPw = document.querySelector('#memberPw').value;
+			
+			if(elInputPasswordRetype === ''){
+				elEmptyMessage.classList.remove('hide');
+				elMismatchMessage.classList.add('hide');
+				elMatchSuccessMessage.classList.add('hide');
+				return;
+			}
 
 			if(!elInputPasswordRetype === ''){
 				elEmptyMessage.classList.remove('hide');
@@ -307,26 +319,30 @@
 			if(noDataCount > 0){
 				Swal.fire({
 						icon: 'warning',
-						title: 'Alert가 실행되었습니다.',
-						text: '필수 입력란을 채워주세요.',
+						title: '필수 입력란이 비어있어요!',
+						text: '모든 필수 항목을 입력해주세요.',
+						confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 					});
 			}else if(count > 0){
 				Swal.fire({
 						icon: 'warning',
-						title: 'Alert가 실행되었습니다.',
-						text: '아이디 / 비밀번호를 확인해주세요',
+						title: '아이디 / 비밀번호를 확인해주세요!',
+						text: '입력하신 정보를 다시 확인해주세요.',
+						confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 					});
 			}else if(isValid === 'false'){
 				Swal.fire({
 						icon: 'warning',
-						title: 'Alert가 실행되었습니다.',
-						text: '아이디 중복 확인을 해주세요',
+						title: '아이디 중복 확인이 필요합니다.',
+						text: '아이디를 확인 후 다시 시도해주세요.',
+						confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 					});
 			}else if(isEmailVerified === 'false'){
 				Swal.fire({
 						icon: 'warning',
-						title: 'Alert가 실행되었습니다.',
-						text: '이메일 인증이 필요합니다',
+						title: '이메일 인증이 완료되지 않았어요.',
+						text: '이메일 인증을 먼저 해주세요.',
+						confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 					});
 			}else{
 				
@@ -334,14 +350,14 @@
 					// html 기본 유효성검사 통과 시 submit
 					if(elForm.checkValidity()){
 						Swal.fire({
-							title: '정말로 그렇게 하시겠습니까?',
-							text: '다시 되돌릴 수 없습니다. 신중하세요.',
-							icon: 'warning',
+							title: '회원가입을 진행하시겠습니까?',
+							text: '입력한 정보가 최종 확인됩니다. 다시 확인하시고 진행해주세요.',
+							icon: 'question',
 							
 							showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-							confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
-							cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
-							confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+							confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
+							cancelButtonColor: '#555', // cancel 버튼 색깔 지정
+							confirmButtonText: '가입하기', // confirm 버튼 텍스트 지정
 							cancelButtonText: '취소', // cancel 버튼 텍스트 지정
 							
 							reverseButtons: true, // 버튼 순서 거꾸로
@@ -349,24 +365,40 @@
 						}).then(result => {
 							// 만약 Promise리턴을 받으면,
 							if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+
+
+								let timerInterval;
 								Swal.fire({
-										title: '승인이 완료되었습니다.',
-										text: '회원가입 진행중',
-										icon: 'success',
-										confirmButtonText: '확인'
+									title: "가입이 진행됩니다!",
+									html: "잠시만 기다려주세요. <b></b> ms",
+									timer: 700,
+									timerProgressBar: true,
+									didOpen: () => {
+										Swal.showLoading();
+										const timer = Swal.getPopup().querySelector("b");
+										timerInterval = setInterval(() => {
+											timer.textContent = `${Swal.getTimerLeft()}`;
+										}, 100);
+									},
+									willClose: () => {
+										clearInterval(timerInterval);
+									}
 								}).then((result) => {
-										// 확인 버튼 클릭 후 동작
-										if (result.isConfirmed) {
-											elForm.submit(); // 폼 제출
-										}
-    });
+									/* Read more about handling dismissals below */
+									if (result.dismiss === Swal.DismissReason.timer) {
+										console.log("I was closed by the timer");
+										elForm.submit(); // 폼 제출
+									}
+								});
+
 							}
 						});
 					}else{
 						Swal.fire({
 							icon: 'warning',
-							title: 'Alert가 실행되었습니다.',
-							text: '생년월일, 휴대전화 또는 이메일을 확인해주세요',
+							title: '입력 정보를 확인해주세요!',
+							text: '생년월일, 휴대전화 또는 이메일이 올바르지 않습니다.',
+							confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 						});
 
 						const invalidElements = elForm.querySelectorAll(':invalid');
@@ -428,7 +460,6 @@
 			}
 		}
 		
-.0000
 		// 버튼 비활성화
 		function deactivateButton(btnName){
 			if(btnName === 'checkDuplicate'){
@@ -476,8 +507,9 @@
 				if (result.success) {
 					Swal.fire({
 							icon: 'success',
-							title: 'Alert가 실행되었습니다.',
-							text: result.message,
+							title: '사용 가능한 아이디입니다!',
+							text: '해당 아이디를 사용할 수 있습니다.',
+							confirmButtonColor: '#800020', // confrim 버튼 색깔 지정
 					});
 					// 중복확인 - data-valid : true 로 변경
 					duplicateCheckBtn.setAttribute('data-valid', 'true');
@@ -485,8 +517,9 @@
 				} else {
 					Swal.fire({
 							icon: 'warning',
-							title: 'Alert가 실행되었습니다.',
-							text: result.message,
+							title: '아이디 중복!',
+							text: '이미 사용 중인 아이디입니다. 다른 아이디를 입력해주세요.',
+							confirmButtonColor: '#555', // confrim 버튼 색깔 지정
 					});
 					idSuccessMessage.classList.add('hide');
 					idFailureMessageDuplicate.classList.remove('hide');
@@ -513,157 +546,11 @@
 		}
 
 
-		const email = document.querySelector('#email');
-		const emailDomain = document.querySelector('#email-domain');
-
-		// 이메일 코드 전송
-		async	function sendEmailCode(){
-			const response = await fetch('/member/api/send-email', {
-				method: 'POST',
-					headers: {
-							'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ email:email.value, emailDomain:emailDomain.value }),
-			});
-
-			const data = await response.json();
-
-			console.log("data : "+data);
-
-			if(data.success){
-				console.log("성공");
-				
-				const boolean = alert('이메일로 코드가 전송되었습니다');
-				const elMailCode = document.querySelector('#email-code');
-				startTimer(); // 1분 타이머 시작
-				// 제한시간 1분 스타트
-				window.setTimeout(()=>{
-					deactivateButton('verifyEmail'); // 이메일 인증 버튼 비활성화
-					elMailCode.disabled = true;			// 이메일 인증코드 입력창 비활성화
-				}, 1000 * 60) // 60초
-
-				activateButton('verifyEmail');
-				elMailCode.disabled = false;
-
-			}else{
-				console.log("실패");
-				
-			}
-		
-			
-			// 조건따라 인증버튼 활성화
-			
-			// if(boolean){
-			// activateButton('verifyEmail');
-			// elMailCode.disabled = false;
-			// }
-		}
-
-
-		const elEmailCode = document.querySelector('#email-code');
-		const elEmailCodeBtn = document.querySelector('#email-verify-btn');
-
-		// 이메일 코드 인증 
-		async	function verifyEmailCode(){
-			const emailAddress = `${email.value}${emailDomain.value}`;
-			const response = await fetch('/member/api/verify-emailCode', {
-				method: 'POST',
-					headers: {
-							'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ emailCode:elEmailCode.value, email:emailAddress }),
-			});
-
-			const result = await response.json();
-
-			console.log("result : " + result);
-
-			if(result.success){
-				Swal.fire({
-							icon: 'success',
-							title: 'Alert가 실행되었습니다.',
-							text: '인증 성공하였습니다',
-				});
-				elEmailCodeBtn.setAttribute('data-emailVerified', 'true');
-				clearInterval(timer);
-				document.querySelector("#timer").style.display='none';
-				deactivateButton('verifyEmail'); // 이메일 인증 버튼 비활성화
-				elEmailCode.disabled = true;			// 이메일 인증코드 입력창 비활성화
-				
-			}else{
-				Swal.fire({
-							icon: 'warning',
-							title: 'Alert가 실행되었습니다.',
-							text: '다시 입력해주세요',
-				});
-				elEmailCodeBtn.setAttribute('data-emailVerifed', 'false');
-			}
-
-
-		}
-
-		
-
 	</script>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-	const searchAddress = () => {
-		cancelAddress();
-		let width = 400;
-		let height = 500;
-		new daum.Postcode({
-			width: width,
-			height: height,
-			oncomplete: function(data) {
-					document.querySelector('#zonecode').value = data.zonecode;
-					document.querySelector('#default-address').value = data.address;
-			}
-	}).open({
-		left: (window.screen.width / 2) - (width / 2),
-		top: (window.screen.height / 2) - (height / 2)
-});
-	}
-
-	const cancelAddress = () => {
-		document.querySelector('#zonecode').value = "";
-		document.querySelector('#default-address').value = "";
-	}
-
-
-
-	let timer; // 타이머 변수
-	
-
-	function startTimer() {
-		let timeLeft = 60; // 1분 카운트
-		let time = `01:00`;
-		// 타이머가 이미 실행 중이라면 종료
-		if (timer) {
-			clearInterval(timer);
-		}
-		document.querySelector("#timer").textContent = time;
-
-		// 타이머 실행
-		timer = setInterval(function() {
-			timeLeft--; // 남은 시간 감소
-			// 남은 시간이 0초가 되면 타이머 종료
-			if (timeLeft <= 0) {
-				clearInterval(timer);
-				time = `00:00`;
-				document.querySelector("#timer").textContent = time;
-			} else {
-				// 타이머 업데이트
-				if(timeLeft < 10){
-					time = `00:0${timeLeft}`;
-				}else{
-					time = `00:${timeLeft}`;
-				}
-				document.querySelector("#timer").textContent = time;
-			}
-		}, 1000); // 1초마다 실행
-  }
-	
-</script>
+<script src="/static/js/member/timer.js"></script>
+<script src="/static/js/member/verifyEmail.js"></script>
+<script src="/static/js/member/daumMap.js"></script>
 {% endblock %}

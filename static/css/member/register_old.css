@@ -2,18 +2,13 @@
 	box-sizing: border-box;
 }
 input{
-	/* outline: none; */
 	padding-left: 10px;
-	transition: all 300ms;
 }
-#basic-info input:hover{
-	border: 1px solid black;
-}
-
-
 
 #register-container{
 	width: 1100px;
+	background-color: aquamarine;
+	/* text-align: center; */
 	margin: 30px 0;
 }
 
@@ -24,11 +19,11 @@ input{
 }
 
 #basic-info, #add-info{
-	width: 550px;
+	width: 700px;
 	border-radius: 10px;
 	border: 2px solid #e9e9e9;
 	color: #63666e;
-	font-size: 15px;
+	font-size: 13px;
 	overflow: hidden;
 	margin: 0 auto;
 	margin-top: 10px;
@@ -38,7 +33,7 @@ input{
 	padding: 15px 15px;
 	background-color: #f1f1f1;
 	border-radius: 10px 10px 0 0;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
 	color: black;
 	display: flex;
@@ -49,13 +44,13 @@ input{
 	padding: 15px 15px;
 	background-color: #f1f1f1;
 	border-radius: 10px 10px 0 0;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
 	color: black;
 }
 
 .essential{
-	font-size: 13px;
+	font-size: 11px;
 	font-weight: normal;
 }
 .essential-mark{
@@ -64,10 +59,10 @@ input{
 
 #basic-info input{
 	border: 1px solid #e9e9e9;
-	width: 360px;
+	width: 300px;
 	height: 40px;
 	border-radius: 5px;
-	font-size: 14px;
+	font-size: 11px;
 }
 
 .small-container{
@@ -77,7 +72,7 @@ input{
 }
 
 .container-head{
-	width: 150px;
+	width: 110px;
 	padding-top: 10px;
 	padding-left: 12px;
 	margin-right: 5px;
@@ -99,7 +94,7 @@ input{
 }
 
 .notice{
-	font-size: 13px;
+	font-size: 11px;
 	color: red;
 	padding-top: 5px;
 }
@@ -131,7 +126,7 @@ input{
 	line-height: 40px;
 	cursor: pointer;
 	margin-left: 10px;
-	font-size: 13px;
+	font-size: 11px;
 }
 
 
@@ -141,21 +136,16 @@ input{
 
 
 #year{
-	width: 70px;
+	width: 50px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid #e9e9e9;
-	margin-right: 5px;
 }
 #month, #day{
-	width: 60px;
+	width: 40px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid #e9e9e9;
-	margin-right: 5px;
-}
-#year:hover, #month:hover, #day:hover{
-	border: 1px solid black;
 }
 
 input[type="radio"] {
@@ -175,6 +165,7 @@ input[type="radio"]:checked {
 }
 
 label[for="male-radio"], label[for="female-radio"]{
+	padding-top: 3px;
 	padding-left: 4px;
 	padding-right: 6px;
 	cursor: pointer;
@@ -185,9 +176,6 @@ label[for="male-radio"], label[for="female-radio"]{
 	align-items: center;
 	margin: 5px 0;
 	margin-bottom: 10px;
-}
-.select-box input {
-	margin: 0 10px;
 }
 
 label[for="lunar-radio"], label[for="solar-radio"]{
@@ -213,20 +201,16 @@ label[for="lunar-radio"], label[for="solar-radio"]{
 	padding-top: 5px;
 }
 
-.gender-container input{
-	margin: 0 10px;
-}
-
 
 #signUp-btn{
-	width: 550px;
+	width: 430px;
 	height: 48px;
 	border: none;
 	border-radius: 5px;
 	color: white;
-	background-color: #800020;
+	background-color: tomato;
 	cursor: pointer;
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 500;
 	margin-top: 30px;
 	padding: 0;
@@ -253,52 +237,48 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 
 #basic-info .phone-flexBox input{
 	width: 80px;
-	font-size: 15px;
+	font-size: 13px;
 	color: #353535;
 }
 
 .phone-flexBox div{
-	font-size: 22px;
+	font-size: 20px;
 	font-weight: 1000;
 	margin: 0 10px;
 }
 
 #basic-info #memberId{
-	width: 300px;
+	width: 240px;
 }
 
 #check-duplicate-btn, #send-code-btn, #email-verify-btn{
 	display: inline-block;
 	border-radius: 5px;
-	/* background-color: rgb(144, 144, 144); */
-	background-color: #a33e57;
+	background-color: rgb(144, 144, 144);
 	opacity: 0.5;
 	padding: 10px 5px;
-	font-size: 13px;
+	font-size: 11px;
 	font-weight: 1000;
 	color: white;
 	pointer-events: none;
 	user-select: none;
-	margin-left: 20px;
 }
 
 
 #check-duplicate-btn:not(.disabled), #email-verify-btn:not(.disabled), #send-code-btn:not(.disabled) {
-	/* background-color: rgb(120, 120, 120); */
-	background-color: 	#a33e57;
+	background-color: rgb(120, 120, 120);
 	opacity: 1;
 	cursor: pointer; /* 활성화 상태에서 클릭 가능 */
 	pointer-events: auto; /* 클릭 이벤트 허용 */
 }
 
 #check-duplicate-btn:hover, #send-code-btn:hover, #email-verify-btn:hover{
-	background-color: #800020;
-	color: #dcbe5d;
+	background-color: rgb(31, 31, 31);
 	opacity: 1;
 }
 
 #basic-info #email{
-	width: 175px;
+	width: 135px;
 	margin-right: 5px;
 }
 
@@ -308,7 +288,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 	border-radius: 5px;
 	outline: none;
 	height: 40px;
-	padding: 0 10px;
 }
 
 select option{
@@ -321,18 +300,10 @@ select option{
 
 #basic-info #email-code{
 	margin-top: 8px;
-	margin-left: 160px;
+	margin-left: 100px;
 	width: 155px;
 }
 
 #timer{
 	color: tomato;
-	position: absolute; 
-	top: 17px; 
-	right: 60px; 
-	user-select: none;
-}
-
-#default-address, #zonecode{
-	cursor: not-allowed;
 }
