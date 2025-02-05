@@ -68,7 +68,7 @@
     #recipe-list li:hover {
         transform: translateY(-5px);
     }
-        #recipe-list li img {
+        #recipe-list li a img {
             width: 100%;
             height: 255px;
             object-fit: cover;
@@ -85,8 +85,23 @@
         text-overflow: ellipsis;
         word-wrap: break-word;
 }
-    #recipe-list p {
+    .recipe-title {
         margin: 5px 10px;
+        height: 42px;
+    }
+    .writer-info {
+        display: flex;
+        text-align: center;
+        padding-left: 7px;
+    }
+    .member-id {
+        padding-top: 7px;
+        padding-left: 8px;
+    }
+    .profile-img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
     }
 
 /* 더보기 버튼 */

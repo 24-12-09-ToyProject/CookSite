@@ -29,12 +29,23 @@ async function getRecipeList(req, res) {
             default: kCategory = null;
         }
 
-        let query = 'SELECT RECIPE_NO, MEMBER_ID, RECIPE_TITLE, RECIPE_THUMBNAIL FROM RECIPE';
+        let query = `
+            SELECT 
+                r.RECIPE_NO,
+                r.MEMBER_ID, 
+                r.RECIPE_TITLE, 
+                r.RECIPE_THUMBNAIL, 
+                p.FILE_RENAME
+            FROM 
+                RECIPE r
+            LEFT JOIN 
+                PROFILE_IMGS p ON r.MEMBER_ID = p.MEMBER_ID
+        `;
         let countQuery = 'SELECT COUNT(*) AS totalCount FROM RECIPE';
         const queryParams = [];
 
         if(memberId) {
-            query += ' WHERE MEMBER_ID = ?';
+            query += ' WHERE r.MEMBER_ID = ?';
             countQuery += ' WHERE MEMBER_ID = ?';
             queryParams.push(memberId);
         }
@@ -52,7 +63,7 @@ async function getRecipeList(req, res) {
         const [countRows] = await connection.query(countQuery, memberId ? [memberId, ...(kCategory ? [kCategory] : [])] : kCategory ? [kCategory] : []);
         connection.release();
 
-        const recipes = rows.map(row => new RecipeDTO(row));
+        const recipes = rows.map(row => { return new RecipeDTO(row); });
         const totalCount = countRows[0].totalCount;
 
         // ajax 요청이면 json 객체 반환, 아닐 경우 페이지 렌더링
