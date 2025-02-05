@@ -50,10 +50,13 @@ const cookingRouter = require('./routes/cooking/cookingRoute.js');
 const recipeRouter = require('./routes/recipe/recipeRoute.js');
 const memberRouter = require('./routes/member/memberRoute.js');
 const naverRouter = require('./routes/member/naverRoute.js');
+const storeRouter = require('./routes/store/storeRoute.js');
 
 // 라우터 미들웨어 등록
 app.use('/cooking' , cookingRouter);
 app.use('/recipe' , recipeRouter);
+app.use('/store', storeRouter);
+// - member 미들웨어
 app.use('/member' , memberRouter);
 app.use('/naver', naverRouter);
 

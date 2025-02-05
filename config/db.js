@@ -13,7 +13,12 @@ const pool = mysql.createPool({
     password : 'khadmin1023!!',
     database : 'cooksite_temp',
     debug : false,
+<<<<<<< HEAD
     port: '3306' // 포트번호 반드시 업데이트 후 사용!! 
+=======
+    port: '15920' // 포트번호 반드시 업데이트 후 사용!! 
+
+>>>>>>> main
 
     // db정보들은 공유되면 안되기 떄문에 파일을 따로만들어 관리
     // 소스코드와 중요한 정보를 분리시킬 수 있음.
