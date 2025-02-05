@@ -25,57 +25,66 @@
 </div>
 
 <script>
-    // 장바구니 아이템 표시
+    // 장바구니 아이템 표시 함수
     function displayCartItems() {
         const cartContainer = document.getElementById('cart-items');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log(cart);
 
         if (cart.length === 0) {
             cartContainer.innerHTML = '<p class="empty-cart">장바구니가 비어있습니다.</p>';
-            updateTotalPrice();
+            updateTotalPrice(); // 장바구니가 비어있을 때도 총 가격을 0원으로 업데이트
             return;
         }
 
         let cartHTML = `
-        <div class="cart-list">
-            <div class="cart-header">
-                <input type="checkbox" id="select-all" onchange="toggleAllItems()" checked>
-                <span>전체선택</span>
-            </div>
+    <div class="cart-list">
+        <div class="cart-header">
+            <input type="checkbox" id="select-all" onchange="toggleAllItems()" checked>
+            <span>전체선택</span>
+        </div>
     `;
 
         cart.forEach((item, index) => {
+            // 상품별 총 가격 (옵션 가격 * 수량)
+            const totalItemPrice = item.price * item.quantity;
+
             cartHTML += `
-            <div class="cart-item" data-index="${index}">
-                <div class="item-checkbox">
-                    <input type="checkbox" class="item-select" checked onchange="updateTotalPrice()">
-                </div>
-                <div class="item-image">
-                    <img src="${item.productImg}" alt="${item.productName}">
-                </div>
-                <div class="item-details">
-                    <div class="item-name">${item.productName}</div>
-                    <div class="item-option">옵션: ${item.optionName}</div>
-                    <div class="item-price-qty">
-                        <div class="quantity-controls">
-                            <button onclick="updateQuantity(${index}, -1)">-</button>
-                            <span class="quantity">${item.quantity}</span>
-                            <button onclick="updateQuantity(${index}, 1)">+</button>
-                        </div>
-                        <div class="item-price">${item.price.toLocaleString()}원</div>
-                    </div>
-                </div>
-                <button class="remove-item" onclick="removeItem(${index})">×</button>
+        <div class="cart-item" data-index="${index}">
+            <div class="item-checkbox">
+                <input type="checkbox" class="item-select" checked onchange="updateTotalPrice()">
             </div>
+            <div class="item-image">
+                <img src="${item.productImg}" alt="${item.productName}">
+            </div>
+            <div class="item-details">
+                <div class="item-name">${item.productName}</div>
+                <div class="item-option">옵션: ${item.optionName}</div>
+                <div class="item-price-qty">
+                    <div class="quantity-controls">
+                        <button onclick="updateQuantity(${index}, -1)">-</button>
+                        <span class="quantity">${item.quantity}</span>
+                        <button onclick="updateQuantity(${index}, 1)">+</button>
+                    </div>
+                    <div class="item-price">${totalItemPrice}원</div>
+                </div>
+            </div>
+            <button class="remove-item" onclick="removeItem(${index})">×</button>
+        </div>
         `;
         });
 
         cartHTML += '</div>';
         cartContainer.innerHTML = cartHTML;
+
+        // 가격 업데이트
         updateTotalPrice();
     }
-
-    // 수량 업데이트
+    // 페이지 로드 시 장바구니 표시
+    window.onload = () => {
+        displayCartItems();
+    };
+    // 수량 업데이트 함수
     function updateQuantity(index, change) {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const item = cart[index];
@@ -106,11 +115,10 @@
         updateTotalPrice();
     }
 
-    // 총 가격 업데이트
+    // 총 가격 및 배송비 계산
     function updateTotalPrice() {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         let subtotal = 0;
-
         document.querySelectorAll('.cart-item').forEach((item, index) => {
             const checkbox = item.querySelector('.item-select');
             if (checkbox.checked) {
@@ -126,7 +134,6 @@
         document.getElementById('total').textContent = total.toLocaleString() + '원';
     }
 
-    // 주문 처리
     function proceedToCheckout() {
         try {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -144,8 +151,8 @@
                         productImg: selectedItem.productImg,
                         productName: selectedItem.productName,
                         optionName: selectedItem.optionName,
-                        price: selectedItem.price,
-                        quantity: selectedItem.quantity
+                        quantity: selectedItem.quantity,
+                        optionPrice: selectedItem.price
                     });
                 }
             });
@@ -155,45 +162,35 @@
                 return;
             }
 
-            // selectedItems를 selectedOptionsData 형태로 변환
+            // Form을 생성하여 POST 요청 수행
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/store/order';
+
+            // 선택된 상품 정보만 전송
             const selectedOptionsData = selectedItems.map(item => ({
+                productImg: item.productImg,
+                productName: item.productName,
                 optionName: item.optionName,
                 quantity: item.quantity,
-                optionPrice: item.price * item.quantity
+                optionPrice: item.optionPrice
             }));
 
-            // 서버로 데이터 전송
-            fetch('/store/order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    productImg: selectedItems[0].productImg,
-                    productName: selectedItems[0].productName,
-                    selectedOptionsData: JSON.stringify(selectedOptionsData)
-                })
-            })
-                .then(response => response.text())  // response.text()로 변경
-                .then(html => {
-                    // 새로운 HTML을 현재 페이지에 표시
-                    document.documentElement.innerHTML = html;
-                    // URL 업데이트
-                    history.pushState({}, '', '/store/order');
-                })
-                .catch(error => {
-                    console.error('주문 처리 오류:', error);
-                    alert('주문 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-                });
+            // hidden input 추가
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selectedOptionsData';
+            input.value = JSON.stringify(selectedOptionsData);
+            form.appendChild(input);
+
+            // 폼을 body에 추가하고 제출
+            document.body.appendChild(form);
+            form.submit();
 
         } catch (error) {
             console.error('주문 처리 중 오류가 발생했습니다:', error);
             alert('주문 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }
     }
-
-
-    // 페이지 로드 시 장바구니 표시
-    window.onload = displayCartItems;
 </script>
 {% endblock %}

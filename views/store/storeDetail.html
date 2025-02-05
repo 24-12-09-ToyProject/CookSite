@@ -77,7 +77,7 @@
         const select = this;
         const selectedOption = select.options[select.selectedIndex];
 
-        // console.log("선택된 옵션:", selectedOption.value);  // 선택된 옵션 로그 출력
+        console.log("선택된 옵션:", selectedOption);  // 선택된 옵션 로그 출력
 
         // 이미 선택된 옵션인지 확인
         if (selectedOptions.has(selectedOption.value)) {
@@ -177,10 +177,10 @@
 
     // 개별 옵션의 가격 업데이트
     function updateOptionPrice(optionDiv, optionData) {
-        const totalOptionPrice = (basePrice + optionData.priceDiff) * optionData.quantity;
-        optionDiv.querySelector('.option-price').textContent = `${totalOptionPrice.toLocaleString()}원`;
+        const optionBasePrice = basePrice + optionData.priceDiff;
+        optionDiv.querySelector('.option-price').textContent = `${optionBasePrice.toLocaleString()}원`;
     }
-
+    
     // 총 가격 업데이트
     function updateTotalPrice() {
         let totalPrice = 0;
@@ -202,36 +202,28 @@
             productName: productName,
             optionName: option.name,
             quantity: option.quantity,
-            optionPrice: (basePrice + option.priceDiff) * option.quantity
+            price: (basePrice + option.priceDiff)
         }));
 
         const totalPrice = selectedOptionsData.reduce((sum, option) => sum + option.optionPrice, 0);
 
-        // 장바구니에 아이템 추가
+
+        // 장바구니에 아이템 추가 로직 수정
         selectedOptionsData.forEach(option => {
-            const existingItem = cart.find(item =>
+            const existingItemIndex = cart.findIndex(item =>
                 item.productName === productName &&
-                item.optionName === option.optionName // 옵션 이름으로 중복 검사
+                item.optionName === option.optionName
             );
 
-            if (existingItem) {
-                existingItem.quantity += option.quantity;
-                existingItem.price = existingItem.price + (option.optionPrice * option.quantity); // 기존 가격 업데이트
+            if (existingItemIndex !== -1) {
+                // 이미 존재하는 옵션이면 수량과 가격 업데이트
+                cart[existingItemIndex].quantity += option.quantity;
+                cart[existingItemIndex].price += option.price;
             } else {
-                cart.push({
-                    productImg: productImg,
-                    productName: productName,
-                    optionName: option.optionName,
-                    quantity: option.quantity,
-                    price: option.optionPrice * option.quantity // 가격을 수량만큼 반영
-                });
+                // 새로운 옵션이면 추가
+                cart.push(option);
             }
         });
-
-        // 장바구니에 저장
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-
         // 장바구니에 저장
         localStorage.setItem("cart", JSON.stringify(cart));
         const moveToCart = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
@@ -243,11 +235,21 @@
         updateFormData(selectedOptionsData, totalPrice);
     }
 
-    // 폼 데이터 업데이트 함수
+    // 폼 데이터 업데이트 함수 개선
     function updateFormData(selectedOptionsData, totalPrice) {
-        document.getElementById('selectedOptionsData').value = JSON.stringify(selectedOptionsData);
+        const selectedOptionsWithDetails = selectedOptionsData.map(option => ({
+            productImg: productImg,  // 전역 변수로 선언된 이미지 URL 사용
+            productName: productName,  // 전역 변수로 선언된 상품명 사용
+            optionName: option.name || option.optionName,
+            quantity: option.quantity,
+            optionPrice: (basePrice + option.priceDiff)
+        }));
+
+        document.getElementById('selectedOptionsData').value = JSON.stringify(selectedOptionsWithDetails);
         document.getElementById('totalPriceData').value = totalPrice;
     }
+
+    // 바로구매 시 폼 제출 이벤트 리스너 개선
     document.getElementById('product-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -258,9 +260,11 @@
 
         // 선택된 옵션 데이터를 orderItems 형식으로 준비
         const orderItems = Array.from(selectedOptions.values()).map(option => ({
+            productImg: productImg,  // 상품 이미지 추가
+            productName: productName,  // 상품명 추가
             optionName: option.name,
             quantity: option.quantity,
-            optionPrice: (basePrice + option.priceDiff) * option.quantity
+            optionPrice: (basePrice + option.priceDiff)
         }));
 
         // 총 가격 계산
@@ -272,7 +276,6 @@
         // 폼 제출
         this.submit();
     });
-
 
 
 </script>

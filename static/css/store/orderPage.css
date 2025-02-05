@@ -26,46 +26,69 @@ body {
 
 .product-header {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
+    flex-direction: row;
+    align-items: flex-start; /* 제목과 옵션들을 시작 위치에서 정렬 */
+    padding: 20px;
+    width: 100%;
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .product-header img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+    width: 80px;  /* 상품 이미지를 작게 설정 */
+    height: auto;
+    margin-right: 15px;
     border-radius: 8px;
 }
 
 .product-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.2rem; /* 상품 이름 크기 줄이기 */
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+    flex-grow: 1;
+    word-wrap: break-word; /* 긴 제목이 넘칠 경우 줄바꿈 */
+    max-width: 600px; /* 최대 폭 설정 */
 }
 
 .options-container {
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    flex-grow: 1;  /* 옵션들이 제목과 같은 공간을 차지하도록 설정 */
 }
 
 .option-detail {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    align-items: center; /* 옵션 항목들이 세로로 중앙 정렬되도록 */
 }
 
 .option-name {
-    font-weight: 500;
+    font-size: 1rem;
+    color: #555;
+    font-weight: normal;
+    flex-grow: 1; /* 옵션 이름이 공간을 꽉 채우도록 설정 */
+    margin-right: 15px;
 }
 
 .option-info {
+    font-size: 0.9rem; /* 옵션의 텍스트 크기를 조금 더 작게 설정 */
+    color: #777;
     display: flex;
-    gap: 1rem;
-    color: #666;
+    justify-content: space-between;
+    width: 180px;  /* 옵션 정보는 공간을 적당히 차지하도록 설정 */
 }
+
+.quantity, .price {
+    color: #333;
+}
+
+
 
 /* 배송 정보 스타일 */
 .shipping-info {

@@ -7,8 +7,8 @@ async function addToCart({ userId, productNo, optionNo, quantity }) {
         // 동일한 상품과 옵션이 있는지 확인
         const [existing] = await db.execute(
             `SELECT cart_no, quantity 
-             FROM cart 
-             WHERE member_id = ? AND product_no = ? AND option_no = ?`,
+            FROM cart 
+            WHERE Member_id = ? AND product_no = ? AND option_no = ?`,
             [userId, productNo, optionNo]
         );
 
@@ -16,17 +16,23 @@ async function addToCart({ userId, productNo, optionNo, quantity }) {
             // 이미 존재하면 수량만 업데이트
             await db.execute(
                 `UPDATE cart 
-                 SET quantity = quantity + ? 
-                 WHERE cart_no = ?`,
+                SET quantity = quantity + ? 
+                WHERE cart_no = ?`,
                 [quantity, existing[0].cart_no]
             );
         } else {
             // 새로운 상품 추가
-            await db.execute(
-                `INSERT INTO cart (member_id, product_no, option_no, quantity) 
-                 VALUES (?, ?, ?, ?)`,
-                [userId, productNo, optionNo, quantity]
-            );
+            try {
+                const [result] = await db.execute(
+                    `INSERT INTO cart (member_id, product_no, option_no, quantity) 
+                    VALUES (?, ?, ?, ?)`,
+                    [userId, productNo, optionNo, quantity]
+                );
+                console.log('DB insert result:', result); // 결과 로깅
+            } catch (error) {
+                console.error('장바구니 추가 에러:', error);
+                throw error;
+            }
         }
 
         return true;

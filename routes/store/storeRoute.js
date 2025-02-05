@@ -5,6 +5,7 @@ const { getAllProducts, getProductsByCategory } = require('../../static/js/store
 const { getProductDetails } = require('../../static/js/store/storeDetail');  // 경로 확인
 const { checkLogin } = require('../member/checkLogin.js');
 const { addToCart, getCartItems } = require('../../static/js/store/storeCart.js');
+const orderService = require('../../static/js/store/orderPage.js');
 
 // 모든 상품 조회
 router.get('/all', async (req, res) => {
@@ -40,19 +41,19 @@ router.get('/product/:id', async (req, res) => {
 // 장바구니 페이지 렌더링
 router.get('/cart', checkLogin, async (req, res) => {
     try {
-
+        console.log(req.body);
         const userId = req.session.user.id;
         const cartItems = await getCartItems(userId);
 
         // 총 상품 금액 계산
-        const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        // const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         // 배송비 계산 (7만원 이상 무료배송)
-        const shippingFee = totalPrice >= 70000 ? 0 : 3500;
+        // const shippingFee = totalPrice >= 70000 ? 0 : 3500;
 
         res.render('store/storeCart.html', {
             cart: cartItems,
-            totalPrice,
-            shippingFee
+            // totalPrice,
+            // shippingFee
         });
     } catch (error) {
         console.error('장바구니 조회 오류:', error);
@@ -111,47 +112,75 @@ app.use(express.json());
 
 router.post('/order', checkLogin, async (req, res) => {
     try {
-        // console.log("전체 데이터:", req.body);
-
-        // req.body에서 상품 이미지와 이름을 가져오기
-        const { productImg, productName, selectedOptionsData } = req.body;
-
-        // selectedOptionsData가 없으면 빈 배열로 처리
+        // console.log(req.body);
+        const { selectedOptionsData } = req.body;
         const optionsData = selectedOptionsData ? JSON.parse(selectedOptionsData) : [];
 
-        // orderItems에 파싱된 데이터를 할당
-        const orderItems = optionsData.map(option => ({
-            productImg,  // 상위에서 가져온 productImg 사용
-            productName,  // 상위에서 가져온 productName 사용
-            optionName: option.optionName,
-            quantity: option.quantity,
-            optionPrice: option.optionPrice
-        }));
+        // 상품별로 옵션을 그룹화
+        const productGroups = {};
+        optionsData.forEach(option => {
+            const productKey = `${option.productName}_${option.productImg}`;
+            if (!productGroups[productKey]) {
+                productGroups[productKey] = {
+                    productImg: option.productImg,
+                    productName: option.productName,
+                    optionNo: option.optionNo, // 추가
+                    options: []
+                };
+            }
+            productGroups[productKey].options.push({
+                optionName: option.optionName,
+                quantity: option.quantity,
+                optionPrice: (option.optionPrice)*(option.quantity)
+            });
+        });
 
-        if (!orderItems || orderItems.length === 0) {
-            return res.status(400).json({ error: '주문 데이터가 없습니다.' });
-        }
-
-        // 렌더링 전에 console.log로 확인
-        console.log("주문 데이터 렌더링:", orderItems);
-
-        // 주문 총 가격 계산 (예시로 1000을 전달하는 대신 실제 계산된 가격을 사용)
-        const totalPrice = orderItems.reduce((sum, item) => sum + item.optionPrice, 0);
+        // 총 가격 계산
+        const totalPrice = optionsData.reduce((sum, item) => sum + (item.optionPrice * item.quantity), 0);
 
         res.render('store/orderPage.html', {
             orderData: {
-                productImg,        // 실제 이미지 URL을 전달
-                productName,       // 실제 상품명을 전달
-                options: orderItems, // 옵션들 전달
-                totalPrice         // 실제 총 가격 계산
+                productGroups: Object.values(productGroups),
+                totalPrice,
+                userId: req.session.user.id
             },
-            user: req.user
         });
 
     } catch (error) {
-        console.error(error);  // 오류 로그 추가
+        console.error(error);
         res.status(500).json({ error: '주문 처리 중 오류가 발생했습니다.' });
     }
 });
+router.post('/payments/complete', checkLogin, async (req, res) => {
+    try {
+        const { imp_uid, merchant_uid, productInfo, shippingInfo } = req.body;
+        
+        const orderRecords = productInfo.options.map(option => ({
+            product_no: option.productNo,
+            quantity: option.quantity,
+            member_id: req.session.user.id
+        }));
 
+        const orderId = await orderService.createOrder(orderRecords, shippingInfo);
+        await orderService.verifyPayment(orderId, {
+            merchant_uid,
+            amount: productInfo.totalPrice,
+            pay_method: req.body.pay_method
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Payment processing error:', error);
+        res.status(500).json({ success: false, error: '결제 처리 중 오류가 발생했습니다.' });
+    }
+});
+
+router.get('/order/history', checkLogin, async (req, res) => {
+    try {
+        const orders = await orderService.getOrderHistory(req.session.user.id);
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ error: '주문 내역을 불러오는데 실패했습니다.' });
+    }
+});
 module.exports = router;

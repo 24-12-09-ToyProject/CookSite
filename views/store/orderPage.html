@@ -7,82 +7,91 @@
 {% block content %}
 <div class="container">
     <div class="order-summary">
-        <div class="product-header">
-            <img src="{{ orderData.productImg }}" alt="{{ orderData.productName }}">
-            <h2>{{ orderData.productName }}</h2>
-        </div>
+        {% for group in orderData.productGroups %}
+        <div class="product-header" data-product-name="{{ group.productName }}">
+            <img src="{{ group.productImg }}" alt="{{ group.productName }}">
+            <h2>{{ group.productName }}</h2>
 
-        <div class="options-container">
-            {% for option in orderData.options %}
-            <div class="option-detail">
-                <div class="option-name">{{ option.optionName }}</div>
-                <div class="option-info">
-                    <span class="quantity">수량: {{ option.quantity }}</span>
-                    <span class="price">가격: {{ option.optionPrice }}</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="shipping-info">
-            <h3>배송 정보</h3>
-            <div class="form-group">
-                <div class="input-wrapper">
-                    <label for="name">이름</label>
-                    <input type="text" id="name" placeholder="받으시는 분의 이름을 입력해주세요">
-                </div>
-
-                <div class="input-wrapper">
-                    <label for="phone">전화번호</label>
-                    <input type="tel" id="phone" placeholder="'-' 없이 입력해주세요">
-                </div>
-
-                <div class="input-wrapper">
-                    <label for="email">이메일</label>
-                    <input type="email" id="email" placeholder="이메일 주소를 입력해주세요">
-                </div>
-
-                <div class="address-wrapper">
-                    <label for="address">주소</label>
-                    <div class="address-input-group">
-                        <div class="postcode-group">
-                            <input type="text" id="postcode" placeholder="우편번호" readonly>
-                            <button type='button' onclick="findPostCode()" class="address-search-btn">주소검색</button>
-                        </div>
-                        <input type="text" id="address" placeholder="기본주소" readonly>
-                        <input type="text" id="address-detail" placeholder="상세주소를 입력해주세요">
+            <div class="options-container">
+                {% for option in group.options %}
+                <div class="option-detail">
+                    <div class="option-name">{{ option.optionName }}</div>
+                    <div class="option-info">
+                        <span class="quantity">수량: {{ option.quantity }}</span>
+                        <span class="price">가격: {{ option.optionPrice }}</span>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
-
-        <div class="total-price">
-            <strong>총 주문금액:</strong>
-            <span>{{ orderData.totalPrice }}</span>
-        </div>
-
-        <div class="payment-methods">
-            <h3>결제 수단 선택</h3>
-            <div class="payment-options">
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="card" checked>
-                    <span>무통장입금</span>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="transfer">
-                    <span>신용/체크카드</span>
-                </label>
-            </div>
-        </div>
-
-        <button class="payment-button" onclick="requestPay()">결제하기</button>
+        {% endfor %}
     </div>
+
+    <div class="shipping-info">
+        <h3>배송 정보</h3>
+        <div class="form-group">
+            <div class="input-wrapper">
+                <label for="name">이름</label>
+                <input type="text" id="name" placeholder="받으시는 분의 이름을 입력해주세요">
+            </div>
+            <div class="input-wrapper">
+                <label for="phone">전화번호</label>
+                <input type="tel" id="phone" placeholder="'-' 없이 입력해주세요">
+            </div>
+            <div class="input-wrapper">
+                <label for="email">이메일</label>
+                <input type="email" id="email" placeholder="이메일 주소를 입력해주세요">
+            </div>
+            <div class="address-wrapper">
+                <label for="address">주소</label>
+                <div class="address-input-group">
+                    <div class="postcode-group">
+                        <input type="text" id="postcode" placeholder="우편번호" readonly>
+                        <button type='button' onClick="findPostCode()" class="address-search-btn">주소검색</button>
+                    </div>
+                    <input type="text" id="address" placeholder="기본주소" readonly>
+                    <input type="text" id="address-detail" placeholder="상세주소를 입력해주세요">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="total-price">
+        <strong>총 주문금액:</strong>
+        <span>{{ orderData.totalPrice }}</span>
+    </div>
+
+    <div class="payment-methods">
+        <h3>결제 수단 선택</h3>
+        <div class="payment-options">
+            <label class="payment-option">
+                <input type="radio" name="payment" value="card" checked>
+                <span>무통장입금</span>
+            </label>
+            <label class="payment-option">
+                <input type="radio" name="payment" value="transfer">
+                <span>신용/체크카드</span>
+            </label>
+        </div>
+    </div>
+
+    <button class="payment-button" onclick="requestPay()">결제하기</button>
+</div>
 </div>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const productHeaders = document.querySelectorAll(".product-header");
+
+        productHeaders.forEach(header => {
+            const productName = header.getAttribute("data-product-name");
+            console.log("상품명:", productName);
+        });
+    });
+
     function findPostCode() {
         new daum.Postcode({
             oncomplete: function (data) {
@@ -100,22 +109,10 @@
         const address = document.getElementById('address').value;
         const addressDetail = document.getElementById('address-detail').value;
 
-        if (!name) {
-            alert('이름을 입력해주세요.');
-            return false;
-        }
-        if (!phone) {
-            alert('전화번호를 입력해주세요.');
-            return false;
-        }
-        if (!email) {
-            alert('이메일을 입력해주세요.');
-            return false;
-        }
-        if (!postcode || !address || !addressDetail) {
-            alert('주소를 모두 입력해주세요.');
-            return false;
-        }
+        // if (!name || !phone || !email || !postcode || !address || !addressDetail) {
+        //     alert('배송 정보를 모두 입력해주세요.');
+        //     return false;
+        // }
 
         return {
             name,
@@ -127,15 +124,22 @@
     }
 
     async function requestPay() {
+        // 상품명을 가져오기
+        const productHeaders = document.querySelectorAll(".product-header");
+        let productNames = [];
+
+        productHeaders.forEach(header => {
+            const productName = header.getAttribute("data-product-name");
+            productNames.push(productName);
+        });
+
+        // 배열 형태로 묶어서 결제 요청 시 전달 (여러 개의 상품이 있을 수 있음)
+        const productName = productNames.join(", "); // 여러 개의 상품명을 쉼표로 구분
         const shippingInfo = validateForm();
         if (!shippingInfo) return;
 
         const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
         const totalPrice = parseInt("{{ orderData.totalPrice }}".replace(/[^0-9]/g, ''));
-        const productName = "{{ orderData.productName }}";
-        const optionsParsed = JSON.parse('{{ orderData.options | safe }}');
-
-
 
         IMP.init('imp25362283');
         IMP.request_pay({
@@ -157,13 +161,12 @@
                         merchant_uid: response.merchant_uid,
                         productInfo: {
                             name: productName,
-                            options: options,
                             totalPrice: totalPrice
                         },
                         shippingInfo: shippingInfo
                     };
 
-                    const verifyResponse = await fetch('/payments/complete', {
+                    const verifyResponse = await fetch('/store/payments/complete', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

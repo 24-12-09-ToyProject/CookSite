@@ -1,28 +1,74 @@
-const promisePool = require('../../../config/db');
+const pool = require('../../../config/db');
 
-async function getProductDetails(productId) {
-    try {
-        // 상품 정보 조회
-        const [product] = await promisePool.query(
-            'SELECT * FROM product WHERE PRODUCT_NO = ?;',
-            [productId]
+const orderService = {
+    async createOrder(orderRecords, shippingInfo) {
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+            
+            // 주문 생성
+            const [orderResult] = await connection.query(
+                'INSERT INTO storeorders (product_no, quantity, member_id) VALUES ?',
+                [orderRecords.map(record => [record.product_no, record.quantity, record.member_id])]
+            );
+
+            // 배송 정보 저장
+            await connection.query(
+                `INSERT INTO shipping_info 
+                (order_id, name, phone, email, address, postcode) 
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                [orderResult.insertId, shippingInfo.name, shippingInfo.phone, 
+                 shippingInfo.email, shippingInfo.address, shippingInfo.postcode]
+            );
+
+            await connection.commit();
+            return orderResult.insertId;
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    },
+
+    async verifyPayment(orderId, paymentInfo) {
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            await connection.query(
+                'INSERT INTO storepayment (order_id, merchant_uid, amount, pay_method) VALUES (?, ?, ?, ?)',
+                [orderId, paymentInfo.merchant_uid, paymentInfo.amount, paymentInfo.pay_method]
+            );
+
+            await connection.query(
+                'UPDATE storeorders SET payment_status = ? WHERE order_id = ?',
+                ['PAID', orderId]
+            );
+
+            await connection.commit();
+            return true;
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    },
+
+    async getOrderHistory(memberId) {
+        const [orders] = await pool.query(
+            `SELECT o.*, p.merchant_uid, p.amount, p.pay_method, pr.product_name, s.name, s.phone, s.address
+             FROM storeorders o
+             JOIN storepayment p ON o.order_id = p.order_id
+             JOIN product pr ON o.product_no = pr.product_no
+             JOIN shipping_info s ON o.order_id = s.order_id
+             WHERE o.member_id = ?
+             ORDER BY o.created_at DESC`,
+            [memberId]
         );
-
-        // 옵션 정보 조회 (수정된 컬럼에 맞게 조회)
-        const [options] = await promisePool.query(
-            'SELECT OPTION_NO, PRODUCT_NO, OPTION_NAME, OPTION_PRICE_DIFF, OPTION_STOCK FROM productoption WHERE PRODUCT_NO = ?;',
-            [productId]
-        );
-
-        return {
-            product: product[0], // 단일 상품 정보
-            options: options // 해당 상품의 옵션 리스트
-        };
-    } catch (err) {
-        console.error('Error executing query:', err);
-        throw err; // 에러를 던져서 라우터에서 처리할 수 있게 함
+        return orders;
     }
-}
+};
 
-
-module.exports = { getProductDetails };
+module.exports = orderService;
