@@ -72,7 +72,7 @@ function showStep(stepNumber) {
 
     if (activeSidebarStep) {
         activeSidebarStep.style.fontWeight = "bold";
-        activeSidebarStep.style.color = "blue"; // 강조 색상 변경 가능
+        activeSidebarStep.style.backgroundColor = "#ffe4c4"; // 강조 색상 변경 가능
     }
     buttons.forEach((button) =>{
         button.classList.add("hidden");
@@ -681,7 +681,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 throw new Error(`API 요청 실패: ${response.status}`);
             }
-
+            else if(response.ok){
+                alert("등록 완료 되었습니다!");
+                location.href="/searchClass";
+            }
             const responseData = await response.json();
             console.log("📌 서버 응답 데이터:", responseData);
         } catch (error) {

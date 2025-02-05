@@ -236,7 +236,7 @@ exports.getClassDetail = async (req, res) => {
 exports.selectClassInfo =  async (req,res) =>{
     const userId = req.session?.user?.id;
     console.log("id 확인" , userId);
-    const query = `SELECT CLASS_THUMBNAIL_IMG , CLASS_TITLE FROM COOKING WHERE CLASS_MEMBER_ID = ?`
+    const query = `SELECT CLASS_THUMBNAIL_IMG,CLASS_TITLE FROM COOKING WHERE CLASS_MEMBER_ID = ?`
     try {
         // 쿼리 실행 (파라미터 바인딩)
         const [rows] = await pool.execute(query, [userId]);

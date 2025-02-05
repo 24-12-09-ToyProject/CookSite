@@ -7,7 +7,7 @@ main{
 }
 .main-top{
     border:1px solid black;
-    height:370px;
+    height:390px;
     box-sizing: border-box;
 }
 .ghost-panel{
@@ -19,26 +19,73 @@ main{
 }
 .left-panel div{
     padding:10px;
-    margin-left:20px;
+}
+.left-panel legend{
+    width:100px;
 }
 .right-panel{
     position:relative;
     top:39px;
     flex:1;
 }
+.right-panel legend{
+    width:100px;
+}
 .option5,.option6,.option7,.option8{
     padding:10px;
-    margin-left:20px;
 }
 
 /*-----------------------옵션----------------------*/
-
-
+.inputAndhref{
+    display: flex;
+    justify-content: space-between;
+}
+.goRegisterClass{
+    margin-top: 10px;
+    border:2px solid #800020;
+    border-radius: 5px;
+    width: 200px;
+    height: 40px;
+    text-align: center;
+    align-content: center;
+    background-color: rgba(128,0,32,0.1);
+    cursor: pointer;
+}
 .search-class{
+    padding-top:10px;
+    padding-bottom:10px;
+}
+.search-class input{
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #800020;
+    border-radius: 5px;
+    font-size: 1em;
+}
+.search-class span{
+    position: absolute;
+    left:0;
+    color:rgba(255,255,255,0.25);
+    font-size: 1em;
+    pointer-events: none;
     padding:10px;
 }
+
 .select-class{
     padding:10px;
+}
+.select-class span{
+    background-color: white;
+    display: inline-flex;
+    width: 110px;
+    height: 40px;
+    border: 1px solid gray;
+    cursor: pointer;
+    margin-right: 5px;
+    text-align: center;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
 }
 /* 지역 */
 .option1,.option2,.option3,.option4,.option5,.option6,.option7,.option8{
@@ -58,6 +105,7 @@ main{
     height: 50px;
     background: white;
     border: 1px solid #ddd;
+    border-radius: 5px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -184,6 +232,19 @@ main{
     font-size: 14px;
     width:150px;
 }
+.time-label span{
+    background-color: white;
+    display: inline-flex;
+    width: 100px;
+    height: 40px;
+    border: 1px solid gray;
+    cursor: pointer;
+    margin-right: 5px;
+    text-align: center;
+    border-radius: 5px;
+    justify-content: center; 
+    align-items: center;
+}
 .difficulty{
     margin-left:30px;
 }
@@ -208,7 +269,7 @@ main{
 
 .searchButton button {
     padding: 10px 20px;
-    background-color: orange;
+    background-color: #800020;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -299,7 +360,7 @@ a {
     gap : 30px;
 }
 #card-container a{
-    height: 200px;
+    height: 250px;
 }
 /* .cookinglist-body{
     display: flex;
@@ -315,10 +376,12 @@ a {
 }
 .list-head {
     width:100%;
+    height:150px;
 }
 .list-head img {
     width:100%;
     height: 100%;
+    object-fit: cover;
 }
 
 .class-content p {

@@ -1,9 +1,14 @@
+main{
+    width: 100%;
+    min-height:725px;
+}
 a{
     text-decoration: none;
 }
 .main{
     display: flex;
-    height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
 }
 .sidebar {
     width: 250px;
@@ -31,13 +36,18 @@ a{
     flex: 1;
     padding: 20px;
 }
+#contentArea{
+    display: flex;
+    flex-wrap: wrap;
+    gap:30px;
+}
+
 .create-card {
     position: relative;
     top:50px;
     border: 1px solid gray;
-    width: 200px;
-    height: 150px;
-    padding: 20px;
+    width: 400px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,11 +61,13 @@ a{
     margin: 0;
 }
 .create-card a{
-    position: absolute;
-    top:60px;
     width: 100%;
     height: 100%;
     z-index: 1;
+}
+.create-card a p {
+    position: relative;
+    top:80px;
 }
 .options {
     display: flex;

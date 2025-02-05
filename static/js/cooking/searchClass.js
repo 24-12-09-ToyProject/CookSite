@@ -513,3 +513,10 @@ function renderCards(filteredCards) {
 // ✅ 전역함수 활성화
 window.renderCards = renderCards;
 
+// 등록버튼 div 활성화
+document.querySelector('.goRegisterClass').addEventListener('click', function () {
+    const link = this.querySelector('a');
+    if (link) {
+      link.click(); // a 태그 실행
+    }
+});
