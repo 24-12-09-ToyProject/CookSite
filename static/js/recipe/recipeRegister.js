@@ -107,6 +107,16 @@ document.addEventListener("DOMContentLoaded", function() {
     // 폼 제출 시 메시지 표시
     submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
+
+        const descriptions = document.querySelectorAll("textarea[name='description[]']");
+        const photos = document.querySelectorAll("input[name='recipe_image_path[]']");
+        for (let i = 0; i < descriptions.length; i++) {
+            if (!descriptions[i].value.trim() || !photos[i].files.length) {
+                alert("조리 순서와 이미지를 모두 입력해주세요.");
+                return;
+            }
+        }
+
         if(confirm("레시피를 등록하시겠습니까? 등록된 레시피는 나의 레시피에서 확인할 수 있습니다.")) {
             submitBtn.disabled = true;
             const formData = new FormData(form);

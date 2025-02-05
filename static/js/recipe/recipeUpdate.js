@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="form-group">
                     <div id="step${stepCount}-photoBox-div">
                         <img id="step${stepCount}-photo" src="https://recipe1.ezmember.co.kr/img/pic_none2.gif">
+                        <input type="hidden" name="existingImage${stepCount}" value="">
                         <input type="file" id="step${stepCount}-photo-file" name="recipe_image_path[]" accept="image/*" style="display:none;">
                     </div>
                 </div>
@@ -119,6 +120,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if(confirm("레시피 수정을 완료하시겠습니까?")) {
             const descriptions = document.querySelectorAll("textarea[name='description[]']");
             const imageInputs = document.querySelectorAll("input[name='recipe_image_path[]']");
+            const existingThumbnail = document.querySelector("input[name='existingThumbnail']");
+            const existingImages = document.querySelectorAll("input[name^='existingImage']");
 
             // 검증 로직 추가
             for (let i = 0; i < descriptions.length; i++) {
@@ -129,12 +132,36 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             for (let i = 0; i < imageInputs.length; i++) {
-                if (!imageInputs[i].files.length) {
+                const imageInput = imageInputs[i];
+                const existingImage = existingImages[i] ? existingImages[i].value : null;
+
+                if (!imageInput.files.length && !existingImage) {
                     alert("조리 순서 이미지를 업로드해주세요.");
                     return;
                 }
             }
+
             const formData = new FormData(form);
+
+            // 기존 썸네일 추가
+            if (existingThumbnail && existingThumbnail.value) {
+                formData.append('existingThumbnail', existingThumbnail.value);
+            }
+
+            // 이미지 추가
+            for (let i = 0; i < imageInputs.length; i++) {
+                const imageInput = imageInputs[i];
+                const existingImage = existingImages[i] ? existingImages[i].value : null;
+
+                if (imageInput.files.length) {
+                    // 새로운 이미지 파일이 있으면 추가
+                    formData.append('recipe_image_path[]', imageInput.files[0]);
+                } else if (existingImage) {
+                    // 기존 이미지가 있으면 기존 이미지를 추가
+                    formData.append('existingImage[]', existingImage);
+                }
+            }
+
             for (let pair of formData.entries()) {
                 console.log(pair[0]+ ', ' + pair[1]);
             }

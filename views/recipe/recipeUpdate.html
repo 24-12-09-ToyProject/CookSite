@@ -59,8 +59,8 @@
         <div class="information-right">
             <div>
                 <!-- 썸네일 등록 -->
-                <img id="thumbnail-img" src="{{ recipe.thumbnail }}"
-                    style="width: 250px; height: 250px; cursor:pointer">
+                <img id="thumbnail-img" src="{{ recipe.thumbnail }}" style="width: 250px; height: 250px; cursor:pointer">
+                    <input type="hidden" name="existingThumbnail" value="{{ recipe.thumbnail }}">
                 <input type="file" id="thumbnail-file" name="thumbnail" accept="image/*" style="display:none;">
             </div>
         </div>
@@ -84,13 +84,12 @@
             {% endif %}
             <div class="form-group">
                 <label for="step{{ loop.index }}-description">Step {{ loop.index }}</label>
-                <textarea id="step{{ loop.index }}-description" name="description[]"
-                        placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required
-                        style="resize:none;">{{ step.description }}</textarea>
+                <textarea id="step{{ loop.index }}-description" name="description[]" placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required style="resize:none;">{{ step.description }}</textarea>
                 <div class="form-group">
                     <div id="step{{ loop.index }}-photoBox-div">
                         <!-- 조리 순서 이미지 등록 -->
                         <img id="step{{ loop.index }}-photo" src="{{ step.recipe_image_path }}">
+                        <input type="hidden" name="existingImage{{ loop.index }}" value="{{ step.recipe_image_path }}">
                         <input type="file" id="step{{ loop.index }}-photo-file" name="recipe_image_path[]" accept="image/*" required style="display:none;">
                     </div>
                 </div>
