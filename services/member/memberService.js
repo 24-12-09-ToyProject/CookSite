@@ -93,7 +93,7 @@ async function checkAccount(memberId, memberPw) {
       [memberId]
     );
 
-    if (results.length === 0) return '존재하지 않는 계정';
+    if (results.length === 0) return {success:false};
 
     const isMatch = await verifyValue(results[0].password, memberPw);
     return isMatch ? {success:true, message:"존재하는 계정", info:results[0], } : {success:false, message:"존재하지 않는 계정"};
