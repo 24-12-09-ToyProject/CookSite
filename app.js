@@ -59,6 +59,9 @@ app.use('/store', storeRouter);
 // - member 미들웨어
 app.use('/member' , memberRouter);
 app.use('/naver', naverRouter);
+app.get('/', (req, res) => {
+    res.redirect('/recipe/list');
+});
 
 // view 모든 하위 폴더 지정
 function getAllSubfolders(directory) {

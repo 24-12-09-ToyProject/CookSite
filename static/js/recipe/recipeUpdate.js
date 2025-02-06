@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => response.json().then(data => ({
                 status: response.status,
-                body: data
+                body: data  
             })))
             .then(({ status, body }) => {
                 if (status === 200) {

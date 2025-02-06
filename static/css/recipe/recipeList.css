@@ -4,20 +4,15 @@
     padding: 40px 25px 20px 25px;
 }
 /* 카테고리 */
+.recipe-header {
+    text-align: center;
+    margin: 20px 0 30px 0;
+}
 .cate-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 20px;
 }
-    .cate-list span {
-        font-size: 22px;
-        font-weight: bold;
-        margin-right: 15px;
-        padding: 3px 20px;
-        color: #ddb73b;
-        align-self: center;
-    }
     .cate-button {
         font-family: 'Pretendard-Regular', sans-serif;
         border: none;

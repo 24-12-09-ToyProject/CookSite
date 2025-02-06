@@ -54,7 +54,7 @@ router.post('/login', async (req, res)=>{
 			}
 			
 
-			res.send("로그인 성공");
+			res.redirect("/");
 
 		}else if(resultMessage === "존재하지 않는 계정"){
 			res.send("로그인 실패")

@@ -295,17 +295,20 @@ async function updateRecipe(req, res) {
         // 기존 이미지 및 새로운 이미지의 수 확인
         const stepImageUrls = descriptions.map((desc, i) => {
             let stepImagePath = recipe_image_paths[i] ? recipe_image_paths[i].filename : null;
-            // 기존 이미지가 있으면 이를 사용
             let existingImage = req.body[`existingImage${i + 1}`];
-            
+        
             if (stepImagePath) {
+                console.log(`등록된 새 이미지 [${i}]:`, stepImagePath);
                 return `http://127.0.0.1:8888/uploads/${stepImagePath}`;
             } else if (existingImage) {
+                console.log(`기존 이미지 유지 [${i}]:`, existingImage);
                 return existingImage;
             }
-            
-            return null; // 이미지가 없으면 null 반환
+        
+            console.log(`이미지 누락 [${i}]`);
+            return null;
         });
+        console.log("최종 조리 순서 이미지 URL 목록:", stepImageUrls);
 
         // 중복된 URL 제거
         const uniqueStepImageUrls = stepImageUrls.filter((value, index, self) => self.indexOf(value) === index);
@@ -314,8 +317,7 @@ async function updateRecipe(req, res) {
         if (validDescriptions.length === 0 || uniqueStepImageUrls.length < validDescriptions.length) {
             return res.status(400).json({ message: "조리 순서와 이미지를 모두 입력해주세요." });
         }
-        console.log('이미지:', recipe_image_paths.length);
-        console.log('사진:', validDescriptions.length);
+        
 
         // 기존 step 삭제
         const deleteStepsQuery = 'DELETE FROM STEPS WHERE RECIPE_NO = ?';
