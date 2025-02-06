@@ -52,7 +52,7 @@ router.post('/login', async (req, res)=>{
 				loggedIn : true
 			}
 
-			res.send("로그인 성공"); // index 페이지로 이동하도록 바꿔야함
+			res.redirect("/");
 
 		}else{
 			req.flash('loginResult', 'fail')
