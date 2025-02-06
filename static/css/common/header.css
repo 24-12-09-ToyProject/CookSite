@@ -3,6 +3,7 @@ header {
     display: flex;
     justify-content: space-between;
     background-color: #800020;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* 헤더 좌측 스타일 */
@@ -40,7 +41,7 @@ header {
 .header-right {
     display: flex;
     align-items: center;
-    margin-right: 50px;
+    margin-right: 70px;
 }
 .header-login-area{
     display: flex;
@@ -83,15 +84,15 @@ header {
 
 .header-my-expand {
     position: absolute;
-    top: 80px;
-    left: -160px;
+    top: 75px;
+    left: -120px;
     z-index: 999;
     /* transform: translateX(calc(-100% - 170px)) translateY(-10px); */
     width: 170px;
     display: none;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
 }
     .header-my-expand p {
         padding: 8px 10px;

@@ -1,0 +1,109 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="/static/css/recipe/recipeUpdate.css">
+{% endblock %}
+
+{% block content %}
+<span class="regi-title">레시피 수정</span> <span class="regi-sub-title">등록된 레시피 내용을 수정하는 공간입니다</span>
+<form id="recipe-form" action="/recipe/update/{{ recipe.recipe_no }}" method="POST" enctype="multipart/form-data"
+    class="form-section">
+    <div class="information-box">
+        <div class="information-left">
+            <div class="form-group">
+                <label for="title">레시피 제목</label>
+                <input type="text" id="title" name="title" value="{{ recipe.title }}" placeholder="예) 소고기 미역국 끓이기"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="intro">요리소개</label>
+                <textarea id="intro" name="intro"
+                    placeholder="이 레시피의 탄생배경을 적어주세요. 예) 남편의 생일을 맞아 소고기 미역국을 끓여봤어요. 어머니로부터 배운 미역국 레시피를 남편 입맛에 맞게 고안했습니다."
+                    rows="5" required style="resize:none;">{{ recipe.intro }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">카테고리</label>
+                <select name="category" required>
+                    <option selected disabled>종류별</option>
+                    <option value="밑반찬" {% if recipe.category=='밑반찬' %}selected{% endif %}>밑반찬</option>
+                    <option value="메인반찬" {% if recipe.category=='메인반찬' %}selected{% endif %}>메인반찬</option>
+                    <option value="국/탕/찌개" {% if recipe.category=='국/탕/찌개' %}selected{% endif %}>국/탕/찌개</option>
+                    <option value="면/만두" {% if recipe.category=='면/만두' %}selected{% endif %}>면/만두</option>
+                    <option value="밥/죽/떡" {% if recipe.category=='밥/죽/떡' %}selected{% endif %}>밥/죽/떡</option>
+                    <option value="양식/샐러드" {% if recipe.category=='양식/샐러드' %}selected{% endif %}>양식/샐러드</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="serving">인원</label>
+                <select name="serving" required>
+                    <option selected disabled>인원</option>
+                    <option value="1인분" {% if recipe.serving=='1인분' %}selected{% endif %}>1인분</option>
+                    <option value="2인분" {% if recipe.serving=='2인분' %}selected{% endif %}>2인분</option>
+                    <option value="3인분" {% if recipe.serving=='3인분' %}selected{% endif %}>3인분</option>
+                    <option value="4인분" {% if recipe.serving=='4인분' %}selected{% endif %}>4인분</option>
+                    <option value="5인분" {% if recipe.serving=='5인분' %}selected{% endif %}>5인분</option>
+                    <option value="6인분 이상" {% if recipe.serving=='6인분 이상' %}selected{% endif %}>6인분 이상</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="difficulty">난이도</label>
+                <select name="difficulty" required>
+                    <option selected disabled>난이도</option>
+                    <option value="아무나" {% if recipe.difficulty=='아무나' %}selected{% endif %}>아무나</option>
+                    <option value="초급" {% if recipe.difficulty=='초급' %}selected{% endif %}>초급</option>
+                    <option value="중급" {% if recipe.difficulty=='중급' %}selected{% endif %}>중급</option>
+                    <option value="고급" {% if recipe.difficulty=='고급' %}selected{% endif %}>고급</option>
+                </select>
+            </div>
+        </div>
+        <div class="information-right">
+            <div>
+                <!-- 썸네일 등록 -->
+                <img id="thumbnail-img" src="{{ recipe.thumbnail }}" style="width: 250px; height: 250px; cursor:pointer">
+                <input type="hidden" name="existingThumbnail" value="{{ recipe.thumbnail }}">
+                <input type="file" id="thumbnail-file" name="thumbnail" accept="image/*" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <div class="ingredients-box">
+        <div class="form-group">
+            <label for="ingredients">재료</label>
+            <textarea id="ingredients-input" name="ingredients"
+                placeholder="예) 소고기 200g, 미역 30g, 간장 1/2큰술, 다진마늘 1T, 소고기 다시다 1포..." rows="5" required
+                style="resize:none;">{{ recipe.ingredients }}</textarea>
+        </div>
+    </div>
+
+    <div class="steps-box" id="steps-container">
+        <p>조리 순서</p>
+        {% for step in recipe.steps %}
+        <div class="step" id="step{{ loop.index }}">
+            {% if loop.index > 1 %}
+            <button type="button" class="delete-step-btn">x</button>
+            {% endif %}
+            <div class="form-group">
+                <label for="step{{ loop.index }}-description">Step {{ loop.index }}</label>
+                <textarea id="step{{ loop.index }}-description" name="description[]" placeholder="예) 소고기는 기름기를 떼어내고 적당한 크기로 썰어주세요." rows="5" required style="resize:none;">{{ step.description }}</textarea>
+                <div class="form-group">
+                    <div id="step{{ loop.index }}-photoBox-div">
+                        <!-- 조리 순서 이미지 등록 -->
+                        <img id="step{{ loop.index }}-photo" src="{{ step.recipe_image_path }}">
+                        <input type="hidden" name="existingImage{{ loop.index }}" value="{{ step.recipe_image_path }}">
+                        <input type="file" id="step{{ loop.index }}-photo-file" name="recipe_image_path[]" accept="image/*" required style="display:none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="button" id="add-step-btn" class="add-step-btn">순서 추가</button>
+    </div>
+    <div class="form-group" id="button-group">
+        <button type="button" class="common-btn" id="submit-btn" style="margin-right: 40px;">수정</button>
+        <button type="button" class="common-btn" id="cancel-btn">취소</button>
+    </div>
+</form>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/recipe/recipeUpdate.js"></script>
+{% endblock %}

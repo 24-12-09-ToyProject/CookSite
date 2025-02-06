@@ -131,9 +131,8 @@ main {
     align-items: center;
 }
 .step .form-group label {
-    font-size: 26px;
-    color: #ddb73b;
-    font-weight: bold;
+    font-size: 24px;
+    color: green;
     padding-top: 0;
 }
 .step .form-group textarea {
