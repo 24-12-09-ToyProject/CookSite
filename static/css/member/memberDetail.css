@@ -22,6 +22,7 @@ input{
 	/* font-size: 22px; */
 	text-align: center;
 	margin: 50px 0;
+	margin-top: 100px;
 }
 
 #basic-info, #add-info{
@@ -533,7 +534,7 @@ select option{
 	width: 550px;
 	margin: 0 auto;
 	padding: 10px 10px;
-	margin-bottom: 50px;
+	margin-bottom: 100px;
 }
 
 #delete-member-btn-border h2{

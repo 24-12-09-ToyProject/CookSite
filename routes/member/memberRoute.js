@@ -31,7 +31,7 @@ router.get('/login', (req, res)=>{
 		
 		res.render('login.html', {signupResult:signupResult, loggedInMessage:loggedInMessage, deleteResult:deleteResult, api_url:api_url, loginResult:loginResult});  // 로그인 페이지 내용
 	} else {
-			res.redirect('/member/mypage'); // 임시
+			res.redirect('/'); // 임시
 	}
 });
 
@@ -66,16 +66,17 @@ router.post('/login', async (req, res)=>{
 });
 
 
-// 마이페이지 이동
-router.get('/mypage', checkLogin, (req, res)=>{
-	res.render('mypage.html');
-})
+// // 마이페이지 이동
+// router.get('/mypage', checkLogin, (req, res)=>{
+// 	res.render('mypage.html');
+// })
 
 // 회원가입 페이지 이동
 router.get('/signUp', (req, res)=>{
 	res.render('register.html');
 })
 
+// 아이디 찾기 페이지 이동
 router.get('/findAccount', (req, res) => {
 	res.render('findAccount.html');
 })
