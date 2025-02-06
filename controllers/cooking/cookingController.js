@@ -259,3 +259,18 @@ exports.showAllClass = async (req,res) =>{
         res.status(500).json({ error: "데이터를 가져오는 중 오류가 발생했습니다." });
     }
 }
+
+// 예약 내역 조회
+exports.showReservationInfo = async (req,res) =>{
+    const userId = req.session?.user?.id;
+    const query = `SELECT RESERVATION_NO , CLASS_TITLE , RESERVATION_CLASS_DATE WHERE 1=1`;
+
+    try{
+        const[rows] = await pool.execute(query,[userId]);
+        res.status(200).json(rows);
+    }
+    catch(error){
+        console.error("DB 조회 오류:", error);
+        res.status(500).json({ error: "데이터를 가져오는 중 오류가 발생했습니다." });
+    }
+}

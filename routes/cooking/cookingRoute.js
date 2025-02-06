@@ -33,18 +33,18 @@ router.get('/mypage', checkLogin, (req, res)=>{
 });
 
 // 쿠킹 클래스 메인 페이지
-router.get("/searchClass",(req,res)=>
+router.get("/cooking/search",(req,res)=>
 {
     res.render("searchClass.html")
 });
 
 // 클래스 등록 페이지
-router.get("/registerClass",(req,res)=>
+router.get("/cooking/register",(req,res)=>
 {
     res.render("registerClass.html")
 });
 // 클래스 등록 추가 페이지
-router.get("/createClass",(req,res)=>
+router.get("/cooking/create",(req,res)=>
 {
     res.render("createClass.html")
 });
@@ -71,7 +71,8 @@ router.post("/payments/save",payController.savePaymentInfo);
 router.post("/api/getImpUid",payController.ImpuidFromReservationNo);
 // 결제 취소
 router.post("/api/payments/cancel",payController.cancelPayment);
-
+// 예약 정보 조회
+router.post("/api/select/reservationInfo",cookingController.showReservationInfo);
 
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));

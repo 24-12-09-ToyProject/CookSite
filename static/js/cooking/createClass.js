@@ -196,62 +196,6 @@ async function handleImageUpload(containerConfig) {
     console.log("📌 최종 업로드된 classImages 배열:", classImages);
 }
 
-
-
-// // 파일 선택 후 이미지 업로드 및 미리보기 업데이트
-// async function handleFileUpload(input, previewElement) {
-//     const files = Array.from(input.files); // 다중 파일 처리
-//     if (files.length === 0) return;
-
-//     // 미리보기 영역 초기화
-//     previewElement.innerHTML = "";
-
-//     for (const file of files) {
-//         // 1. 로컬 미리보기 생성
-//         const reader = new FileReader();
-//         reader.onload = (event) => {
-//             previewElement.src = event.target.result; // 로컬 파일 URL
-//         };
-//         reader.readAsDataURL(file); // 파일을 데이터 URL로 변환
-
-//         // 2. 파일 업로드
-//         try {
-//             const uploadedUrl = await uploadFile(file); // 파일 업로드
-//             previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
-//         } catch (error) {
-//             console.error("업로드 중 오류:", error);
-//         }
-//     }
-
-    // const file = input.files[0];
-    // if (file) {
-    //     // 1. 로컬 미리보기 표시
-    //     const blobUrl = URL.createObjectURL(file);
-    //     previewElement.src = blobUrl;
-
-    //     // 2. 파일 업로드
-    //     try {
-    //         const uploadedUrl = await uploadFile(file); // 파일 업로드
-    //         previewElement.src = uploadedUrl; // 업로드된 GCS URL로 업데이트
-    //     } catch (error) {
-    //         console.error("업로드 중 오류:", error);
-    //     }
-    // }
-
-
-// // 모든 컨테이너에 클릭 및 파일 업로드 이벤트 추가
-// photoContainers.forEach(({ container, input, preview }) => {
-//     if (!container || !input || !preview) {
-//         console.error("필수 DOM 요소가 정의되지 않았습니다.");
-//         return;
-//     }
-//     // 클릭 시 파일 선택 창 열기
-//     container.addEventListener("click", () => input.click());
-
-//     // 파일 선택 후 처리
-//     input.removeEventListener("change", handleFileUpload);
-//     input.addEventListener("change", () => handleFileUpload(input, preview));
-// });
 // 모든 컨테이너에 클릭 및 파일 업로드 이벤트 추가
 photoContainers.forEach((containerConfig) => {
     const { container, input } = containerConfig;
@@ -389,20 +333,9 @@ instructortext.addEventListener('input',()=>{
     instructortextCount.textContent = `최대 600자 (${currentLength}/600)`;
 });
 
-
-// // 파일 선택 후 미리보기 이미지 업데이트
-// uploadPhotoInput.addEventListener('change', (event) => {
-//     const file = event.target.files[0]; // 사용자가 선택한 파일
-//     if (file) {
-//         // Blob URL 생성
-//         const blobUrl = URL.createObjectURL(file); // Blob URL 생성
-//         photoPreview.src = blobUrl; // Blob URL을 미리보기 이미지에 적용
-//     }
-// });
-
 // 메인 창에서 "주소 검색" 버튼 클릭 시 새 창 열기
 document.getElementById('search-address-btn').addEventListener('click', () => {
-    const popup = window.open('', '_blank', 'width=800,height=600');
+    const popup = window.open('', '_blank', 'width=800,height=700'); // 새로운 페이지 열기
 
     // 새 창 HTML 내용
     const popupContent = `
@@ -414,6 +347,27 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
             <title>카카오 지도</title>
             <style>
                 /* 스타일 정의 */
+                #keyword {
+                width: calc(100% - 100px);
+                padding: 5px;
+                margin-right: 10px;
+                }
+                #search-btn{
+                    border-radius:5px;
+                    width:50px;
+                    height:30px;
+                    cursor:poiner;
+                    background-color:#FEE500;
+                    outline:none;
+                    border:none;
+                }
+                #search-btn:hover{
+                    color:#FEE500;
+                    border:none;
+                    background-color:#3A1D1D;
+                    outline:none;
+                    transform:0.2s all ease-in-out;
+                }
                 .map_wrap, .map_wrap * {
                     margin: 0;
                     padding: 0;
@@ -438,6 +392,16 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
                 #placesList li:hover {
                     background-color: #f0f0f0;
                 }
+                .pagination a {
+                    margin: 0 5px;
+                    text-decoration: none;
+                    color: #333;
+                    cursor: pointer;
+                }
+                .pagination a.active {
+                    font-weight: bold;
+                    color: red;
+                }
             </style>
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=942fcaff4cdbad94246811fba8b6e230&libraries=services"></script>
         </head>
@@ -449,6 +413,7 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
                     <button id="search-btn">검색</button>
                     <ul id="placesList"></ul>
                 </div>
+                <div class="pagination"></div>
             </div>
             <script>
                 // 카카오 지도 API 초기화
@@ -461,7 +426,6 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
                 const ps = new kakao.maps.services.Places();
                 const markers = [];
 
-                // 검색 버튼 클릭 이벤트
                 document.getElementById('search-btn').addEventListener('click', () => {
                     const keyword = document.getElementById('keyword').value;
                     if (!keyword.trim()) {
@@ -472,9 +436,10 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
                 });
 
                 // 검색 결과 콜백 함수
-                function placesSearchCB(data, status) {
+                function placesSearchCB(data, status,pagination) {
                     if (status === kakao.maps.services.Status.OK) {
                         displayPlaces(data);
+                        displayPagination(pagination);
                     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                         alert('검색 결과가 없습니다.');
                     } else {
@@ -519,6 +484,22 @@ document.getElementById('search-address-btn').addEventListener('click', () => {
                     markers.forEach(marker => marker.setMap(null));
                     markers.length = 0;
                 }
+                function displayPagination(pagination) {
+                    const paginationEl = document.querySelector('.pagination');
+                    paginationEl.innerHTML = '';
+
+                    for (let i = 1; i <= pagination.last; i++) {
+                    const a = document.createElement('a');
+                    a.textContent = i;
+                    a.className = i === pagination.current ? 'active' : '';
+                    a.href = '#';
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        ps.keywordSearch(document.getElementById('keyword').value, placesSearchCB, { page: i });
+                    });
+                    paginationEl.appendChild(a);
+                }
+        }
             </script>
         </body>
         </html>

@@ -189,22 +189,27 @@ main{
     margin-top: 10px;
 }
 .description-list{
-    height: 35px;
+    height: 40px;
     margin:0;
     display: flex;
-    padding:3px;
+    padding:10px;
     list-style: none;
 }
-.description-list li {
-    background-color: white;
-}
-.description-list li span,.description-list li img{
-    position: relative;
-    top:4px;
-}
+
 .class-MultiTabs.active {
     font-weight: bold;
     color: black;
+}
+#class-category{
+    margin-top:10px;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #800020;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    color: #333;
 }
 
 .content-item {
@@ -379,5 +384,6 @@ main{
     font-size: 18px;
     font-weight: bold;
     text-align: center;
+    vertical-align: middle;
     min-width: 30px; /* 최소 너비 */
 }

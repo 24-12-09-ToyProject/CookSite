@@ -361,7 +361,7 @@ a {
     gap : 30px;
 }
 #card-container a{
-    height: 250px;
+    height: 280px;
 }
 /* .cookinglist-body{
     display: flex;
@@ -373,7 +373,6 @@ a {
 } 
 .cookinglist-content {
     width: 300px;
-    height: 250px;
 }
 .list-head {
     width:100%;
@@ -384,10 +383,45 @@ a {
     height: 100%;
     object-fit: cover;
 }
-
+.list-body{
+    height: 300px;
+}
 .class-content p {
     margin-bottom: 10px; 
     color:#800020;
+}
+.class-Tag{
+    margin-top:5px;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #800020;
+    border-radius: 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+.instructor{
+    display: flex;
+}
+.class-instructor{
+    height: 50px;
+    position:relative;
+    top:15px;
+    left:5px;
+}
+.class-instructor-photo{
+    width: 50px;
+    height: 50px;
+    border-radius:50%;
+    border: 1px solid beige;
+}
+.class-instructor-photo img{
+    width: 100%;
+    height: 100%;
+    border-radius:50%;
 }
 .mainSlash{
     margin-top:15px;
