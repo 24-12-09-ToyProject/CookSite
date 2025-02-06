@@ -526,3 +526,23 @@ select option{
 #delete-member-btn:hover{
 	border-color: black;
 }
+
+#delete-member-btn-border{
+	border: 2px solid #e9e9e9;
+	border-radius: 5px;
+	width: 550px;
+	margin: 0 auto;
+	padding: 10px 10px;
+	margin-bottom: 50px;
+}
+
+#delete-member-btn-border h2{
+	font-size: 16px;
+	color: #353535;
+	margin-bottom: 10px;
+}
+#delete-member-btn-border li{
+	color: #63666e;
+	font-size: 13px;
+	margin-bottom: 5px;
+}
