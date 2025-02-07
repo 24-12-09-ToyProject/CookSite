@@ -319,7 +319,7 @@ function activateButton(btnName){
 
 	if(btnName === 'sendCodeBtn'){
 		sendCodeBtn.classList.remove('disabled');
-		sendCodeBtn.onclick = sendEmailCode;
+		sendCodeBtn.onclick = () => sendEmailCode('register');
 	}
 }
 
