@@ -77,6 +77,20 @@ async function checkDuplicateId(memberId) {
   }
 }
 
+// 이메일 중복 체크
+async function checkDuplicateEmail(email){
+  try {
+    const result = await queryDatabase(
+      `SELECT COUNT(*) AS count FROM members WHERE email = ?`,
+      [email]
+    );
+    return result[0].count > 0 ? { success:false } : { success:true };
+  } catch (error) {
+    console.error('이메일 중복 체크 오류:', error.message || error);
+    throw '이메일 중복 체크 실패';
+  }
+}
+
 // 로그인
 async function checkAccount(memberId, memberPw) {
   try {
@@ -531,5 +545,6 @@ module.exports = {
   removeProfile,
   deleteAccount,
   findSnsMember,
-  snsSignup
+  snsSignup,
+  checkDuplicateEmail
 };

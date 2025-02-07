@@ -5,6 +5,29 @@ const elEmailCodeBtn = document.querySelector('#email-verify-btn');
 
 // 이메일 코드 전송
 async	function sendEmailCode(){
+
+	// 이메일 중복 체크
+	const emailDuplicate = await fetch('/member/api/check-duplicate-email', {
+		method: 'POST',
+		headers: {
+				'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ email:email.value, emailDomain:emailDomain.value }),
+	});
+
+	const emailDuplicateData = await emailDuplicate.json();
+
+	if(!emailDuplicateData.success){
+		Swal.fire({
+			icon: 'warning',
+			title: '이미 등록된 이메일',
+			html: '다른 이메일을 사용해주세요.<br>이 이메일은 이미 가입되어 있습니다.',
+			confirmButtonColor: '#800020'
+		});
+		return;
+	}
+
+	// 이메일 인증
 	const response = await fetch('/member/api/send-email', {
 		method: 'POST',
 			headers: {

@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
 const { hashValue } = require('../../services/member/argon.js');
-const { signUpMember, checkDuplicateId, checkAccount, findAccount, verifyEmailCode, findPassword, updatePassword, selectInfoById, updateInfo, addProfile, removeProfile, deleteAccount } = require('../../services/member/memberService.js');
+const { signUpMember, checkDuplicateId, checkAccount, findAccount, verifyEmailCode, findPassword, updatePassword, selectInfoById, updateInfo, addProfile, removeProfile, deleteAccount, checkDuplicateEmail } = require('../../services/member/memberService.js');
 const { checkLogin } = require('../member/checkLogin.js');
 const { upload } = require('../../services/member/uploadProfile.js');
 const router = express.Router();
@@ -193,6 +193,20 @@ router.post('/api/check-duplicate-id', async (req, res) => {
 	}
 });
 
+// api - 이메일 중복체크
+router.post('/api/check-duplicate-email', async (req, res) => {
+	const { email, emailDomain } = req.body;
+
+	const fullMail = `${email}${emailDomain}`;
+	const result = await checkDuplicateEmail(fullMail);
+
+	if(result.success){
+		return res.json({success:true, message:"이메일 사용 가능"});
+	}else{
+		return res.json({success:false, message:"이메일 중복"});
+	}
+});
+
 // api - 아이디 찾기
 router.post('/api/find-id', async (req, res) => {
 	const { memberName, email } = req.body;
@@ -373,7 +387,6 @@ router.post('/api/confirm-password', async (req, res) => {
 		res.send("로그인 중 오류발생");
 	}
 })
-
 
 
 // api - 프로필 이미지 업로드
