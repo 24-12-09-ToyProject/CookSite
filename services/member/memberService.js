@@ -1,6 +1,7 @@
 const pool = require('../../config/db.js');
 const fs = require('fs');
-const { verifyValue, allVerifyValue } = require('../../static/js/member/argon.js');
+const { verifyValue, allVerifyValue } = require('../member/argon.js');
+
 const crypto = require('crypto');
 
 // 공통 데이터베이스 쿼리 실행 함수

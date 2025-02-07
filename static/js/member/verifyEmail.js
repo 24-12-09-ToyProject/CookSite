@@ -1,5 +1,7 @@
 const email = document.querySelector('#email');
 const emailDomain = document.querySelector('#email-domain');
+const elEmailCode = document.querySelector('#email-code');
+const elEmailCodeBtn = document.querySelector('#email-verify-btn');
 
 // 이메일 코드 전송
 async	function sendEmailCode(){
@@ -37,11 +39,6 @@ async	function sendEmailCode(){
 
 }
 
-
-
-const elEmailCode = document.querySelector('#email-code');
-const elEmailCodeBtn = document.querySelector('#email-verify-btn');
-
 // 이메일 코드 인증 
 async	function verifyEmailCode(){
 	const emailAddress = `${email.value}${emailDomain.value}`;
@@ -60,8 +57,9 @@ async	function verifyEmailCode(){
 	if(result.success){
 		Swal.fire({
 					icon: 'success',
-					title: 'Alert가 실행되었습니다.',
-					text: '인증 성공하였습니다',
+					title: '이메일 인증 완료!',
+					text: '이메일 인증이 성공적으로 완료되었습니다.',
+					confirmButtonColor: '#800020'
 		});
 		elEmailCodeBtn.setAttribute('data-emailVerified', 'true');
 		clearInterval(timer);
@@ -72,8 +70,9 @@ async	function verifyEmailCode(){
 	}else{
 		Swal.fire({
 					icon: 'warning',
-					title: 'Alert가 실행되었습니다.',
-					text: '다시 입력해주세요',
+					title: '이메일 인증 실패!',
+					html: '인증 코드가 올바르지 않습니다.<br>다시 입력하거나 새로운 인증 코드를 요청해주세요.',
+					confirmButtonColor: '#555'
 		});
 		elEmailCodeBtn.setAttribute('data-emailVerifed', 'false');
 	}
