@@ -96,6 +96,7 @@ main {
     font-weight: 400;
     color: #000000;
     margin-bottom: 5px;
+    height: 30px;
 }
 
 .product-price {

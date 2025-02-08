@@ -15,8 +15,8 @@
                 <span>{{ details.product.PRODUCT_NAME }}</span>
             </div>
 
-            <div class="product-price">
-                <p><strong>{{ details.product.BASE_PRICE }} 원</strong></p>
+            <div class="product-price" data-raw-price="{{ details.product.BASE_PRICE }}">
+                <p><strong id="price-{{ details.product.product_no }}">{{ details.product.BASE_PRICE }}</strong> 원</p>
             </div>
             <div class="shipping-info">
                 <img src="../../static/img/store/van.png" alt="" class="shipping-icon">
@@ -30,6 +30,7 @@
                 {% if details.options and details.options|length > 0 %}
                 <form action="/store/order" method="POST" id="product-form">
                     <input type="hidden" name="productImg" value="{{ details.product.PPODUCT_MAIN_IMG_URL }}">
+                    <input type="hidden" name="productNo" value="{{ details.product.PRODUCT_NO }}">
                     <input type="hidden" name="productName" value="{{ details.product.PRODUCT_NAME }}">
                     <input type="hidden" name="selectedOptionsData" id="selectedOptionsData">
                     <input type="hidden" name="totalPrice" id="totalPriceData">
@@ -63,10 +64,18 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll(".product-price").forEach(priceElement => {
+            const rawPrice = priceElement.dataset.rawPrice;  // HTML 속성에서 가격 가져오기
+            const formattedPrice = Number(rawPrice).toLocaleString(); // 쉼표 추가 변환
+            priceElement.querySelector("strong").textContent = formattedPrice; // 변환된 값 적용
+        });
+    });
     const basePrice = {{ details.product.BASE_PRICE }};
     const rewardAmount = basePrice * 0.005;
     const productImg = document.querySelector("input[name='productImg']").value;
     const productName = document.querySelector("input[name='productName']").value;
+    const productNo = document.querySelector("input[name='productNo']").value;
 
     document.getElementById('reward-amount').textContent = rewardAmount.toFixed(0);
 
@@ -74,10 +83,10 @@
 
     // 옵션 선택 시 실행되는 함수
     document.getElementById('product-option').addEventListener('change', function () {
+
         const select = this;
         const selectedOption = select.options[select.selectedIndex];
-
-        console.log("선택된 옵션:", selectedOption);  // 선택된 옵션 로그 출력
+        const optionNo = selectedOption.value; // 옵션 번호
 
         // 이미 선택된 옵션인지 확인
         if (selectedOptions.has(selectedOption.value)) {
@@ -87,7 +96,7 @@
         }
 
         const optionData = {
-            id: selectedOption.value,
+            optionNo: selectedOption.value,
             name: selectedOption.getAttribute('data-name'),
             priceDiff: parseInt(selectedOption.getAttribute('data-price'), 10),
             stock: parseInt(selectedOption.getAttribute('data-stock'), 10),
@@ -97,7 +106,7 @@
         // console.log("옵션 데이터 추가:", optionData); // 옵션 데이터 로그 확인
 
         addOptionToContainer(optionData);
-        selectedOptions.set(optionData.id, optionData);  // 옵션 저장
+        selectedOptions.set(optionData.optionNo, optionData);  // 옵션 저장
 
         // console.log("현재 selectedOptions:", selectedOptions); // 선택된 옵션 전체 출력
         // console.log("🔢 현재 selectedOptions size:", selectedOptions.size);
@@ -115,7 +124,7 @@
         const container = document.getElementById('selected-options-container');
         const optionDiv = document.createElement('div');
         optionDiv.className = 'selected-option-details';
-        optionDiv.dataset.optionId = optionData.id;
+        optionDiv.dataset.optionId = optionData.optionNo;
 
         const totalOptionPrice = basePrice + optionData.priceDiff;
 
@@ -133,6 +142,7 @@
             <button type="button" class="increase-btn">+</button>
         </div>
     </div>
+    <span name="optionNo" value="${optionData.optionNo}">
     <input type="hidden" name="options[]" value="${optionData.id}">
     <input type="hidden" name="quantities[]" value="1">
 </div>
@@ -180,7 +190,7 @@
         const optionBasePrice = basePrice + optionData.priceDiff;
         optionDiv.querySelector('.option-price').textContent = `${optionBasePrice.toLocaleString()}원`;
     }
-    
+
     // 총 가격 업데이트
     function updateTotalPrice() {
         let totalPrice = 0;
@@ -198,12 +208,16 @@
         }
 
         const selectedOptionsData = Array.from(selectedOptions.values()).map(option => ({
+            productNo: productNo,
             productImg: productImg,
             productName: productName,
             optionName: option.name,
+            optionNo: option.optionNo,
             quantity: option.quantity,
             price: (basePrice + option.priceDiff)
         }));
+
+        // console.log("selectedOptionsData:", selectedOptionsData);
 
         const totalPrice = selectedOptionsData.reduce((sum, option) => sum + option.optionPrice, 0);
 
@@ -232,21 +246,22 @@
         }
 
         // 폼에 데이터를 추가
-        updateFormData(selectedOptionsData, totalPrice);
+        updateFormData(selectedOptionsData);
     }
 
     // 폼 데이터 업데이트 함수 개선
-    function updateFormData(selectedOptionsData, totalPrice) {
+    function updateFormData(selectedOptionsData) {
         const selectedOptionsWithDetails = selectedOptionsData.map(option => ({
-            productImg: productImg,  // 전역 변수로 선언된 이미지 URL 사용
-            productName: productName,  // 전역 변수로 선언된 상품명 사용
-            optionName: option.name || option.optionName,
+            productNo: productNo,
+            productImg: productImg,
+            productName: productName,
+            optionName: option.optionName,
+            optionNo: option.optionNo,
             quantity: option.quantity,
-            optionPrice: (basePrice + option.priceDiff)
+            optionPrice: option.optionPrice
         }));
 
         document.getElementById('selectedOptionsData').value = JSON.stringify(selectedOptionsWithDetails);
-        document.getElementById('totalPriceData').value = totalPrice;
     }
 
     // 바로구매 시 폼 제출 이벤트 리스너 개선
@@ -257,21 +272,26 @@
             alert('상품 옵션을 선택해주세요.');
             return;
         }
-
-        // 선택된 옵션 데이터를 orderItems 형식으로 준비
-        const orderItems = Array.from(selectedOptions.values()).map(option => ({
-            productImg: productImg,  // 상품 이미지 추가
-            productName: productName,  // 상품명 추가
+        const selectedOptionsData = Array.from(selectedOptions.values()).map(option => {
+        // console.log("Option data:", option); // 옵션 데이터 확인
+        // console.log("Price diff:", option.priceDiff); // priceDiff 값 확인
+        
+        return {
+            productNo: productNo,
+            productImg: productImg,
+            productName: productName,
             optionName: option.name,
+            optionNo: option.optionNo,
             quantity: option.quantity,
-            optionPrice: (basePrice + option.priceDiff)
-        }));
+            optionPrice: basePrice + option.priceDiff // option.priceDiff || 0 제거
+        };
+    });
 
-        // 총 가격 계산
-        const totalPrice = orderItems.reduce((sum, option) => sum + option.optionPrice, 0);
+        // console.log("Final selectedOptionsData:", selectedOptionsData); // 최종 데이터 확인
+
 
         // orderItems와 totalPrice를 hidden 필드에 설정
-        updateFormData(orderItems, totalPrice);
+        updateFormData(selectedOptionsData);
 
         // 폼 제출
         this.submit();
