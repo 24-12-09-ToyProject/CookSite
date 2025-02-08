@@ -7,7 +7,9 @@
 {% block content %}
 <div class="cart-container">
     <h2>장바구니</h2>
-    <div id="cart-items"></div>
+    <!-- <a href="/store/product/{{ item.PRODUCT_NO }}" class="product-card"> -->
+        <div id="cart-items"></div>
+    <!-- </a> -->
     <div class="cart-summary">
         <div class="price-details">
             <p>상품금액 <span id="subtotal">0원</span></p>
@@ -29,7 +31,7 @@
     function displayCartItems() {
         const cartContainer = document.getElementById('cart-items');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        console.log(cart);
+        // console.log(cart);
 
         if (cart.length === 0) {
             cartContainer.innerHTML = '<p class="empty-cart">장바구니가 비어있습니다.</p>';
@@ -148,9 +150,11 @@
                 if (checkbox.checked) {
                     const selectedItem = cart[index];
                     selectedItems.push({
+                        productNo: selectedItem.productNo,
                         productImg: selectedItem.productImg,
                         productName: selectedItem.productName,
                         optionName: selectedItem.optionName,
+                        optionNo: selectedItem.optionNo,
                         quantity: selectedItem.quantity,
                         optionPrice: selectedItem.price
                     });
@@ -169,9 +173,11 @@
 
             // 선택된 상품 정보만 전송
             const selectedOptionsData = selectedItems.map(item => ({
+                productNo: item.productNo,
                 productImg: item.productImg,
                 productName: item.productName,
                 optionName: item.optionName,
+                optionNo: item.optionNo,
                 quantity: item.quantity,
                 optionPrice: item.optionPrice
             }));
