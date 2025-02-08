@@ -140,7 +140,7 @@
 
 #total-price {
     font-size: 35px;
-    color: #46ae4f;
+    color: #800020;
     margin-left: 15px;
     margin-top: 10px;
 }
@@ -160,8 +160,8 @@
     padding: 12px;
     margin-top: 10px;
     background-color: #ffffff;
-    color: #46ae4f;
-    border: 1px solid #46ae4f;
+    color: #800020;
+    border: 1px solid #800020;
     cursor: pointer;
     float: left;
     margin-right: 1%;
@@ -175,7 +175,7 @@
     height: 58px;
     padding: 12px;
     margin-top: 10px;
-    background-color: #46ae4f;
+    background-color: #800020;
     color: white;
     border: none;
     cursor: pointer;
@@ -185,7 +185,7 @@
 }
 
 .buy-now {
-    background-color: #2ecc71;
+    background-color: #800020;
 }
 
 .section-line {
