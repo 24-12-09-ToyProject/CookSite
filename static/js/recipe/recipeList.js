@@ -71,7 +71,10 @@ function updateRecipeList(recipes, reset) {
                 <img src="${recipe.thumbnail}" alt="${recipe.title}">
             </a>
             <p class="recipe-title">${recipe.title}</p>
-            <p>ID: ${recipe.member_id}</p>
+            <div class="writer-info">
+            <img class="profile-img" src="/uploadFile/member/${recipe.profileImg}" alt="profile img">
+                <p class="member-id">${recipe.member_id}</p>
+            </div>
         `;
         recipeList.appendChild(li);
     });

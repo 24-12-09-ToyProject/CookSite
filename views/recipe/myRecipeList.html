@@ -6,8 +6,8 @@
 
 {% block content %}
     <div class="list-container">
+        <h1 class="recipe-header">나의 레시피</h1>
         <div class="cate-list">
-            <span><b>종류</b></span>
             <button class="cate-button" data-category="all">전체</button>
             <button class="cate-button" data-category="sidedish">밑반찬</button>
             <button class="cate-button" data-category="maindish">메인반찬</button>
@@ -16,7 +16,6 @@
             <button class="cate-button" data-category="rice">밥/죽/떡</button>
             <button class="cate-button" data-category="western">양식/샐러드</button>
         </div>
-        <p id="my-recipe-title">나의 레시피</p>
         {% if recipes and recipes|length > 0 %}
             <div class="search-result">
                 등록된 레시피 총 <b id="my-recipe-total-count">{{ totalCount }}</b> 개

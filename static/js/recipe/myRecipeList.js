@@ -112,5 +112,14 @@ function updateRecipeList(recipes, reset) {
             const recipeElement = this.closest('li');
             deleteOneRecipe(recipeNo, recipeElement);
         });
+
+        // 수정 버튼 클릭 시 함수 호출
+        const updateButton = li.querySelector('.update-recipe-btn');
+        updateButton.addEventListener('click', function() {
+            if(confirm('레시피 수정 화면으로 이동합니다.')) {
+                const recipeNo = this.getAttribute('data-recipe-id');
+                window.location.href = `/recipe/update/${recipeNo}`;
+            }
+        });
     });
 }

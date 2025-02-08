@@ -1,9 +1,10 @@
 class RecipeDTO {
-    constructor({ RECIPE_NO, RECIPE_TITLE, MEMBER_ID, RECIPE_THUMBNAIL}) {
-        this.recipe_no = RECIPE_NO;
-        this.member_id = MEMBER_ID;
-        this.title = RECIPE_TITLE;
-        this.thumbnail = RECIPE_THUMBNAIL;
+    constructor(row) {
+        this.recipe_no = row.RECIPE_NO;
+        this.member_id = row.MEMBER_ID;
+        this.title = row.RECIPE_TITLE;
+        this.thumbnail = row.RECIPE_THUMBNAIL;
+        this.profileImg = row.FILE_RENAME || '';
     }
 }
 

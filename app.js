@@ -16,11 +16,11 @@ const pool = require('./config/db.js');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// member 미들웨어 등록 - session
+// session 설정
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-// session  connect-flash
+// connect-flash 설정
 const flash = require('connect-flash');
 require('dotenv').config({path:"./config/.env"});
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -37,14 +37,13 @@ app.use(session({
     }
 }));
 app.use((req, res, next) => {
-    // console.log("현재 세션 데이터:", req.session);
     res.locals.session = req.session;
     next();
 });
-
 app.use(flash());
 // 정적 파일 제공 (브라우저에서 접근 가능하도록 설정 /uploadFile 경로로 실제 경로의 파일 추적 가능)
 app.use("/uploadFile", express.static(process.env.FILE_PATH));
+
 //라우터 불러오기 
 const cookingRouter = require('./routes/cooking/cookingRoute.js');
 const recipeRouter = require('./routes/recipe/recipeRoute.js');
@@ -56,9 +55,11 @@ const storeRouter = require('./routes/store/storeRoute.js');
 app.use('/cooking' , cookingRouter);
 app.use('/recipe' , recipeRouter);
 app.use('/store', storeRouter);
-// - member 미들웨어
 app.use('/member' , memberRouter);
 app.use('/naver', naverRouter);
+app.get('/', (req, res) => {
+    res.redirect('/recipe/list');
+});
 
 // view 모든 하위 폴더 지정
 function getAllSubfolders(directory) {

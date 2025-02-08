@@ -1,11 +1,12 @@
 const express = require('express');
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
-const { hashValue, verifyValue } = require('../../static/js/member/argon.js');
-const { signUpMember, checkDuplicateId, checkAccount, findAccount, verifyEmailCode, findPassword, updatePassword, selectInfoById, updateInfo, addProfile, removeProfile, deleteAccount } = require('../../services/member/memberService.js');
+const { hashValue } = require('../../services/member/argon.js');
+const { signUpMember, checkDuplicateId, checkAccount, findAccount, verifyEmailCode, findPassword, updatePassword, selectInfoById, updateInfo, addProfile, removeProfile, deleteAccount, checkDuplicateEmail } = require('../../services/member/memberService.js');
 const { checkLogin } = require('../member/checkLogin.js');
 const { upload } = require('../../services/member/uploadProfile.js');
 const router = express.Router();
+const emailAuth = require('../../services/member/emailAuth.js');
 
 const client_id = process.env.NAVER_ID;
 var redirectURI = encodeURI("http://127.0.0.1:8888/naver/callback");
@@ -27,12 +28,85 @@ router.get('/login', (req, res)=>{
 
 
 	if (!req.session.user) {
-		// console.log("flashMessage_signupResult : " + signupResult);
-		
 		res.render('login.html', {signupResult:signupResult, loggedInMessage:loggedInMessage, deleteResult:deleteResult, api_url:api_url, loginResult:loginResult});  // 로그인 페이지 내용
 	} else {
-			res.redirect('/member/mypage'); // 임시
+			res.redirect('/');
 	}
+});
+
+// 회원가입 페이지 이동
+router.get('/signUp', (req, res)=>{
+	res.render('register.html');
+})
+
+// 아이디 찾기 페이지 이동
+router.get('/findAccount', (req, res) => {
+	res.render('findAccount.html');
+})
+
+// 비밀번호 찾기 페이지 이동
+router.get('/findPassword', (req, res) => {
+	res.render('findPassword.html');
+})
+
+// 상세정보 페이지 이동
+router.get('/detail', checkLogin, async (req, res) => {
+	// session.user 에서 id 확인
+	const memberId = req.session.user.id;
+	const filePath = req.session.user.filePath;
+	const provider = req.session.user.provider;
+	// 해당 아이디 정보 가져오기
+	const result = await selectInfoById(memberId);
+	if(result.success){
+		result.info.filePath = filePath;
+		result.info.provider = provider;
+		console.log("info : " + result.info);
+		res.render('memberDetail.html', result.info);
+	}else{
+		res.send('정보를 가져오는 중 오류 발생');
+	}
+})
+
+// 비밀번호 본인 확인 페이지 이동
+router.get('/confirmPassword', checkLogin, async (req, res) => {
+	const { from } = req.query;
+	const result = req.flash('confirmPasswordResult');
+	
+	// social 회원의 경우 렌더링 없이 바로 삭제 후 로그인 페이지 이동
+	if(from === 'deleteSocial'){
+		// 회원 탈퇴
+		const memberId = req.session.user.id;
+		console.log("탈퇴되는 아이디 : " + memberId);
+		
+		const deleteResult = await deleteAccount(memberId, null);
+		if(deleteResult.success){
+			 // 세션 삭제 (로그아웃 처리)
+			req.session.destroy(err => {
+				if (err) {
+						console.error('세션 삭제 오류:', err);
+						return res.status(500).send('세션 파괴 실패');
+				}
+				res.redirect('/member/login?deleteResult=success'); // 로그인 페이지로 이동
+			})
+		}else{
+			res.send('삭제 오류');
+		}
+	}else{
+		res.render('confirmPassword.html', {confirmPasswordResult:result, from:from});
+	}
+});
+
+// 비밀번호 재설정 페이지 이동
+router.get("/reset-password", (req, res) => {
+  const { token } = req.query;
+
+  try {
+    // 1. 토큰 검증
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    res.render('resetPassword.html', { decodedMemberId : decoded.memberId });
+  } catch (err) {
+    res.status(400).send("유효하지 않은 또는 만료된 링크입니다.");
+  } 
 });
 
 // 로그인 실행
@@ -51,9 +125,7 @@ router.post('/login', async (req, res)=>{
 				fileRename:result.info.file_rename,
 				loggedIn : true
 			}
-
-			res.send("로그인 성공"); // index 페이지로 이동하도록 바꿔야함
-
+			res.redirect("/");
 		}else{
 			req.flash('loginResult', 'fail')
 			res.redirect('/member/login');
@@ -61,30 +133,20 @@ router.post('/login', async (req, res)=>{
 	} catch (error) {
 		res.send("로그인 중 오류발생" + error);
 	}
-
-	
 });
 
-
-// 마이페이지 이동
-router.get('/mypage', checkLogin, (req, res)=>{
-	res.render('mypage.html');
+// 로그아웃 실행
+router.get('/logout', (req, res) => {
+	// 세션 삭제 (로그아웃 처리)
+	req.session.destroy(err => {
+		if (err) {
+				console.error('세션 삭제 오류:', err);
+				return res.status(500).send('세션 파괴 실패');
+		}
+		
+		res.redirect('/member/login'); // 로그인 페이지로 이동
+	});
 })
-
-// 회원가입 페이지 이동
-router.get('/signUp', (req, res)=>{
-	res.render('register.html');
-})
-
-router.get('/findAccount', (req, res) => {
-	res.render('findAccount.html');
-})
-
-// 비밀번호 찾기 페이지 이동
-router.get('/findPassword', (req, res) => {
-	res.render('findPassword.html');
-})
-
 
 // 회원가입 실행
 router.post('/signUp', async (req, res)=>{
@@ -93,34 +155,14 @@ router.post('/signUp', async (req, res)=>{
 
 		// 해싱할 비밀번호 값
 		const plainvalue = memberJson.memberPw;
-
 		// 비밀번호 해싱
-		console.log('-----------------------------------------------------------------');
-		console.log('해시처리 시작');
 		const hashedvalue = await hashValue(plainvalue);
-
 		// 해싱한 비밀번호로 수정
 		memberJson.memberPw = hashedvalue;
 
-		// 비밀번호 검증 (올바른 비밀번호)
-		// console.log('-----------------------------------------------------------------');
-		// console.log(plainvalue, ' =>이 값 검증');
-		// await verifyValue(hashedvalue, plainvalue);
-
-		// // 비밀번호 검증 (잘못된 비밀번호)
-		// console.log('-----------------------------------------------------------------');
-		// const wrongvalue = '잘못된 값 넣어서 체크해보겠음';
-		// console.log(wrongvalue, ' =>이 값 검증');
-		// await verifyValue(hashedvalue, wrongvalue);
-
 		console.log('회원 정보:', memberJson);
-
-		// service - 회원가입 쿼리문 실행
 		
 		let resultMessage = await signUpMember(memberJson, plainvalue);
-
-		console.log(resultMessage);
-		
 
 		if(resultMessage === '회원가입 성공'){
 			req.flash('signupResult', 'success');
@@ -129,27 +171,18 @@ router.post('/signUp', async (req, res)=>{
 		}
 
 		res.redirect('/member/login');
-
 	} catch (error) {
 		console.error('오류 발생:', error);
 		req.flash('signupResult', 'fail');
 		res.redirect('/member/login');
 	}
-
 });
-
-
 
 // api - 아이디 중복체크
 router.post('/api/check-duplicate-id', async (req, res) => {
 	const { memberId } = req.body;
 
-	console.log('/api/check-duplicate-id ' +memberId);
-	
-
 	const resultMessage = await checkDuplicateId(memberId);
-	console.log(resultMessage);
-	
 		
 	if(resultMessage === '이미 존재하는 아이디'){
 		return res.status(200).json({success:false, message:resultMessage});
@@ -158,30 +191,35 @@ router.post('/api/check-duplicate-id', async (req, res) => {
 	}else{
 		return res.status(500).json({success:false, message:resultMessage});
 	}
-	
+});
+
+// api - 이메일 중복체크
+router.post('/api/check-duplicate-email', async (req, res) => {
+	const { email, emailDomain } = req.body;
+
+	const fullMail = `${email}${emailDomain}`;
+	const result = await checkDuplicateEmail(fullMail);
+
+	if(result.success){
+		return res.json({success:true, message:"이메일 사용 가능"});
+	}else{
+		return res.json({success:false, message:"이메일 중복"});
+	}
 });
 
 // api - 아이디 찾기
 router.post('/api/find-id', async (req, res) => {
 	const { memberName, email } = req.body;
 
-	console.log('/api/find-id' + memberName + " / " + email);
-
 	let {resultMessage, maskedId} = await findAccount(memberName, email);
-
 
 	if(resultMessage === "존재하는 계정"){
 		res.status(200).json({success:true, maskedId:maskedId});
-
 	}else if(resultMessage === "존재하지 않는 계정"){
-		console.log("else if 실행됨");
-		
 		res.status(200).json({success:false, maskedId:maskedId});
 	}
-
 })
 
-const emailAuth = require('../../services/member/emailAuth.js')
 // api - 이메일 코드 전송
 router.post('/api/send-email', async (req, res) => {
 	emailAuth.SendMailCode(req, res);
@@ -225,20 +263,8 @@ router.post('/api/find-pw', async (req, res) => {
 
 })
 
-// 비밀번호 재설정 페이지 이동
-router.get("/reset-password", (req, res) => {
-  const { token } = req.query;
 
-  try {
-    // 1. 토큰 검증
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    res.render('resetPassword.html', { decodedMemberId : decoded.memberId });
-  } catch (err) {
-    res.status(400).send("유효하지 않은 또는 만료된 링크입니다.");
-  } 
-});
-
-// 비밀번호 재설정
+// api - 비밀번호 재설정
 router.post('/api/reset-password', async (req, res) => {
 	const { memberId, memberPw } = req.body;
 
@@ -269,25 +295,8 @@ router.post('/api/reset-password', async (req, res) => {
 
 })
 
-// 상세정보 페이지 이동
-router.get('/detail', checkLogin, async (req, res) => {
-	// session.user 에서 id 확인
-	const memberId = req.session.user.id;
-	const filePath = req.session.user.filePath;
-	const provider = req.session.user.provider;
-	// 해당 아이디 정보 가져오기
-	const result = await selectInfoById(memberId);
-	if(result.success){
-		result.info.filePath = filePath;
-		result.info.provider = provider;
-		console.log("info : " + result.info);
-		res.render('memberDetail.html', result.info);
-	}else{
-		res.send('정보를 가져오는 중 오류 발생');
-	}
-})
 
-// 회원 정보 수정
+// api - 회원 정보 수정
 router.post('/api/update-info', async (req, res) => {
 		const memberJson = req.body;
 		
@@ -316,47 +325,17 @@ router.post('/api/update-info', async (req, res) => {
 		dateOfBirth:dateOfBirth,
 	};
 
-	const result = await updateInfo(info);
-
-	res.json(result);
-
-})
-
-// 비밀번호 본인 확인 페이지 이동
-router.get('/confirmPassword', checkLogin, async (req, res) => {
-	const { from } = req.query;
-	const result = req.flash('confirmPasswordResult');
+	try {
+		const result = await updateInfo(info);
 	
-	// social 회원의 경우 렌더링 없이 바로 삭제 후 로그인 페이지 이동
-	if(from === 'deleteSocial'){
-		// 회원 탈퇴
-		const memberId = req.session.user.id;
-		console.log("탈퇴되는 아이디 : " + memberId);
-		
-		const deleteResult = await deleteAccount(memberId, null);
-		if(deleteResult.success){
-			 // 세션 삭제 (로그아웃 처리)
-			req.session.destroy(err => {
-				if (err) {
-						console.error('세션 삭제 오류:', err);
-						return res.status(500).send('세션 파괴 실패');
-				}
-				
-				res.redirect('/member/login?deleteResult=success'); // 로그인 페이지로 이동
-			})
-
-		}else{
-			res.send('삭제 오류');
-		}
-	}else{
-		res.render('confirmPassword.html', {confirmPasswordResult:result, from:from});
+		res.json(result);
+	} catch (error) {
+		res.send("회원 정보 수정 중 오류 발생 : " + error);
 	}
 
-
 })
 
-
-// 비밀번호 본인 확인 
+// api - 비밀번호 본인 확인 
 router.post('/api/confirm-password', async (req, res) => {
 	const { from } = req.body;
 
@@ -394,14 +373,10 @@ router.post('/api/confirm-password', async (req, res) => {
 						
 						res.redirect('/member/login?deleteResult=success'); // 로그인 페이지로 이동
 					});
-
-
 				}else{
 					res.send('삭제 오류');
 				}
 			}
-
-
 		}else if(result.message === "존재하지 않는 계정"){
 			req.flash('confirmPasswordResult', 'fail');
 			res.redirect('/member/confirmPassword');
@@ -414,12 +389,9 @@ router.post('/api/confirm-password', async (req, res) => {
 })
 
 
-
-// 프로필 이미지 업로드
+// api - 프로필 이미지 업로드
 router.post('/api/upload-profile', checkLogin, upload.single('profileImage'), async (req, res) => {
-
 	const memberId = req.session.user.id;
-	
 	try {
 	// db에 저장될 파일 정보
 	const fileInfo = {
@@ -461,6 +433,7 @@ router.post('/api/upload-profile', checkLogin, upload.single('profileImage'), as
 		console.log("업로드된 파일:", req.file);
 })
 
+// api - 프로필 삭제
 router.post('/api/remove-profile', async (req, res) => {
 	const memberId = req.session.user.id;
 	const currentProfile = req.session.user.fileRename;
@@ -483,27 +456,12 @@ router.post('/api/remove-profile', async (req, res) => {
 				message: '프로필 삭제 실패'
 			});
 		}
-
   } catch (error) {
     console.error("DB 삭제 오류:", error);
     res.status(500).json({ message: "DB 삭제 실패" });
   }
-
-
 })
 
-
-router.get('/logout', (req, res) => {
-	// 세션 삭제 (로그아웃 처리)
-	req.session.destroy(err => {
-		if (err) {
-				console.error('세션 삭제 오류:', err);
-				return res.status(500).send('세션 파괴 실패');
-		}
-		
-		res.redirect('/member/login'); // 로그인 페이지로 이동
-	});
-})
 
 
 
