@@ -11,11 +11,12 @@
         <div class="product-header" data-product-name="{{ group.productName }}">
             <img src="{{ group.productImg }}" alt="{{ group.productName }}">
             <h2>{{ group.productName }}</h2>
-
+            <input type="hidden" name="productNo" value="{{ group.productNo }}">
             <div class="options-container">
                 {% for option in group.options %}
                 <div class="option-detail">
                     <div class="option-name">{{ option.optionName }}</div>
+                    <input type="hidden" name="option-no" value="{{ option.optionNo }}">
                     <div class="option-info">
                         <span class="quantity">수량: {{ option.quantity }}</span>
                         <span class="price">가격: {{ option.optionPrice }}</span>
@@ -55,12 +56,20 @@
             </div>
         </div>
     </div>
-
-    <div class="total-price">
-        <strong>총 주문금액:</strong>
-        <span>{{ orderData.totalPrice }}</span>
+    <div class="cart-summary">
+        <div class="total-price">
+            <div class="price-details">
+                <p>상품금액 <span id="optionPrice">{{ orderData.optionPrice }}원</span></p>
+                <input name="userId" type="hidden" value="{{ orderData.userId}}">
+                <p>배송비 <span id="shipping">3,500원</span></p>
+                <p class="shipping-notice">(70,000원 이상 구매 시 무료배송)</p>
+            </div>
+            <div class="total-amount">
+                <strong>총 주문금액:</strong>
+                <span id="totalPrice">0원</span>
+            </div>
+        </div>
     </div>
-
     <div class="payment-methods">
         <h3>결제 수단 선택</h3>
         <div class="payment-options">
@@ -83,13 +92,24 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const productHeaders = document.querySelectorAll(".product-header");
+    const productNo = document.querySelector("input[name='productNo']").value;
+    const userId = document.querySelector("input[name='userId']").value;
 
-        productHeaders.forEach(header => {
-            const productName = header.getAttribute("data-product-name");
-            console.log("상품명:", productName);
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+        let optionPriceElement = document.getElementById("optionPrice");
+        let totalPriceElement = document.getElementById("totalPrice");
+        let shippingElement = document.getElementById("shipping");
+
+        // 상품 금액에서 숫자만 추출
+        let optionPrice = parseInt(optionPriceElement.innerText.replace(/[^0-9]/g, ''), 10);
+
+        // 배송비 계산
+        let shipping = optionPrice >= 70000 ? 0 : 3500;
+        shippingElement.innerText = shipping.toLocaleString() + "원";
+
+        // 총 주문 금액 계산
+        let totalPrice = optionPrice + shipping;
+        totalPriceElement.innerText = totalPrice.toLocaleString() + "원";
     });
 
     function findPostCode() {
@@ -109,10 +129,10 @@
         const address = document.getElementById('address').value;
         const addressDetail = document.getElementById('address-detail').value;
 
-        // if (!name || !phone || !email || !postcode || !address || !addressDetail) {
-        //     alert('배송 정보를 모두 입력해주세요.');
-        //     return false;
-        // }
+        if (!name || !phone || !email || !postcode || !address || !addressDetail) {
+            alert('배송 정보를 모두 입력해주세요.');
+            return false;
+        }
 
         return {
             name,
@@ -124,22 +144,45 @@
     }
 
     async function requestPay() {
-        // 상품명을 가져오기
         const productHeaders = document.querySelectorAll(".product-header");
         let productNames = [];
+        let orderItems = [];
 
+        // 각 상품 정보 수집
         productHeaders.forEach(header => {
             const productName = header.getAttribute("data-product-name");
+            const productNo = header.querySelector("input[name='productNo']").value;
+
+            // 각 상품의 옵션 정보 수집
+            const optionsContainer = header.querySelector(".options-container");
+            const options = optionsContainer.querySelectorAll(".option-detail");
+
+            options.forEach(option => {
+                // 옵션 정보 추출
+                const optionName = option.querySelector(".option-name").textContent;
+                const quantityText = option.querySelector(".quantity").textContent;
+                const quantity = parseInt(quantityText.replace(/[^0-9]/g, ''), 10);
+
+                // option-detail에 data-option-no 속성 추가 필요
+                const optionNo = option.querySelector("input[name='option-no']").value;
+                // console.log("상품번호" + optionNo);
+                orderItems.push({
+                    product_no: productNo,
+                    option_no: optionNo,
+                    quantity: quantity
+                });
+            });
+
             productNames.push(productName);
         });
 
-        // 배열 형태로 묶어서 결제 요청 시 전달 (여러 개의 상품이 있을 수 있음)
-        const productName = productNames.join(", "); // 여러 개의 상품명을 쉼표로 구분
+        const productName = productNames.join(", ");
         const shippingInfo = validateForm();
         if (!shippingInfo) return;
 
         const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-        const totalPrice = parseInt("{{ orderData.totalPrice }}".replace(/[^0-9]/g, ''));
+        const totalPriceString = document.getElementById("totalPrice").innerHTML;
+        const totalPrice = parseInt(totalPriceString.replace('원', '').replace(/,/g, ''), 10);
 
         IMP.init('imp25362283');
         IMP.request_pay({
@@ -159,11 +202,11 @@
                     const orderData = {
                         imp_uid: response.imp_uid,
                         merchant_uid: response.merchant_uid,
-                        productInfo: {
-                            name: productName,
-                            totalPrice: totalPrice
-                        },
-                        shippingInfo: shippingInfo
+                        total_price: totalPrice,
+                        member_id: userId,
+                        shippingInfo: shippingInfo,
+                        pay_method: response.pay_method,
+                        orderItems: orderItems  // 수집된 주문 상품 정보
                     };
 
                     const verifyResponse = await fetch('/store/payments/complete', {
@@ -175,8 +218,9 @@
                     });
 
                     if (verifyResponse.ok) {
+                        localStorage.removeItem('cart');  
                         alert('결제가 완료되었습니다.');
-                        location.href = "/store/all";
+                        location.href = "/store/order/history";
                     } else {
                         throw new Error('결제 검증 실패');
                     }
