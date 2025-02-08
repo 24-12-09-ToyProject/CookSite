@@ -1,0 +1,178 @@
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.order-container {
+    width: 1200px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.order-container h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #333;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.order-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.order-number {
+    font-size: 14px;
+    color: #999;
+}
+
+.order-status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.order-status.paid {
+    background-color: #e6f3e6;
+    color: #2c7c2c;
+}
+
+.order-status.waiting {
+    background-color: #fff4e0;
+    color: #ff9800;
+}
+
+.order-product {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-image {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.product-quantity {
+    color: #666;
+    font-size: 14px;
+}
+
+.product-price {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.order-summary {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    background-color: #f8f8f8;
+}
+
+.total-amount {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.total-amount span {
+    color: #666;
+    font-size: 14px;
+}
+
+.total-amount strong {
+    font-size: 18px;
+    color: #333;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.btn-detail, 
+.btn-support {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-detail:hover, 
+.btn-support:hover {
+    background-color: #f0f0f0;
+}
+
+.empty-order {
+    text-align: center;
+    padding: 50px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.empty-order p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btn-continue {
+    padding: 12px 30px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn-continue:hover {
+    opacity: 0.8;
+}
