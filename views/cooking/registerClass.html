@@ -1,41 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="../../static/css/common/footer.css">
-        <link rel="stylesheet" href="../../static/css/common/header.css">
-        <link rel="stylesheet" href="../../static/css/reset.css">
-        <link rel="stylesheet" href="../../static/css/layout.css">
+{% extends "common/layout.html" %}
+        
+{% block extra_styles %}       
         <link rel="stylesheet" href="../../static/css/cooking/registerClass.css">
-    </head>
-    <body>
-        <header>
-            <div class="header-left">
-                <img id="header-logo" src="../../static/img/main-logo.png" alt="main logo"/>
-                <nav class="nav-menu">
-                    <a href="/recipe/list">레시피</a>
-                    <a href="#">스토어</a>
-                    <a href="/cooking/search">쿠킹클래스</a>
-                </nav>
-            </div>
-            <!-- 로그인 상태에 따른 영역 표시 -->
-            <div class="header-right">
-                <div class="header-login-area">
-                    <img id="header-login" src="../../static/img/login.png" alt="login">
-                    <img id="header-write-recipe" src="../../static/img/write-recipe.png" alt="write recipe">
-                </div>
-                <div class="header-my-expand">
-                    <p>내 정보</p>
-                    <p>장바구니</p>
-                    <p onclick="goToMyRecipe();">나의 레시피</p>
-                    <p>구매내역</p>
-                    <p>예약내역</p>
-                    <p>로그아웃</p>
-                </div>
-            </div>
-        </header>
+{% endblock %}
+{% block content %}
         <main>
             <div class="main">
                     <div class="sidebar">
@@ -56,10 +24,8 @@
                 </div>
             </div>
         </main>
-        <footer>
-            <p>cooksite@cooksite.com<br>Copyright ⓒ 2025 CookSite. All Rights Reserved.</p>
-        </footer>
-    </body>
+{% endblock %}
+{% block extra_scripts %}
     <script src="/static/js/common/header.js"></script>
     <script defer src="../../static/js/cooking/registerClass.js"></script>
-</html>
+{% endblock %}

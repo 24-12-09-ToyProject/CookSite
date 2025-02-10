@@ -12,6 +12,7 @@ main{
 /* 왼쪽 패널: 이미지 */
 .left-panel {
     width: 60%;
+    min-height: 1000px;
 }
 .left-panel #class-thumbnail{
     height: 400px;

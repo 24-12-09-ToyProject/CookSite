@@ -1,41 +1,10 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상세페이지</title>
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
     <link rel="stylesheet" href="../../static/css/cooking/detailClass.css">
-    <link rel="stylesheet" href="../../static/css/reset.css">
-    <link rel="stylesheet" href="../../static/css/layout.css">
-    <link rel="stylesheet" href="../../static/css/common/header.css">
-    <link rel="stylesheet" href="../../static/css/common/footer.css">
-</head>
-<body>
-    <header>
-        <div class="header-left">
-            <img id="header-logo" src="../../static/img/main-logo.png" alt="main logo"/>
-            <nav class="nav-menu">
-                <a href="/recipe/list">레시피</a>
-                <a href="#">스토어</a>
-                <a href="/cooking/search">쿠킹클래스</a>
-            </nav>
-        </div>
-        <!-- 로그인 상태에 따른 영역 표시 -->
-        <div class="header-right">
-            <div class="header-login-area">
-                <img id="header-login" src="../../static/img/login.png" alt="login">
-                <img id="header-write-recipe" src="../../static/img/write-recipe.png" alt="write recipe">
-            </div>
-            <div class="header-my-expand">
-                <p>내 정보</p>
-                <p>장바구니</p>
-                <p onclick="goToMyRecipe();">나의 레시피</p>
-                <p>구매내역</p>
-                <p>예약내역</p>
-                <p>로그아웃</p>
-            </div>
-        </div>
-    </header>
+{% endblock %}
+
+{% block content %}
     <main>
         <div class="container">
             <!-- 왼쪽: 이미지 및 상세 설명 -->
@@ -145,10 +114,12 @@
             </div>
         </div>
     </main>
+{% endblock %}
+{% block extra_scripts %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script defer src ="../../static/js/cooking/sharedFunction.js"></script>
     <script defer src="../../static/js/cooking/detailClass.js"></script>
     <script defer src ="../../static/js/cooking/Pay.js"></script>
-</body>
-</html>
+{% endblock %}
+

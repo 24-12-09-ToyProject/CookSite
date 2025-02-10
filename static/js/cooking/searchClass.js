@@ -33,40 +33,6 @@ const dropdownHeader3 = document.querySelector('.dropdown-header3');
 const dropdownContent3 = document.querySelector('.dropdown-content3');
 const arrow3 = document.querySelector('.arrow3');
 
-// // 지역 동적 생성
-// regions.forEach(region => {
-//     const item = document.createElement('div');
-//     item.className = 'dropdown-item';
-//     item.textContent= region;
-
-//     // 메뉴 클릭시 해당 값 상단헤더로 이동
-//     item.addEventListener('click', () => {
-//         regionSpan.textContent = region;
-//         console.log('selected:' + region);
-//         // 메뉴 클릭 시 드롭다운 사라짐
-//         dropdownContent.classList.remove('show');
-//         arrow.classList.remove('up');
-//     });
-//     dropdownContent.appendChild(item);
-// });
-
-
-// // 카테고리 드롭다운 내용 생성
-// categories.forEach(category => {
-//     const items = document.createElement('div');
-//     items.className = 'dropdown-items';
-//     items.textContent = category;
-//         // 메뉴 클릭시 해당 값 상단헤더로 이동
-//         items.addEventListener('click', () => {
-//             categorySpan.textContent = category;
-//             console.log('selected:' + category);
-//             // 메뉴 클릭 시 드롭다운 사라짐
-//             dropdownContent2.classList.remove('show');
-//             arrow2.classList.remove('up');
-//         });
-//         dropdownContent2.appendChild(items);
-// });
-
 function createDropdown(items, dropdownHeader, dropdownContent, arrowElement,spanElement) {
     // 드롭다운 열기/닫기 이벤트 (한 번만 설정)
     dropdownHeader.addEventListener('click', () => {
@@ -106,18 +72,6 @@ createDropdown(regions, dropdownHeader, dropdownContent1, arrow,regionSpan);
 createDropdown(categories, dropdownHeader2, dropdownContent2, arrow2,categorySpan);
 createDropdown(visitors, dropdownHeader3, dropdownContent3, arrow3,visitorSpan);
 
-// // 토글 만들기
-// dropdownHeader.addEventListener('click', () => {
-//     dropdownContent.classList.toggle('show');
-//     arrow.classList.toggle('up');
-// });
-
-// //토글2 
-// dropdownHeader2.addEventListener('click', () => {
-//     dropdownContent2.classList.toggle('show');
-//     arrow2.classList.toggle('up');
-// });
-
 // 유형 옵션
 const classDayForm =[
     document.querySelector('.oneDay'),
@@ -130,13 +84,6 @@ const Days = [
     document.querySelector('.sunday')
 
 ]
-// [TypeOne, TypeTwo].forEach(button => {
-//     button.addEventListener('click', () => {
-//         TypeOne.style.backgroundColor = "";
-//         TypeTwo.style.backgroundColor = "";
-//         button.style.backgroundColor = "red";
-//     });
-// });
 
 // 유형 옵션 색깔 변경
 function createChangeColortoForm(item) {
@@ -147,7 +94,8 @@ function createChangeColortoForm(item) {
             button.classList.remove('selected');
         });
         // 클릭된 버튼의 배경색 변경
-        item.style.backgroundColor = "red";
+        item.style.backgroundColor = "#800020";
+        item.style.color="white";
         // item.className ='selected';
         item.classList.add('selected');
     });
@@ -278,7 +226,8 @@ function createChangeColortoLevel(item) {
     item.classList.add('selected');
     // item.className="selected";
     
-    item.style.backgroundColor = "red"; // 선택된 배경색
+    item.style.backgroundColor = "#800020";
+    item.style.color="white";
     });
 }
 // 함수 실행
@@ -498,6 +447,7 @@ function renderCards(filteredCards) {
         card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
+        card.querySelector(".class-instructor-photo").innerHTML=`<img src="${data.CLASS_INSTRUCTOR_IMG}" alt="Instructor Photo" />`;
         card.querySelector(".class-instructor").textContent = data.CLASS_INSTRUCTOR_NICKNAME;
         // ✅ classNo가 있는지 확인 후 반영
             const cardLink = card.querySelector("a");
@@ -519,11 +469,19 @@ window.renderCards = renderCards;
 
 
 
+
 // 등록버튼 div 활성화
 document.querySelector('.goRegisterClass').addEventListener('click', function () {
-    const link = this.querySelector('a');
-    if (link) {
-      link.click(); // a 태그 실행
+    const userId = sessionStorage.getItem("userid"); // 세션에서 아이디 가져오기
+    if (!userId) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/member/login"; // 로그인 페이지로 이동
+        return;
+    }else{
+        const link = this.querySelector('a');
+        if (link) {
+          link.click(); // a 태그 실행
+        }
     }
 });
 
