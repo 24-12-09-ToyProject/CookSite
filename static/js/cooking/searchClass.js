@@ -511,8 +511,8 @@ async function fetchUserId() {
 // 등록하러가기 버튼 활성화
 document.querySelector('.goRegisterClass').addEventListener('click', async function (event) {
     const userId = await fetchUserId();
-    event.preventDefault(); // 기본 이벤트 차단
     if (!userId) {
+        event.preventDefault(); // 기본 이벤트 차단
         alert("로그인이 필요합니다.");
         event.stopPropagation(); // 이벤트 버블링 차단
         window.location.replace("/member/login"); // 로그인 페이지로 이동
