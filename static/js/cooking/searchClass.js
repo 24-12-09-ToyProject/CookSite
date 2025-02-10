@@ -468,22 +468,52 @@ function renderCards(filteredCards) {
 window.renderCards = renderCards;
 
 
+//아이디 정보 가져오기
+async function fetchUserId() {
+    try {
+        const response = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include' // 세션 쿠키 포함
+        });
 
+        if (response.redirected) {
+            window.location.href = response.url; // 로그인 페이지로 리디렉션
+            return null;
+        }
 
-// 등록버튼 div 활성화
-document.querySelector('.goRegisterClass').addEventListener('click', function () {
-    const userId = sessionStorage.getItem("userid"); // 세션에서 아이디 가져오기
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            console.log("로그인된 사용자 ID:", data.userId);
+            return data.userId;
+        } else {
+            console.log("로그인이 필요합니다.");
+            return null;
+        }
+    } catch (error) {
+        console.error("유저 정보를 가져오는 중 오류 발생:", error);
+        return null;
+    }
+}
+
+// 등록하러가기 버튼 활성화
+document.querySelector('.goRegisterClass').addEventListener('click', async function (event) {
+    const userId = await fetchUserId();
+    event.preventDefault(); // 기본 이벤트 차단
     if (!userId) {
         alert("로그인이 필요합니다.");
-        window.location.href = "/member/login"; // 로그인 페이지로 이동
-        return;
-    }else{
-        const link = this.querySelector('a');
-        if (link) {
-          link.click(); // a 태그 실행
-        }
+        event.stopPropagation(); // 이벤트 버블링 차단
+        window.location.replace("/member/login"); // 로그인 페이지로 이동
+        return false; // 이벤트 중단
+    }
+
+    // userId가 있는 경우 a 태그 클릭 실행
+    const link = this.querySelector('a');
+    if (link) {
+        link.click();
     }
 });
+
 
 async function fetchTotalClassCards() {
     try {

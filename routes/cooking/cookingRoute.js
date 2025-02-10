@@ -81,5 +81,9 @@ router.post("/api/select/reservationInfo",cookingController.showReservationInfo)
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));
 
+// 아이디 조회
+router.get('/api/user', checkLogin, (req, res) => {
+    res.json({ success: true, userId: req.session.user.id });
+});
 
 module.exports = router;
