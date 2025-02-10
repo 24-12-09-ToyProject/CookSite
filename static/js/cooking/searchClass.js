@@ -407,6 +407,7 @@ document.querySelectorAll(".keywordType").forEach((element) => {
 });
 
 // 필터 API 호출 함수
+// 필터 API 호출 함수 (검색 실행)
 async function fetchFilteredCards(filters = {}) {
     try {
         const response = await fetch("/api/cooking/filter", {
@@ -423,12 +424,23 @@ async function fetchFilteredCards(filters = {}) {
 
         const data = await response.json();
         console.log("디버깅 - 서버 응답 데이터:", data);
+
+        // 검색 결과가 없을 경우 "더보기" 버튼 숨김
+        if (data.length === 0) {
+            document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다.</p>";
+            document.getElementById("load-more").style.display = "none"; // "더보기" 버튼 숨김
+        } else {
+            document.getElementById("load-more").style.display = (data.length < allData.length) ? "none" : "block"; // 검색 결과가 전체 데이터보다 적으면 숨김
+        }
+
         return data || [];
     } catch (error) {
         console.error("필터 API 호출 오류:", error);
+        document.getElementById("load-more").style.display = "none"; // 오류 발생 시 "더보기" 숨김
         return [];
     }
 }
+
 
 
 
