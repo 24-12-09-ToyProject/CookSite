@@ -1,0 +1,72 @@
+{% extends "common/layout.html" %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="../../static/css/store/myOrder.css">
+{% endblock %}
+
+{% block content %}
+<div class="order-container">
+    <h2>주문 내역</h2>
+
+    {% if orders and orders|length > 0 %}
+    <div class="order-list">
+        {% for order in orders %}
+        <div class="order-item">
+            <div class="order-header">
+                <div class="order-date">{{ order.created_at }}</div>
+                <div class="order-number">주문번호 {{ order.merchant_uid.replace('merchant_', '') }}</div>
+                <div class="order-status {{ order.payment_status|lower }}">
+                    {% if order.payment_status == 'PAID' %}
+                    결제 완료
+                    {% else %}
+                    결제 대기
+                    {% endif %} </div>
+            </div>
+
+            {% set product_list = order.products.split(',') %}
+            {% set quantity_list = order.quantities.split(',') %}
+            {% set image_list = order.product_images.split(',') %}
+
+            {% for product in product_list %}
+            <div class="order-product">
+                <div class="product-image">
+                    <img src="{{ image_list[loop.index0] }}" alt="{{ product }}">
+                </div>
+                <div class="product-details">
+                    <div class="product-name">{{ product }}</div>
+                    <div class="product-quantity">수량: {{ quantity_list[loop.index0] }}개</div>
+                </div>
+                <div class="product-price">
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="order-summary">
+                <div class="total-amount">
+                    <span>총 주문금액</span>
+                    <strong>{{ order.total_price }}원</strong>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-order">
+        <p>주문 내역이 없습니다.</p>
+        <button onclick="location.href='/store/all'" class="btn-continue">쇼핑하러 가기</button>
+    </div>
+    {% endif %}
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.3/dayjs.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".order-date").forEach(el => {
+            const originalDate = el.innerText.trim();
+            el.innerText = "주문일자 " + dayjs(originalDate).format("YYYY-MM-DD");
+        });
+    });
+
+</script>
+{% endblock %}

@@ -1,4 +1,11 @@
+a {
+    list-style-type: none;
+    text-decoration: none;
+    color: #000;
+}
+
 .cart-container {
+    width: 1200px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;

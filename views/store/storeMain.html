@@ -8,17 +8,23 @@
 <div class="store-container">
     <!-- 상단 헤더 -->
     <!-- <header class="store-header"> -->
-        <h1 class="store-header">스토어</h1>
+    <h1 class="store-header">스토어</h1>
     <!-- </header> -->
     <nav class="category-nav">
         <ul>
             <li><a class="nav-btn {% if currentCategory == 'all' %}selected{% endif %}" href="/store/all">전체</a></li>
-            <li><a class="nav-btn {% if currentCategory == '신선식품' %}selected{% endif %}" href="/store/category/신선식품">신선식품</a></li>
-            <li><a class="nav-btn {% if currentCategory == '간편식' %}selected{% endif %}" href="/store/category/간편식">간편식</a></li>
-            <li><a class="nav-btn {% if currentCategory == '가공식품' %}selected{% endif %}" href="/store/category/가공식품">가공식품</a></li>
-            <li><a class="nav-btn {% if currentCategory == '주방용품' %}selected{% endif %}" href="/store/category/주방용품">주방용품</a></li>
-            <li><a class="nav-btn {% if currentCategory == '주방가전' %}selected{% endif %}" href="/store/category/주방가전">주방가전</a></li>
-            <li><a class="nav-btn {% if currentCategory == '생활용품' %}selected{% endif %}" href="/store/category/생활용품">생활용품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '신선식품' %}selected{% endif %}"
+                    href="/store/category/신선식품">신선식품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '간편식' %}selected{% endif %}"
+                    href="/store/category/간편식">간편식</a></li>
+            <li><a class="nav-btn {% if currentCategory == '가공식품' %}selected{% endif %}"
+                    href="/store/category/가공식품">가공식품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '주방용품' %}selected{% endif %}"
+                    href="/store/category/주방용품">주방용품</a></li>
+            <li><a class="nav-btn {% if currentCategory == '주방가전' %}selected{% endif %}"
+                    href="/store/category/주방가전">주방가전</a></li>
+            <li><a class="nav-btn {% if currentCategory == '생활용품' %}selected{% endif %}"
+                    href="/store/category/생활용품">생활용품</a></li>
         </ul>
     </nav>
 
@@ -30,7 +36,9 @@
             <div class="product-content">
                 <img src="{{ product.PPODUCT_MAIN_IMG_URL }}" alt="{{ product.PRODUCT_NAME }}">
                 <h2 class="product-name">{{ product.PRODUCT_NAME }}</h2>
-                <p class="product-price"><strong>{{ product.BASE_PRICE }} 원</strong></p>
+                <p class="product-price" data-raw-price="{{ product.BASE_PRICE }}">
+                    <span id="price-{{ product.product_no }}">{{ product.BASE_PRICE }}</span> 원
+                </p>
             </div>
         </a>
         {% endfor %}
@@ -39,21 +47,26 @@
         {% endif %}
     </div>
 </div>
-<script> 
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-    const links = document.querySelectorAll('.nav-btn');
+        // 네비게이션 버튼 활성화 기능
+        const links = document.querySelectorAll('.nav-btn');
+        links.forEach(link => {
+            link.addEventListener('click', function (event) {
+                links.forEach(l => l.classList.remove('selected'));
+                event.target.classList.add('selected');
+            });
+        });
 
-    links.forEach(link => {
-        link.addEventListener('click', function(event) {
-            // 모든 링크에서 'active' 클래스 제거
-            links.forEach(l => l.classList.remove('selected'));
-
-            // 클릭한 링크에 'active' 클래스 추가
-            event.target.classList.add('selected');
+        // 가격 변환 기능
+        document.querySelectorAll(".product-price").forEach(priceElement => {
+            const rawPrice = priceElement.dataset.rawPrice;  // data-raw-price 속성에서 가격 가져오기
+            const formattedPrice = Number(rawPrice).toLocaleString(); // 쉼표 추가 변환
+            priceElement.textContent = `${formattedPrice} 원`;
         });
     });
-});
 </script>
+
 {% endblock %}
 
 

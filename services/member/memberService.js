@@ -1,6 +1,7 @@
 const pool = require('../../config/db.js');
 const fs = require('fs');
-const { verifyValue, allVerifyValue } = require('../../static/js/member/argon.js');
+const { verifyValue, allVerifyValue } = require('../member/argon.js');
+
 const crypto = require('crypto');
 
 // 공통 데이터베이스 쿼리 실행 함수
@@ -73,6 +74,20 @@ async function checkDuplicateId(memberId) {
   } catch (error) {
     console.error('아이디 중복 체크 오류:', error.message || error);
     throw '아이디 중복 체크 실패';
+  }
+}
+
+// 이메일 중복 체크
+async function checkDuplicateEmail(email){
+  try {
+    const result = await queryDatabase(
+      `SELECT COUNT(*) AS count FROM members WHERE email = ?`,
+      [email]
+    );
+    return result[0].count > 0 ? { success:false } : { success:true };
+  } catch (error) {
+    console.error('이메일 중복 체크 오류:', error.message || error);
+    throw '이메일 중복 체크 실패';
   }
 }
 
@@ -530,5 +545,6 @@ module.exports = {
   removeProfile,
   deleteAccount,
   findSnsMember,
-  snsSignup
+  snsSignup,
+  checkDuplicateEmail
 };
