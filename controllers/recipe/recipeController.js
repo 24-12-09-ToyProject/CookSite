@@ -270,15 +270,17 @@ async function updateRecipe(req, res) {
         const memberId = req.session.user.id;
         const recipeNo = req.params.recipeNo;
         const { title, intro, category, serving, difficulty, ingredients, description } = req.body;
-        
+
+        // 필수 항목 검증
         if (!title || !intro || !category || !serving || !difficulty || !ingredients || !description || description.length === 0) {
             return res.status(400).json({ message: "모든 필수 항목을 입력해주세요." });
         }
-        
+
+        // 썸네일 처리
         const thumbnail = req.files['thumbnail'] && req.files['thumbnail'][0] ? req.files['thumbnail'][0].filename : null;
         const existingThumbnail = Array.isArray(req.body.existingThumbnail) ? req.body.existingThumbnail[0] : req.body.existingThumbnail;
         const thumbnailUrl = thumbnail ? `http://127.0.0.1:8888/uploads/${thumbnail}` : existingThumbnail;
-        
+
         // recipe 정보 업데이트
         const updateRecipeQuery = `
             UPDATE RECIPE 
@@ -286,63 +288,74 @@ async function updateRecipe(req, res) {
                 RECIPE_DIFFICULTY = ?, SERVING = ?, INGREDIENTS = ?, 
                 RECIPE_THUMBNAIL = ? 
             WHERE RECIPE_NO = ? AND MEMBER_ID = ?`;
-        await connection.query(updateRecipeQuery, [title, intro, category, difficulty, serving, ingredients, thumbnailUrl, recipeNo, memberId]);
+        const [recipeUpdateResult] = await connection.query(updateRecipeQuery, [title, intro, category, difficulty, serving, ingredients, thumbnailUrl, recipeNo, memberId]);
 
+        // recipe 업데이트 결과가 없으면 오류 처리
+        if (recipeUpdateResult.affectedRows === 0) {
+            throw new Error('레시피 정보 업데이트 실패');
+        }
+
+        // description과 image 처리
         const descriptions = Array.isArray(description) ? description : [description];
         const recipe_image_paths = req.files['recipe_image_path[]'] || [];
+        const stepNumber = req.body['step_number[]'] || req.body.step_number;
+        const stepNumbers = Array.isArray(stepNumber) ? stepNumber : [stepNumber];
+
+        // 콘솔 출력: 데이터를 확인
+        console.log("req.body:", req.body);  // 클라이언트에서 전송한 본문 데이터
+        console.log("req.files:", req.files);  // 클라이언트에서 전송한 파일 데이터
+        console.log("step_number[]:", req.body['step_number[]']);  // step_number[]가 잘 오는지 확인
+        console.log("step_number:", req.body.step_number);  // step_number가 잘 오는지 확인
+        console.log("recipe_image_paths:", recipe_image_paths);  // 업로드된 이미지 파일들
+
+        // 조리 순서 설명 유효성 체크
         const validDescriptions = descriptions.filter(desc => desc.trim());
 
-        // 기존 이미지 및 새로운 이미지의 수 확인
+        // 이미지 URL 생성 (새로운 이미지, 기존 이미지)
         const stepImageUrls = descriptions.map((desc, i) => {
-            let stepImagePath = recipe_image_paths[i] ? recipe_image_paths[i].filename : null;
-            let existingImage = req.body[`existingImage${i + 1}`];
-        
-            if (stepImagePath) {
-                console.log(`등록된 새 이미지 [${i}]:`, stepImagePath);
-                return `http://127.0.0.1:8888/uploads/${stepImagePath}`;
-            } else if (existingImage) {
+            const stepIndex = stepNumbers.indexOf((i + 1).toString());
+            if (stepIndex !== -1 && recipe_image_paths.length > stepIndex) {
+                // 새 이미지 사용
+                console.log(`새 이미지 사용 [${i}]:`, recipe_image_paths[stepIndex].filename);
+                return `http://127.0.0.1:8888/uploads/${recipe_image_paths[stepIndex].filename}`;
+            } else {
+                // 기존 이미지 유지
+                const existingImage = req.body[`existingImage${i + 1}`] || null;
                 console.log(`기존 이미지 유지 [${i}]:`, existingImage);
                 return existingImage;
             }
-        
-            console.log(`이미지 누락 [${i}]`);
-            return null;
         });
+
         console.log("최종 조리 순서 이미지 URL 목록:", stepImageUrls);
 
-        // 중복된 URL 제거
-        const uniqueStepImageUrls = stepImageUrls.filter((value, index, self) => self.indexOf(value) === index);
-        console.log(uniqueStepImageUrls);
-
-        if (validDescriptions.length === 0 || uniqueStepImageUrls.length < validDescriptions.length) {
-            return res.status(400).json({ message: "조리 순서와 이미지를 모두 입력해주세요." });
+        // 설명과 이미지가 일치하는지 검증
+        if (validDescriptions.length != stepImageUrls.length || stepImageUrls.includes(null)) {
+            throw new Error("조리 순서와 이미지를 모두 입력해주세요.");
         }
-        
 
         // 기존 step 삭제
         const deleteStepsQuery = 'DELETE FROM STEPS WHERE RECIPE_NO = ?';
-        await connection.query(deleteStepsQuery, recipeNo);
+        const [deleteResult] = await connection.query(deleteStepsQuery, [recipeNo]);
+        if (deleteResult.affectedRows === 0) {
+            throw new Error("조리 순서 삭제 실패");
+        }
 
         // 새 step 데이터 삽입
         const insertStepQuery = `
             INSERT INTO STEPS (RECIPE_NO, STEP, DESCRIPTION, RECIPE_IMAGE_PATH) 
             VALUES (?, ?, ?, ?)`;
 
-        // 각 설명에 대해 해당하는 이미지가 있는지 체크
         for (let i = 0; i < validDescriptions.length; i++) {
-            const stepImageUrl = uniqueStepImageUrls[i];
-
-            if (!stepImageUrl) {
-                return res.status(400).json({ message: "이미지를 모두 입력해주세요." });
+            console.log(`INSERT INTO STEPS VALUES (${recipeNo}, ${i + 1}, ${validDescriptions[i]}, ${stepImageUrls[i]})`);
+            const [insertResult] = await connection.query(insertStepQuery, [recipeNo, i + 1, validDescriptions[i], stepImageUrls[i]]);
+            if (insertResult.affectedRows === 0) {
+                throw new Error(`Step ${i + 1} 삽입 실패`);
             }
-
-            console.log(`INSERT INTO STEPS VALUES (${recipeNo}, ${i + 1}, ${validDescriptions[i]}, ${stepImageUrl})`);
-            await connection.query(insertStepQuery, [recipeNo, i + 1, validDescriptions[i], stepImageUrl]);
         }
-        
+
         await connection.commit();
         res.json({ message: '레시피가 성공적으로 업데이트되었습니다.' });
-    } catch(error) {
+    } catch (error) {
         console.error('레시피 업데이트 오류:', error.message);
         if (connection) await connection.rollback();
         res.status(500).json({ message: '레시피 업데이트 중 오류가 발생했습니다.' });
@@ -350,7 +363,6 @@ async function updateRecipe(req, res) {
         if (connection) connection.release();
     }
 }
-
 
 // 레시피 삭제하는 함수
 async function deleteRecipe(req, res) {
