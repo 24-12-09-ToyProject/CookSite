@@ -60,7 +60,10 @@ async function getRecipeList(req, res) {
         queryParams.push(boardLimit, offset);
 
         const [rows] = await connection.query(query, queryParams);
-        const [countRows] = await connection.query(countQuery, memberId ? [memberId, ...(kCategory ? [kCategory] : [])] : kCategory ? [kCategory] : []);
+        const [countRows] = await connection.query(countQuery, 
+            memberId 
+                ? (kCategory ? [memberId, kCategory] : [memberId]) 
+                : (kCategory ? [kCategory] : []));
         connection.release();
 
         const recipes = rows.map(row => { return new RecipeDTO(row); });
@@ -166,10 +169,11 @@ async function getOneRecipeInfo(req, res) {
 async function registerRecipe(req, res) {
     let connection;
     try {
-        // MySQL 연결 및 트랜잭션 시작
+        // db 연결 및 트랜잭션 시작
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
+        // 세션에서 사용자 아이디 호출
         console.log(req.session.user.id);
         const memberId = req.session.user.id;
 
@@ -188,7 +192,7 @@ async function registerRecipe(req, res) {
         }
         const thumbnailUrl = `http://127.0.0.1:8888/uploads/${thumbnail}`;
 
-        // 레시피 SQL 작성
+        // recipe 데이터 삽입
         const recipeSql = `
             INSERT INTO RECIPE 
             (MEMBER_ID, RECIPE_TITLE, RECIPE_INTRO, RECIPE_CATEGORY, RECIPE_DIFFICULTY, 
@@ -219,7 +223,7 @@ async function registerRecipe(req, res) {
             }
         }
 
-        // 스텝 데이터 삽입
+        // step 데이터 삽입
         const stepSql = `
             INSERT INTO STEPS
             (RECIPE_NO, STEP, DESCRIPTION, RECIPE_IMAGE_PATH)
@@ -301,12 +305,8 @@ async function updateRecipe(req, res) {
         const stepNumber = req.body['step_number[]'] || req.body.step_number;
         const stepNumbers = Array.isArray(stepNumber) ? stepNumber : [stepNumber];
 
-        // 콘솔 출력: 데이터를 확인
-        console.log("req.body:", req.body);  // 클라이언트에서 전송한 본문 데이터
-        console.log("req.files:", req.files);  // 클라이언트에서 전송한 파일 데이터
-        console.log("step_number[]:", req.body['step_number[]']);  // step_number[]가 잘 오는지 확인
-        console.log("step_number:", req.body.step_number);  // step_number가 잘 오는지 확인
-        console.log("recipe_image_paths:", recipe_image_paths);  // 업로드된 이미지 파일들
+        console.log("req.body:", req.body);
+        console.log("req.files:", req.files);
 
         // 조리 순서 설명 유효성 체크
         const validDescriptions = descriptions.filter(desc => desc.trim());
@@ -325,7 +325,6 @@ async function updateRecipe(req, res) {
                 return existingImage;
             }
         });
-
         console.log("최종 조리 순서 이미지 URL 목록:", stepImageUrls);
 
         // 설명과 이미지가 일치하는지 검증
@@ -346,7 +345,6 @@ async function updateRecipe(req, res) {
             VALUES (?, ?, ?, ?)`;
 
         for (let i = 0; i < validDescriptions.length; i++) {
-            console.log(`INSERT INTO STEPS VALUES (${recipeNo}, ${i + 1}, ${validDescriptions[i]}, ${stepImageUrls[i]})`);
             const [insertResult] = await connection.query(insertStepQuery, [recipeNo, i + 1, validDescriptions[i], stepImageUrls[i]]);
             if (insertResult.affectedRows === 0) {
                 throw new Error(`Step ${i + 1} 삽입 실패`);
@@ -388,11 +386,4 @@ async function deleteRecipe(req, res) {
     }
 }
 
-module.exports = { 
-    getRecipeList, 
-    getRecipeDetail, 
-    getOneRecipeInfo,
-    registerRecipe,
-    updateRecipe,
-    deleteRecipe
-};
+module.exports = { getRecipeList, getRecipeDetail, getOneRecipeInfo, registerRecipe, updateRecipe, deleteRecipe };

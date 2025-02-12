@@ -176,10 +176,10 @@ async function getDetailData(detailUrl) {
 
         // 수집된 데이터 반환
         return {
-            intro,              // 레시피 소개
-            difficulty,         // 난이도
-            category,           // 카테고리
-            serving,            // 인분
+            intro,       // 레시피 소개
+            difficulty,  // 난이도
+            category,    // 카테고리
+            serving,     // 인분
             ingredients: Array.from(ingredients),  // 재료 목록
             steps: Array.from(steps.values())      // 조리 단계
         };

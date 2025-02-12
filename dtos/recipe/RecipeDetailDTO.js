@@ -10,8 +10,10 @@ class RecipeDetailDTO {
         this.difficulty = RECIPE_DIFFICULTY;
         this.serving = SERVING;
         this.ingredients = INGREDIENTS;
+        // 조리순서를 추가하기 위한 배열 생성
         this.steps = [];
     }
+    // steps 배열에 조리 단계 추가하는 메서드
     addStep({ STEP_NO, STEP, DESCRIPTION, RECIPE_IMAGE_PATH}) {
         this.steps.push({
             step_no: STEP_NO,

@@ -1,10 +1,10 @@
-
 .list-container {
     min-width: 1400px;
     min-height: 850px;
     background-color: white;
     padding: 40px 25px 20px 25px;
 }
+
 /* 카테고리 */
 .recipe-header {
     text-align: center;

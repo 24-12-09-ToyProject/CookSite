@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // window 객체를 통해 전역 변수로 선언된 데이터를 사용
-    const ingredients = window.recipeData.ingredients.split(', ');
+    const ingredients = window.recipeData.ingredients.split(', '); // , 기준으로 배열 생성
     const ingredientsList = document.getElementById('ingredients-list');
 
     ingredients.forEach(ingredient => {

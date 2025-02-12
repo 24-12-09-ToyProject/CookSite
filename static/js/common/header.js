@@ -8,7 +8,6 @@ if(loggedOutDiv){
     })
 }
 
-
 // 프로필 사진 클릭하면 메뉴 열고 닫기
 const profileDropdownContainer = document.querySelector("#profile-dropdown-container");
 if(profileDropdownContainer){
@@ -24,7 +23,6 @@ if(profileDropdownContainer){
         myExpandVisible = !myExpandVisible;
     });
 }
-
 
 // 페이지 내 다른 곳을 클릭하면 메뉴 닫기
 document.addEventListener("click", (e) => {
@@ -42,8 +40,3 @@ document.querySelector("#header-write-recipe").addEventListener("click", (e) => 
         window.location.href = '/recipe/register';
     }
 });
-
-// 나의 레시피로 이동
-function goToMyRecipe() {
-    window.location.href = '/recipe/myList';
-}

@@ -46,21 +46,16 @@ document.addEventListener("DOMContentLoaded", function() {
             const label = step.querySelector("label[for^='step']");
             label.textContent = `Step ${index + 1}`;
             step.id = `step${index + 1}`;
-
             const textarea = step.querySelector("textarea");
             textarea.id = `step${index + 1}-description`;
             textarea.name = `description[]`;
-
             const photoBoxDiv = step.querySelector("div[id^='step'][id$='-photoBox-div']");
             photoBoxDiv.id = `step${index + 1}-photoBox-div`;
-
             const img = step.querySelector("img");
             img.id = `step${index + 1}-photo`;
-
             const file = step.querySelector("input[type='file']");
             file.id = `step${index + 1}-photo-file`;
             file.name = `recipe_image_path[]`;
-
             const existingImage = step.querySelector(`input[name^='existingImage']`);
             if (existingImage) {
                 existingImage.name = `existingImage${index + 1}`;
