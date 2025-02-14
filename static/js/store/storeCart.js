@@ -70,7 +70,7 @@ async function removeCartItem(userId, cartNo) {
     try {
         await db.execute(
             `DELETE FROM cart 
-             WHERE cart_no = ? AND member_id = ?`,
+            WHERE cart_no = ? AND member_id = ?`,
             [cartNo, userId]
         );
         return true;
@@ -89,8 +89,8 @@ async function updateCartQuantity(userId, cartNo, quantity) {
 
         await db.execute(
             `UPDATE cart 
-             SET quantity = ? 
-             WHERE cart_no = ? AND member_id = ?`,
+            SET quantity = ? 
+            WHERE cart_no = ? AND member_id = ?`,
             [quantity, cartNo, userId]
         );
         return true;

@@ -44,15 +44,8 @@ router.get('/cart', checkLogin, async (req, res) => {
         const userId = req.session.user.id;
         const cartItems = await getCartItems(userId);
 
-        // 총 상품 금액 계산
-        // const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        // 배송비 계산 (7만원 이상 무료배송)
-        // const shippingFee = totalPrice >= 70000 ? 0 : 3500;
-
         res.render('store/storeCart.html', {
             cart: cartItems,
-            // totalPrice,
-            // shippingFee
         });
     } catch (error) {
         console.error('장바구니 조회 오류:', error);

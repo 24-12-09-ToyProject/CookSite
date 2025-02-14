@@ -89,7 +89,7 @@
         const optionNo = selectedOption.value; // 옵션 번호
         const stock = parseInt(selectedOption.getAttribute('data-stock'), 10);
 
-        // ✅ 재고가 0인 경우 선택 불가
+        // 재고가 0인 경우 선택 불가
         if (stock === 0) {
             alert('재고가 부족합니다.');
             select.selectedIndex = 0; // 선택 초기화
@@ -116,16 +116,9 @@
         addOptionToContainer(optionData);
         selectedOptions.set(optionData.optionNo, optionData);  // 옵션 저장
 
-        // console.log("현재 selectedOptions:", selectedOptions); // 선택된 옵션 전체 출력
-        // console.log("🔢 현재 selectedOptions size:", selectedOptions.size);
-        // console.log("productImg =" + productImg);
-        // console.log("productName = " + productName);
-
         updateTotalPrice();
         select.selectedIndex = 0; // 선택 초기화
     });
-
-
 
     // 옵션 컨테이너에 새로운 옵션 추가
     function addOptionToContainer(optionData) {
@@ -281,8 +274,6 @@
             return;
         }
         const selectedOptionsData = Array.from(selectedOptions.values()).map(option => {
-            // console.log("Option data:", option); // 옵션 데이터 확인
-            // console.log("Price diff:", option.priceDiff); // priceDiff 값 확인
 
             return {
                 productNo: productNo,
@@ -294,9 +285,7 @@
                 optionPrice: basePrice + option.priceDiff // option.priceDiff || 0 제거
             };
         });
-
         // console.log("Final selectedOptionsData:", selectedOptionsData); // 최종 데이터 확인
-
 
         // orderItems와 totalPrice를 hidden 필드에 설정
         updateFormData(selectedOptionsData);
