@@ -155,7 +155,7 @@ router.post('/payments/complete', checkLogin, async (req, res) => {
     try {
         const { imp_uid, merchant_uid, total_price, member_id, shippingInfo, orderItems, pay_method } = req.body;
 
-        console.log("결제 응답:", req.body);
+        // console.log("결제 응답:", req.body);
 
         // 주문 데이터 구성
         const orderData = {

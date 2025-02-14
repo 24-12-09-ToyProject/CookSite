@@ -87,6 +87,14 @@
         const select = this;
         const selectedOption = select.options[select.selectedIndex];
         const optionNo = selectedOption.value; // 옵션 번호
+        const stock = parseInt(selectedOption.getAttribute('data-stock'), 10);
+
+        // ✅ 재고가 0인 경우 선택 불가
+        if (stock === 0) {
+            alert('재고가 부족합니다.');
+            select.selectedIndex = 0; // 선택 초기화
+            return;
+        }
 
         // 이미 선택된 옵션인지 확인
         if (selectedOptions.has(selectedOption.value)) {
@@ -273,19 +281,19 @@
             return;
         }
         const selectedOptionsData = Array.from(selectedOptions.values()).map(option => {
-        // console.log("Option data:", option); // 옵션 데이터 확인
-        // console.log("Price diff:", option.priceDiff); // priceDiff 값 확인
-        
-        return {
-            productNo: productNo,
-            productImg: productImg,
-            productName: productName,
-            optionName: option.name,
-            optionNo: option.optionNo,
-            quantity: option.quantity,
-            optionPrice: basePrice + option.priceDiff // option.priceDiff || 0 제거
-        };
-    });
+            // console.log("Option data:", option); // 옵션 데이터 확인
+            // console.log("Price diff:", option.priceDiff); // priceDiff 값 확인
+
+            return {
+                productNo: productNo,
+                productImg: productImg,
+                productName: productName,
+                optionName: option.name,
+                optionNo: option.optionNo,
+                quantity: option.quantity,
+                optionPrice: basePrice + option.priceDiff // option.priceDiff || 0 제거
+            };
+        });
 
         // console.log("Final selectedOptionsData:", selectedOptionsData); // 최종 데이터 확인
 

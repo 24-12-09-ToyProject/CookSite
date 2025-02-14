@@ -60,17 +60,30 @@ const orderService = {
         try {
             await connection.beginTransaction();
 
-            // 결제 정보 저장 (storepayment 테이블에 저장)
+            // 1. 결제 정보 저장
             await connection.query(
-                'INSERT INTO storepayment (order_id, imp_uid, merchant_uid, amount, pay_method, payment_status) VALUES (?, ?, ?, ?, ?, ?)',
+                `INSERT INTO storepayment (order_id, imp_uid, merchant_uid, amount, pay_method, payment_status) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
                 [orderId, paymentInfo.imp_uid, paymentInfo.merchant_uid, paymentInfo.amount, paymentInfo.pay_method, 'PAID']
             );
 
-            // 주문 상태 업데이트 (PAID)
-            await connection.query(
-                'UPDATE storepayment SET payment_status = ? WHERE order_id = ?',
-                ['PAID', orderId]
+            // 2. 주문 상품 목록 가져오기
+            const [orderItems] = await connection.query(
+                `SELECT option_no, quantity 
+            FROM store_order_items 
+            WHERE order_id = ?`,
+                [orderId]
             );
+
+            // 3. 재고 차감
+            for (const item of orderItems) {
+                await connection.query(
+                    `UPDATE productoption 
+                SET OPTION_STOCK = OPTION_STOCK - ? 
+                WHERE option_no = ?`,
+                    [item.quantity, item.option_no]
+                );
+            }
 
             await connection.commit();
             return true;
