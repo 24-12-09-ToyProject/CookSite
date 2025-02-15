@@ -272,7 +272,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 #check-duplicate-btn, #send-code-btn, #email-verify-btn{
 	display: inline-block;
 	border-radius: 5px;
-	/* background-color: rgb(144, 144, 144); */
 	background-color: #a33e57;
 	opacity: 0.5;
 	padding: 10px 5px;
@@ -280,19 +279,16 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 	font-weight: 1000;
 	color: white;
 	user-select: none;
-	/* margin-left: 20px; */
 }
 
 
 #check-duplicate-btn:not(.disabled), #email-verify-btn:not(.disabled), #send-code-btn:not(.disabled) {
-	/* background-color: rgb(120, 120, 120); */
 	background-color: 	#a33e57;
 	opacity: 1;
 	cursor: pointer; /* 활성화 상태에서 클릭 가능 */
 }
 
 #check-duplicate-btn:hover, #send-code-btn:hover, #email-verify-btn:hover{
-	/* background-color: rgb(31, 31, 31); */
 	background-color: #800020;
 	color: #dcbe5d;
 	opacity: 1;
@@ -439,7 +435,6 @@ select option{
 /* 변경, 수정 버튼 */
 .edit-btn{
 	border: none;
-	/* background-color: white; */
 	color: #800020;
 	text-decoration: underline;
 	cursor: pointer;

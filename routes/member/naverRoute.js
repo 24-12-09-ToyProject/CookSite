@@ -6,15 +6,6 @@ const client_secret = process.env.NAVER_SECRET;
 var redirectURI = encodeURI("http://127.0.0.1:8888/naver/callback");
 var api_url = "";
 
-
-// naverRouter.get('/login', function (req, res) {
-// 	// state 값 생성 (랜덤 문자열)
-// 	const state = crypto.randomBytes(20).toString('hex');
-// api_url = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + client_id + '&redirect_uri=' + redirectURI + '&state=' + state+"&prompt=login";
-// 	res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
-// 	res.end("<a href='"+ api_url + "'><img height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></a>");
-// });
-
 naverRouter.get('/callback', async function (req, res) {
 	console.log("콜백 실행");
 	
@@ -94,7 +85,6 @@ naverRouter.get('/callback', async function (req, res) {
 						}
 						</script>
 						`);
-					// res.json({success:true});
 				}
 				
 			}

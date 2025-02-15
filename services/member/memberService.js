@@ -454,7 +454,7 @@ async function findSnsMember(snsMember){
 }
 
 // sns 회원가입
-async function snsSignup(snsInfo){  //여기서부터 시작
+async function snsSignup(snsInfo){ 
   let gender;
   if(snsInfo.gender === 'M'){
     gender = 'male';

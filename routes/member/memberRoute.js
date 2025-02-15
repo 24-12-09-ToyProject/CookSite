@@ -297,7 +297,7 @@ router.post('/api/reset-password', async (req, res) => {
 
 
 // api - 회원 정보 수정
-router.post('/api/update-info', async (req, res) => {
+router.post('/api/update-info', checkLogin, async (req, res) => {
 		const memberJson = req.body;
 		
 		let dateOfBirth = null;
@@ -336,7 +336,7 @@ router.post('/api/update-info', async (req, res) => {
 })
 
 // api - 비밀번호 본인 확인 
-router.post('/api/confirm-password', async (req, res) => {
+router.post('/api/confirm-password', checkLogin, async (req, res) => {
 	const { from } = req.body;
 
 	const memberId = req.session.user.id;
@@ -434,7 +434,7 @@ router.post('/api/upload-profile', checkLogin, upload.single('profileImage'), as
 })
 
 // api - 프로필 삭제
-router.post('/api/remove-profile', async (req, res) => {
+router.post('/api/remove-profile', checkLogin, async (req, res) => {
 	const memberId = req.session.user.id;
 	const currentProfile = req.session.user.fileRename;
 
