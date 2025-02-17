@@ -120,12 +120,14 @@ TOYPROJECT/
   #### [클래스 등록]
   - 클래스를 생성하는 페이지로 이동 할 수 있습니다.
   - 로그인 아이디에 따라 등록한 클래스 목록을 확인할 수 있습니다
-    
+
   ![클래스 등록1](https://github.com/user-attachments/assets/b3da6492-1972-4cf2-b745-5cf8b0c96aa7)
   ![클래스 등록2](https://github.com/user-attachments/assets/27f6bd54-2fb8-4fa9-bda8-fc1780ca9257)
+  ![클래스 조회](https://github.com/user-attachments/assets/f970be96-d548-49c1-92c2-93bb54757abf)
+
   #### [클래스 상세페이지]
   - 해당 클래스를 배우기 위한 결제를 진행 할 수 있습니다.
-    
+  - 
   ![상세페이지 옵션 및 결제](https://github.com/user-attachments/assets/9d70b1f0-beac-4b18-8c44-23134676a2a8)
 
 ### [회원가입]
@@ -137,7 +139,13 @@ TOYPROJECT/
 ## :hammer: 개선목표
   - 브랜치 분리
     - 독립성을 위해 1차로 main 과 기능별 branch 로 분류 되어있지만 개발용 main 브랜치와 배포용 main 브랜치를 별개로 설정 후 개발을 마친 뒤 배포용에 commit 하는 구조 생성
-  -   
+  - 코드 베이스 작게 유지
+    - 중복되는 코드에 의한 반복되는 요청 제거
+    - 사용하지 않는 코드 및 기능 제거
+    - 서로 분리된 하위 프로젝트로 구성
+  - 규칙 생성
+    - 개인이 아닌 팀 프로젝트로써 타인이 봤을때도 확인하기 쉽게 규칙 생성
+  
 
     
 
