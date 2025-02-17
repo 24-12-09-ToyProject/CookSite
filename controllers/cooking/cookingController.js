@@ -90,6 +90,26 @@ exports.searchClass = async (req, res) => {
         });
     }
 };
+//검색 조건
+exports.loadsDefaultClass = async (req, res) => {
+    let query = `SELECT CLASS_NO,CLASS_THUMBNAIL_IMG,CLASS_TITLE,CLASS_CATEGORY,CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM cooking`;
+    try {
+        const connection =  await pool.getConnection();
+        try {
+            const [results] = await connection.execute(query);
+            console.log('Query Results:', results);
+            res.json(results || []);
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Database error',
+            message: error.message
+        });
+    }
+};
 
 // 파일 업로드 핸들러 함수
 exports.uploadFileToGCS = async (req, res) => {
