@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 
+
 //nunjucks 세팅
 const path = require('path');
 
@@ -13,6 +14,7 @@ const cookingController = require('../../controllers/cooking/cookingController.j
 const payController = require('../../controllers/cooking/pay/payController.js');
 router.post('/api/cooking/filter',cookingController.searchClass);
 router.post('/api/cooking/insert',cookingController.createClass);
+router.get('/api/cooking',cookingController.loadsDefaultClass);
 // multer 설정 가져오기
 const { upload } = require('../../config/googlecloud.js');
 router.post('/upload',upload.single('image'), cookingController.uploadFileToGCS);
@@ -50,7 +52,6 @@ router.get("/api/class/:classNo", cookingController.getClassDetail);  // ✅ API
 // ✅ 클래스 상세 페이지 (HTML 파일 반환)
 router.get("/class/:classNo", (req, res) => {
     const classNo = req.params.classNo;
-
     // 필요한 데이터를 서버에서 처리한 후 템플릿에 전달
     res.render("cooking/detailClass.html", { classNo });
 });
@@ -81,5 +82,9 @@ router.post("/api/select/reservationInfo",cookingController.showReservationInfo)
 // 상세 페이지 조회 위한 설정
 app.set("views", path.join(__dirname, "views"));
 
+// 아이디 조회
+router.get('/api/user', checkLogin, (req, res) => {
+    res.json({ success: true, userId: req.session.user.id });
+});
 
 module.exports = router;

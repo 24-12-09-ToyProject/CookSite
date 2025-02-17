@@ -89,7 +89,7 @@ nunjucks.configure(viewPaths, {
 })
 // http 서버 실행
 app.listen(port, () =>{
-    console.log("서버가 정상적으로 실행 되었습니다" + port);
+    console.log("서버가 정상적으로 실행 되었습니다");
 });
 // static의 모든 하위 폴더 지정
 app.use('/static', express.static(path.join(__dirname, 'static')));

@@ -8,7 +8,7 @@ const { bucket } = require('../../config/googlecloud.js');
 exports.searchClass = async (req, res) => {
     const { classTitle, region, classType, classFrequency, category, visitor, weekdays, difficulty, timeMin, timeMax, priceMin, priceMax,keyword } = req.body;
 
-    let query = `SELECT CLASS_NO , CLASS_THUMBNAIL_IMG, CLASS_TITLE, CLASS_CATEGORY , CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM cooking WHERE 1=1`;
+    let query = `SELECT CLASS_NO,CLASS_THUMBNAIL_IMG,CLASS_TITLE,CLASS_CATEGORY,CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM cooking WHERE 1=1`;
     const params = [];
     if (classTitle) {
         query += ` AND CLASS_TITLE LIKE ? COLLATE utf8mb4_general_ci`;
@@ -51,13 +51,13 @@ exports.searchClass = async (req, res) => {
     }
 
     if (weekdays) {
-        query += ` AND CLASS_DATE = ?`; // 단일 값 처리
+        query += ` AND CLASS_DAY = ?`; // 단일 값 처리
         params.push(weekdays);
     }
 
     if (classFrequency) {
-        query += ` AND CLASS_FREQUENCY LIKE ? COLLATE utf8mb4_general_ci`;
-        params.push(`$${classFrequency}%`);
+        query += ` AND CLASS_FREQUENCY LIKE ?`;
+        params.push(classFrequency);
     }
     if(keyword) {
         query += ` AND CLASS_CATEGORY =?`;
@@ -77,6 +77,26 @@ exports.searchClass = async (req, res) => {
         const connection =  await pool.getConnection();
         try {
             const [results] = await connection.execute(query, params);
+            console.log('Query Results:', results);
+            res.json(results || []);
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({
+            error: 'Database error',
+            message: error.message
+        });
+    }
+};
+//검색 조건
+exports.loadsDefaultClass = async (req, res) => {
+    let query = `SELECT CLASS_NO,CLASS_THUMBNAIL_IMG,CLASS_TITLE,CLASS_CATEGORY,CLASS_INSTRUCTOR_IMG,CLASS_INSTRUCTOR_NICKNAME FROM cooking`;
+    try {
+        const connection =  await pool.getConnection();
+        try {
+            const [results] = await connection.execute(query);
             console.log('Query Results:', results);
             res.json(results || []);
         } finally {

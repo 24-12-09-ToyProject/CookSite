@@ -262,6 +262,12 @@ document.querySelectorAll('.difficulty-btn').forEach((btn) => {
         e.target.classList.add('active');
     });
 });
+document.querySelectorAll('.weekend-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.difficulty-btn').forEach((btn) => btn.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
 
 // 커리큘럼 텍스트 길이 카운트
 const textarea = document.getElementById('curriculum-description');
@@ -673,40 +679,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-// document.querySelector(".register").addEventListener("click", async () => {
-//     const data = await collectAllData(); // 데이터 수집
-    
-
-//     try {
-//         const response = await fetch("/api/cooking/insert", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify(data), // 데이터를 JSON 형태로 전송
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`API 요청 실패: ${response.status}`);
-//         }
-
-//         // 서버 응답 데이터
-//         const responseData = await response.json();
-//         console.log("✅ 서버 응답 데이터:", responseData);
-
-//         if (responseData.success) {
-//             alert(responseData.message);
-
-//             // 상세 페이지로 이동
-//             const redirectUrl = `/class/${responseData.classNo}`;
-//             console.log("✅ 이동할 상세 페이지 URL:", redirectUrl);
-//             window.location.href = redirectUrl;
-//         } else {
-//             console.error("🚨 서버 응답 실패:", responseData.message);
-//             alert("클래스 생성 중 오류가 발생했습니다.");
-//         }
-//     } catch (error) {
-//         console.error("🚨 클래스 생성 요청 에러:", error);
-//     }
-// });

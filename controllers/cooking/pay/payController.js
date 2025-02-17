@@ -10,17 +10,14 @@ require("dotenv").config({ path: path.resolve(__dirname, "../../../config/cookin
 
 exports.requestClassMemberInfo = async (req, res) => {
     const classNo = req.body.classNo; // URL에서 클래스 번호 가져오기
-
     if (!classNo) {
         return res.status(400).json({ success: false, error: "클래스 번호가 필요합니다." });
     }
-
     const query = `
         SELECT *
         FROM COOKING C 
-        JOIN MEMBERS M ON C.CLASS_MEMBER_ID = M.member_id 
         WHERE C.CLASS_NO = ?
-    `;
+        `;
     try {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute(query, [classNo]); // ✅ 클래스 데이터 조회

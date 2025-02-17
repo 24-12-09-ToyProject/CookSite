@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("🚨 fetchClassAndMember 함수가 정의되지 않았습니다. A.js가 먼저 로드되었는지 확인하세요.");
     }
 });
-let reservationVisitor = 0;
+let reservationVisitor = 1;
 document.querySelectorAll(".calc").forEach(button => {
     button.addEventListener("click", () => {
     reservationVisitor = parseInt(document.querySelector(".showPersonCount").innerText, 10);
@@ -52,8 +52,8 @@ async function requestPay() {
             pay_method: "card",
             merchant_uid: "merchant_" + new Date().getTime(),
             name: classMemberData.CLASS_TITLE,
-            // amount: totalAmount,
-            amount: 100,
+            amount: totalAmount,
+            // amount: 100,
             buyer_email: classMemberData.email,
             buyer_name: classMemberData.member_id,
             buyer_tel: classMemberData.phone,
@@ -225,43 +225,3 @@ async function cancelPay() {
 document.querySelector(".cancel-button").addEventListener("click", async function () {
     cancelPay();
 });
-
-// // 결제 취소하는 함수 작성자 기준 예매번호로 imp_uid 조회해서 맞으면 삭제 하는 코드
-// function cancelPay() {
-//     const reservationNo = prompt("예약 번호를 입력해주세요").trim();
-//     if (!reservationNo) {
-//         alert("올바른 예약 번호를 입력해야 합니다.");
-//         return;
-//     }
-
-//     // 먼저 서버에서 imp_uid를 가져옵니다.
-//     $.ajax({
-//         url: "/getImpUid",
-//         type: "GET",
-//         data: {reservationNo: reservationNo}
-//     })
-//         .done(function (response) {
-//             if (response) {
-//                 if (confirm("정말 취소 하시겠습니까?")) {
-//                     // imp_uid를 받아왔다면, 결제 취소를 진행합니다.
-//                     $.ajax({
-//                         url: "/payments/cancel/" + response,
-//                         type: "GET",
-//                         contentType: "application/json"
-//                     })
-//                         .done(function (data) {
-//                             alert("취소가 완료되었습니다!");
-//                             console.log(data);
-//                         })
-//                         .fail(function (jqXHR, textStatus) {
-//                             alert("결제 취소에 실패했습니다: " + textStatus);
-//                         });
-//                 } else {
-//                     alert("유효한 예약 번호가 아닙니다.");
-//                 }
-//             }
-//         })
-//         .fail(function (jqXHR, textStatus) {
-//             alert("예약 정보를 가져오는데 실패했습니다: " + textStatus);
-//         });
-// }
