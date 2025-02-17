@@ -120,8 +120,8 @@ const parentEl = document.getElementById("parentEl");
 // MutationObserver 설정
 const observer = new MutationObserver(() => {
 		console.log("Value changed:", parentEl.value);
-		if (parentEl.value) {
-				window.location.href = '/'; // 임시 (index파일 없음)
+		if (parentEl.value === 'true') {
+				window.location.href = '/';
 		}
 });
 

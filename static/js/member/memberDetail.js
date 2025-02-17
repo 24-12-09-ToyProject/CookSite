@@ -114,7 +114,6 @@ function openConfirmPwPage(){
 		}
 
 		div.classList.add('newData');
-		
 	}
 
 	// 빈 객체 생성
@@ -429,3 +428,17 @@ function openConfirmPwPage(){
 		function logout(){
 			location.href="/member/logout";
 		}
+
+// 이메일 container 툴팁
+const hoverElement = document.querySelector(".email-container");
+const tooltip = document.getElementById("tooltip");
+
+hoverElement.addEventListener("mouseenter", (event) => {
+		tooltip.style.display = "block";
+		tooltip.style.left = event.pageX + "px";
+		tooltip.style.top = event.pageY + "px";
+});
+
+hoverElement.addEventListener("mouseleave", () => {
+		tooltip.style.display = "none";
+});

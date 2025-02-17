@@ -293,6 +293,11 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 	color: #dcbe5d;
 	opacity: 1;
 }
+#check-duplicate-btn.disabled:hover, #email-verify-btn.disabled:hover, #send-code-btn.disabled:hover{
+	background-color: #a33e57;
+	opacity: 0.5;
+	color: white;
+}
 
 #basic-info #email{
 	width: 130px;
@@ -538,4 +543,15 @@ select option{
 	color: #63666e;
 	font-size: 13px;
 	margin-bottom: 5px;
+}
+
+
+.tooltip-box {
+	position: absolute;
+	background-color: rgb(204, 204, 204);
+	color: gray;
+	padding: 10px;
+	border-radius: 5px;
+	display: none;
+	font-size: 12px;
 }

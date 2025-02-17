@@ -1,6 +1,6 @@
 const express = require('express');
 const naverRouter = express.Router();
-const { findSnsMember, snsSignup } = require('../../services/member/memberService.js')
+const { findSnsMember, snsSignup, checkDuplicateEmail } = require('../../services/member/memberService.js')
 const client_id = process.env.NAVER_ID;
 const client_secret = process.env.NAVER_SECRET;
 var redirectURI = encodeURI("http://127.0.0.1:8888/naver/callback");
@@ -41,6 +41,8 @@ naverRouter.get('/callback', async function (req, res) {
 
 			if(result.success){
 				// 로그인
+				console.log(userData.response);
+				
 
 				// 세션 생성
 				req.session.user = {
@@ -64,29 +66,41 @@ naverRouter.get('/callback', async function (req, res) {
 				// res.json({success:true});
 				
 			}else{
-				// 회원가입 후 로그인
-				const signupResult = await snsSignup(userData.response);
-				if(signupResult.success){
-					// 세션 생성
-					req.session.user = {
-						id : signupResult.info.memberId,
-						filePath:signupResult.info.profileImg,
-						provider:'naver',
-						loggedIn : true
-					}
+				// 이메일 중복 체크
+				const checkResult = await checkDuplicateEmail(userData.response.email);
+				if(checkResult.success){
+					// 회원가입 후 로그인
+					const signupResult = await snsSignup(userData.response);
+					if(signupResult.success){
+						// 세션 생성
+						req.session.user = {
+							id : signupResult.info.memberId,
+							filePath:signupResult.info.profileImg,
+							provider:'naver',
+							loggedIn : true
+						}
 
+						res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
+						res.end(`
+							<script>
+							if(${signupResult.success}){
+								const parentEl = opener.document.querySelector('#parentEl');
+								parentEl.value = ${signupResult.success};
+								window.close();
+							}
+							</script>
+							`);
+					}
+				}else{
 					res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
 					res.end(`
 						<script>
-						if(${signupResult.success}){
-							const parentEl = opener.document.querySelector('#parentEl');
-							parentEl.value = ${signupResult.success};
-							window.close();
-						}
+						alert('이미 일반 회원으로 가입된 이메일입니다.\\n일반 로그인을 이용해주세요.');
+						window.close();
+						
 						</script>
-						`);
+					`);
 				}
-				
 			}
 
 			
