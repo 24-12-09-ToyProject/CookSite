@@ -163,11 +163,11 @@ async function requestPay() {
 document.querySelector(".apply-button").addEventListener("click", async function () {
     const userId = sessionStorage.getItem("userid"); // 세션에서 아이디 가져오기
 
-    // if (!userId) {
-    //     alert("로그인이 필요합니다.");
-    //     window.location.href = "/member/login"; // 로그인 페이지로 이동
-    //     return;
-    // }
+    if (!userId) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/member/login"; // 로그인 페이지로 이동
+        return;
+    }
     requestPay();
 });
 

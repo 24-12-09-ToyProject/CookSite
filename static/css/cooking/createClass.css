@@ -80,8 +80,7 @@ main{
 
 /* 선택된 옵션 스타일 */
 .option.active ,.classFrequency.active{
-    border-color: #007bff;
-    background-color: #e9f4ff;
+    border-color: #800020;
 }
 
 /* 버튼 영역 스타일 */
@@ -265,7 +264,7 @@ span {
 }
 #photo-upload-preview{
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 .preview-image{
     width:100%;

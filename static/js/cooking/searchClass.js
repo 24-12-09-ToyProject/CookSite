@@ -283,52 +283,6 @@ function createChangeColortoClass(item) {
 // 함수 실행
 classType.forEach(button => createChangeColortoClass(button));
 
-// // 카드 데이터를 로드하는 함수 , 검색 결과에 따른 더보기 처리
-// async function loadCards() {
-//     try {
-//         // API에서 JSON 데이터 가져오기
-//         const response = await fetch("/api/cooking");
-//         const cardData = await response.json();
-
-//         // DOM에 카드 추가
-//         const container = document.getElementById("card-container");
-//         const template = document.getElementById("card-template");
-
-//         //카드 개수 슬라이스
-//         const show_count = 12;
-//         let currentCount = 0;
-
-//         function renderdefaultCards(count){ // createClass js 에서 쓰기 위해 windows 로 전역 함수로 변경
-//             const cardsToShow = cardData.slice(currentCount, currentCount + count);
-//             cardsToShow.forEach((data) => {
-//                 const card = template.content.cloneNode(true); 
-//                 card.querySelector(".class-img").src = data.img;
-//                 card.querySelector(".class-Tag").textContent = data.category;
-//                 card.querySelector(".class-Name").textContent= data.title;
-                
-//                  // a 태그 설정
-//                 const cardLink = card.querySelector("a"); // 템플릿 내 a 태그를 선택
-//                 cardLink.href = `/class/${data.classNo}`;
-//                 container.appendChild(card);
-//             });
-//             currentCount += count;
-//             // 모든 카드가 표시되면 "더보기" 버튼 숨김
-//     if (currentCount >= cardData.length) {
-//         document.getElementById("load-more").style.display = "none";
-//     }
-//     }
-
-//     // 초기 카드 렌더링
-//     renderdefaultCards(show_count);
-
-//     // 더보기 버튼 클릭 이벤트
-//     document.getElementById("load-more").addEventListener("click", () => {
-//       renderCards(show_count); // 추가로 카드 렌더링
-//     });
-//     } catch (error) {
-//         console.error("카드 데이터를 불러오는 중 오류 발생:", error);
-//     }
-// }
 
 // 페이지 로드 시 카드 데이터를 불러옴
 document.addEventListener("DOMContentLoaded", loadCards);
@@ -580,57 +534,6 @@ async function fetchTotalClassCards() {
         document.getElementById("load-more").style.display = "none"; // "더보기" 버튼 숨김
     }
 }
-
-// // 상태 변수
-// let currentPage = 1; // 현재 페이지
-// const itemsPerPage = 12; // 한 번에 표시할 카드 개수
-// let allData = []; // 서버에서 가져온 전체 데이터
-
-// // 초기 데이터 로드 , 검색 없이 전체 결과에 대한 카드 더보기 처리
-// document.addEventListener("DOMContentLoaded", async () => {
-//     await fetchTotalClassCards(); // 데이터를 가져옴
-//     renderPageData(); // 첫 번째 페이지 데이터를 렌더링
-// });
-// function renderPageData() {
-//     const container = document.getElementById("card-container");
-//     const template = document.getElementById("card-template");
-
-//         // 기존 카드 삭제 (깨짐 방지)
-//         if (currentPage === 1) {
-//             container.innerHTML = "";
-//         }
-
-//     // 현재 페이지의 데이터 가져오기
-//     const start = (currentPage - 1) * itemsPerPage;
-//     const end = currentPage * itemsPerPage;
-//     const pageData = allData.slice(start, end);
-
-//     // 새 카드 추가
-//     pageData.forEach((data) => {
-//         const card = template.content.cloneNode(true);
-//         card.querySelector(".class-img").src = data.CLASS_THUMBNAIL_IMG;
-//         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
-//         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
-//         card.querySelector(".class-instructor").textContent = data.CLASS_INSTRUCTOR_NICKNAME;
-//         card.querySelector(".class-instructor-photo").innerHTML=`<img src="${data.CLASS_INSTRUCTOR_IMG}" alt="Instructor Photo" />`;
-//         const cardLink = card.querySelector("a");
-//         cardLink.href = `/class/${data.CLASS_NO}`;
-//         cardLink.dataset.classNo = `${data.CLASS_NO}`;
-
-//         container.appendChild(card);
-//     });
-
-//     // "더보기" 버튼 처리
-//     if (end >= allData.length) {
-//         document.getElementById("load-more").style.display = "none"; // 데이터가 더 이상 없으면 버튼 숨김
-//     }
-// }
-
-// // "더보기" 버튼 클릭 이벤트
-// document.getElementById("load-more").addEventListener("click", () => {
-//     currentPage++; // 다음 페이지로 이동
-//     renderPageData(); // 다음 페이지 데이터 렌더링
-// });
 
 // 상태 변수
 let currentPage = 1; // 현재 페이지
