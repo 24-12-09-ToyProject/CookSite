@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("🚨 fetchClassAndMember 함수가 정의되지 않았습니다. A.js가 먼저 로드되었는지 확인하세요.");
     }
 });
-let reservationVisitor = 0;
+let reservationVisitor = 1;
 document.querySelectorAll(".calc").forEach(button => {
     button.addEventListener("click", () => {
     reservationVisitor = parseInt(document.querySelector(".showPersonCount").innerText, 10);
@@ -52,8 +52,8 @@ async function requestPay() {
             pay_method: "card",
             merchant_uid: "merchant_" + new Date().getTime(),
             name: classMemberData.CLASS_TITLE,
-            // amount: totalAmount,
-            amount: 100,
+            amount: totalAmount,
+            // amount: 100,
             buyer_email: classMemberData.email,
             buyer_name: classMemberData.member_id,
             buyer_tel: classMemberData.phone,
@@ -163,11 +163,11 @@ async function requestPay() {
 document.querySelector(".apply-button").addEventListener("click", async function () {
     const userId = sessionStorage.getItem("userid"); // 세션에서 아이디 가져오기
 
-    if (!userId) {
-        alert("로그인이 필요합니다.");
-        window.location.href = "/member/login"; // 로그인 페이지로 이동
-        return;
-    }
+    // if (!userId) {
+    //     alert("로그인이 필요합니다.");
+    //     window.location.href = "/member/login"; // 로그인 페이지로 이동
+    //     return;
+    // }
     requestPay();
 });
 

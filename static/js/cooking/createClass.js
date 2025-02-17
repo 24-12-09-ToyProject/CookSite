@@ -262,6 +262,12 @@ document.querySelectorAll('.difficulty-btn').forEach((btn) => {
         e.target.classList.add('active');
     });
 });
+document.querySelectorAll('.weekend-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.difficulty-btn').forEach((btn) => btn.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
 
 // 커리큘럼 텍스트 길이 카운트
 const textarea = document.getElementById('curriculum-description');

@@ -374,7 +374,7 @@ span {
     gap: 10px;
 }
 
-.difficulty-btn {
+.difficulty-btn,.weekend-btn {
     padding: 8px 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -382,10 +382,10 @@ span {
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.difficulty-btn.active{
+.difficulty-btn.active,.weekend-btn.active{
     background-color:blanchedalmond;
 }
-.difficulty-btn:hover {
+.difficulty-btn:hover,.weekend-btn:hover {
     background-color: #e9e9e9;
 }
 
