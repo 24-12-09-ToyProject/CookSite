@@ -9,7 +9,7 @@
 
 | 엄태운 | 엄은지 | 조홍빈 | 이충무
 | :---: | :---: | :---: | :---: |
-| 1|<img width="150" alt="KakaoTalk_20250210_144959582" src="https://github.com/user-attachments/assets/5b29b401-96e8-4a56-a198-3daa54fd0524"/>| <img width ="150" alt="2ac4d61cd9b1cedd9c714ade97845366" src ="https://github.com/user-attachments/assets/d0d8b2d8-f08c-40d5-bb5e-fc340b2e6c2f" />| <img width="150" alt="KakaoTalk_20250210_144745939" src="https://github.com/user-attachments/assets/142d2be9-2562-4010-b756-44f67fb1c1a4" />|
+|<img width="150" alt="KakaoTalk_20250210_160840652" src="https://github.com/user-attachments/assets/71e4d9f0-6c2a-4dc2-bd3f-15189c8ed35c"/>|<img width="150" alt="KakaoTalk_20250210_144959582" src="https://github.com/user-attachments/assets/5b29b401-96e8-4a56-a198-3daa54fd0524"/>| <img width ="150" alt="2ac4d61cd9b1cedd9c714ade97845366" src ="https://github.com/user-attachments/assets/d0d8b2d8-f08c-40d5-bb5e-fc340b2e6c2f" />| <img width="150" alt="KakaoTalk_20250210_144745939" src="https://github.com/user-attachments/assets/142d2be9-2562-4010-b756-44f67fb1c1a4" />|
 | [@Github](https://github.com/TaewoonEom) | [@Github](https://github.com/eomji1233) | [@Github](https://github.com/Puer1111) |[@Github](https://github.com/dudrnrduddj) |
 
 ## :bulb: 개발 환경
@@ -62,9 +62,9 @@ TOYPROJECT/
 ## :tada: 역할 분담
 ### :wine_glass:엄태운
   - **UI**
-    - 페이지 구성 작성
+    - 페이지 : 레시피 리스트 페이지 & 상세 정보 페이지 & 레시피 등록, 수정 페이지 & 본인이 등록한 레시피 페이지
   - **기능**
-      - 기능 작성
+    - 레시피 웹사이트 데이터 크롤링, 레시피 리스트 조회(카테고리별 필터링) 및 상세 정보 조회, 레시피 등록, 수정, 삭제
 ### :fries:엄은지
   - **UI**
     - 페이지 구성 작성
@@ -72,9 +72,9 @@ TOYPROJECT/
       - 기능 작성
 ### :spaghetti:조홍빈
   - **UI**
-    - 페이지 구성 작성
+    - 페이지: 클래스 검색 페이지 & 등록 및 본인 등록클래스 확인 & 클래스 생성 페이지 
   - **기능**
-      - 기능 작성
+      - 검색필터를 통한 클래스 검색 , 클래스 등록 내용 확인 및 새 클래스 생성
 ###  :doughnut:이충무
   - **UI**
     - 페이지 구성 작성
@@ -93,14 +93,41 @@ TOYPROJECT/
 ### [공통]
   - 헤더 기능 작성 
 ### [레시피]
-  - 기능1
-  - 기능2
+  #### [레시피 리스트]
+  - 상단의 카테고리 선택 버튼을 통해 일치하는 레시피를 조회할 수 있습니다.
+  - 레시피는 20개씩 페이징 처리되어 더보기 버튼을 통해 추가적인 확인이 가능합니다.
+  - 썸네일 이미지를 클릭하여 레시피 상세 정보 페이지로 이동할 수 있습니다.
+  #### [레시피 등록]
+  - 단일 레시피에 대한 정보 및 첨부파일(썸네일, 조리순서 이미지)을 입력할 수 있습니다.
+  - 조리 순서는 최대 30단계까지 작성할 수 있으며, 각 단계를 자유롭게 추가 또는 삭제할 수 있습니다.
+  - 입력한 재료는 추후 상세 페이지에서 이름과 용량으로 구분되어 표시됩니다.
+  #### [레시피 수정]
+  - 기존 등록된 정보가 불러와지며, 레시피를 수정 후 저장할 수 있습니다.
+  #### [작성한 레시피]
+  - 회원은 본인이 등록한 레시피를 카테고리 별로 확인할 수 있습니다.
+  - 수정과 삭제 버튼으로 레시피를 수정 또는 삭제할 수 있습니다.
 ### [스토어]
   - 기능1
   - 기능2
 ### [쿠킹 클래스]
-  - 기능1
-  - 기능2
+  #### [클래스 검색]
+  - 상단에 검색 조건들을 통해서 등록된 클래스들을 검색 할 수 있습니다.
+  - 일부 조건만을 사용해 검색이 가능합니다.
+  - 추천 검색어를 통해 빠른 검색이 가능합니다.
+    
+  ![검색 조건으로 검색하기](https://github.com/user-attachments/assets/f37b720b-b6ac-4987-ae6c-13d29fad3908)
+  ![추천 검색어 사용](https://github.com/user-attachments/assets/0c0f23ea-0d91-4f81-9c33-54aae9cd846d)
+  #### [클래스 등록]
+  - 클래스를 생성하는 페이지로 이동 할 수 있습니다.
+  - 로그인 아이디에 따라 등록한 클래스 목록을 확인할 수 있습니다
+    
+  ![클래스 등록1](https://github.com/user-attachments/assets/b3da6492-1972-4cf2-b745-5cf8b0c96aa7)
+  ![클래스 등록2](https://github.com/user-attachments/assets/27f6bd54-2fb8-4fa9-bda8-fc1780ca9257)
+  #### [클래스 상세페이지]
+  - 해당 클래스를 배우기 위한 결제를 진행 할 수 있습니다.
+    
+  ![상세페이지 옵션 및 결제](https://github.com/user-attachments/assets/9d70b1f0-beac-4b18-8c44-23134676a2a8)
+
 ### [회원가입]
   - 기능1
   - 기능2
