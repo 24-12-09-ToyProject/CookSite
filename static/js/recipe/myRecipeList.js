@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// 한 개의 레시피를 삭제하는 함수
 function deleteOneRecipe(recipeNo, recipeElement) {
     if(confirm('정말 삭제하시겠습니까?')) {
         fetch(`/recipe/delete/${recipeNo}`, {
@@ -38,7 +39,6 @@ function deleteOneRecipe(recipeNo, recipeElement) {
             },
         })
         .then(response => {
-            console.log('서버 응답 수신:', response);
             return response.json().then(body => ({ response, body }));
         })
         .then(({ response, body }) => {

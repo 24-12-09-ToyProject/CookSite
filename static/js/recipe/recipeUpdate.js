@@ -56,8 +56,12 @@ document.addEventListener("DOMContentLoaded", function() {
             const file = step.querySelector("input[type='file']");
             file.id = `step${index + 1}-photo-file`;
             file.name = `recipe_image_path[]`;
+            const existingImage = step.querySelector(`input[name^='existingImage']`);
+            if (existingImage) {
+                existingImage.name = `existingImage${index + 1}`;
+            }
         });
-        stepCount = steps.length;
+        stepCount = steps.length; // stepCount 갱신
     }
 
     // Step 이미지 클릭 이벤트 추가하는 함수
@@ -120,52 +124,48 @@ document.addEventListener("DOMContentLoaded", function() {
         if(confirm("레시피 수정을 완료하시겠습니까?")) {
             const descriptions = document.querySelectorAll("textarea[name='description[]']");
             const imageInputs = document.querySelectorAll("input[name='recipe_image_path[]']");
-            const existingThumbnail = document.querySelector("input[name='existingThumbnail']");
             const existingImages = document.querySelectorAll("input[name^='existingImage']");
-
-            // 검증 로직 추가
+    
+            // 조리순서 검증
             for (let i = 0; i < descriptions.length; i++) {
                 if (!descriptions[i].value.trim()) {
                     alert("조리 순서를 입력해주세요.");
                     return;
                 }
             }
-
+    
+            // 조리순서 이미지 검증
             for (let i = 0; i < imageInputs.length; i++) {
                 const imageInput = imageInputs[i];
                 const existingImage = existingImages[i] ? existingImages[i].value : null;
-
+    
+                console.log(`Step ${i + 1} - 기존 이미지:`, existingImage, "| 새 이미지:", imageInput.files.length);
+    
                 if (!imageInput.files.length && !existingImage) {
                     alert("조리 순서 이미지를 업로드해주세요.");
                     return;
                 }
             }
-
+    
             const formData = new FormData(form);
+    
+            // 변경된 이미지에 대해서만 step_number 추가
+            imageInputs.forEach((imageInput, index) => {
+                const stepNum = index + 1;
 
-            // 기존 썸네일 추가
-            if (existingThumbnail && existingThumbnail.value) {
-                formData.append('existingThumbnail', existingThumbnail.value);
-            }
-
-            // 이미지 추가
-            for (let i = 0; i < imageInputs.length; i++) {
-                const imageInput = imageInputs[i];
-                const existingImage = existingImages[i] ? existingImages[i].value : null;
-
-                if (imageInput.files.length) {
-                    // 새로운 이미지 파일이 있으면 추가
-                    formData.append('recipe_image_path[]', imageInput.files[0]);
-                } else if (existingImage) {
-                    // 기존 이미지가 있으면 기존 이미지를 추가
-                    formData.append('existingImage[]', existingImage);
+                if (imageInput.files.length > 0) { // 새 파일이 있을 때만 step_number 추가
+                    formData.append('step_number[]', stepNum);
+                }
+            });
+    
+            for (let pair of formData.entries()) {
+                if (pair[1] instanceof File) {
+                    console.log(pair[0] + ', ' + pair[1].name); // 파일 객체일 경우 파일명
+                } else {
+                    console.log(pair[0] + ', ' + pair[1]);
                 }
             }
-
-            for (let pair of formData.entries()) {
-                console.log(pair[0]+ ', ' + pair[1]);
-            }
-
+    
             fetch(form.action, {
                 method: 'POST',
                 body: formData
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => {
                 console.error('Error: ', error);
                 alert('레시피 수정 중 오류가 발생했습니다.');
-            })
+            });
         }
     });
 

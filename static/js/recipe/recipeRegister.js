@@ -107,9 +107,10 @@ document.addEventListener("DOMContentLoaded", function() {
     // 폼 제출 시 메시지 표시
     submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
-
         const descriptions = document.querySelectorAll("textarea[name='description[]']");
         const photos = document.querySelectorAll("input[name='recipe_image_path[]']");
+        
+        // 조리순서와 이미지 검증
         for (let i = 0; i < descriptions.length; i++) {
             if (!descriptions[i].value.trim() || !photos[i].files.length) {
                 alert("조리 순서와 이미지를 모두 입력해주세요.");
