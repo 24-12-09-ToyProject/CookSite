@@ -1,4 +1,4 @@
-#  :cookie: 쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
+![식탁의비밀 - 소셜회원 정보수정 및 탈퇴](https://github.com/user-attachments/assets/b4c708ef-68ae-40b6-81ae-4b6dc6f1e64a)#  :cookie: 쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
 <img width="827" alt="KakaoTalk_20250210_140306723" src="https://github.com/user-attachments/assets/aa02f350-0709-4700-8255-1de748b41f36" />
 
 ## 프로젝트 소개
@@ -176,7 +176,8 @@ TOYPROJECT/
 ##### 일반회원
 ![식탁의비밀 - 일반회원 정보 수정 및 탈퇴](https://github.com/user-attachments/assets/57d10183-4054-425a-9c5c-90b909cd244e)
 ##### 소셜회원
-![식탁의비밀 - 소셜회원 정보수정 및 탈퇴](https://github.com/user-attachments/assets/377a44a6-9f6c-415a-a154-e0dc714b7c97)
+![식탁의비밀 - 소셜회원 정보수정 및 탈퇴](https://github.com/user-attachments/assets/911a66f0-cd8b-474c-a91c-3a6f8b6dd4b6)
+
 
 ## :hammer: 개선목표
   - 브랜치 분리
