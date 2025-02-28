@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     password : 'cooksite',
     database : 'test1',
     debug : false,
-    port: 17620 // 포트번호 반드시 업데이트 후 사용!! 
+    port: 16704 // 포트번호 반드시 업데이트 후 사용!! 
     // db정보들은 공유되면 안되기 떄문에 파일을 따로만들어 관리
     // 소스코드와 중요한 정보를 분리시킬 수 있음.
 });
