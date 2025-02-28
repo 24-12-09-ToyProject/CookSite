@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentCategory = 'all';
     let currentPage = 1;
 
-    // 기본으로 전체 버튼 선택
+    // 기본으로 '전체' 버튼 선택
     const allButton = document.querySelector('.cate-button[data-category="all"]');
     allButton.classList.add('selected');
 

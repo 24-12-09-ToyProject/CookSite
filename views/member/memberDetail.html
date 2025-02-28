@@ -86,6 +86,7 @@
 	
 				</div>
 				<div class="small-container email-container">
+					
 					<div class="container-head">이메일<span class="essential-mark"> *</span></div>
 					<div>
 						<input id="email" type="text" class="required" name="email" autocomplete="off" lang="en" onkeyup="checkEmailRequired()" oninput="addNewData(this); setEmailVerified();" readonly>@
@@ -96,16 +97,19 @@
 						<div style="position: relative;">
 							<div id="timer"></div>
 							<input type="text" id="email-code" name="emailCode" disabled="false">
-							<span id="email-verify-btn" class="disabled" data-emailVerified="true" onclick="verifyEmailCode();">인증</span>
+							<span id="email-verify-btn" class="disabled" data-emailVerified="true">인증</span>
 						</div>
 					</div>
-					
-					<button class="edit-btn edit-email" type="button" onclick="changeReadOnly('email', 'remove'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(false);">변경</button>
-					<button class="update-btn update-email hide" type="button" onclick="changeReadOnly('email', 'add'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(true);">수정</button> 
-					
+
+					<div id="tooltip" class="tooltip-box">소셜 회원은 이메일을 수정할 수 없습니다. <br>다른 이메일을 사용하려면 새 계정을 생성해주세요.</div>
+					{% if provider === 'naver' %}
+					{% else %}
+						<button class="edit-btn edit-email" type="button" onclick="changeReadOnly('email', 'remove'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(false);">변경</button>
+						<button class="update-btn update-email hide" type="button" onclick="changeReadOnly('email', 'add'); changeBtn(this, 'edit-email', 'update-email'); changeStatusSelect(true);">수정</button> 
+					{% endif %}
 				</div>
 			</div>
-			
+
 			<div id="add-info">
 				<div class="add-info-header">
 					<div>추가정보</div>
@@ -160,7 +164,6 @@
 			<button id="delete-member-btn" type="button" onclick="deleteAccount();">회원탈퇴</button>
 		</div>
 	</div>
-	<!-- <button type="button" onclick="logout();">로그아웃</button> -->
 
 
 

@@ -1,4 +1,4 @@
-const {createNewTransport} = require('../../config/member/email'); //위에서만든거 가져옴email.js
+const {createNewTransport} = require('../../config/member/email');
 const { addEmailCode } = require('../../services/member/memberService.js');
 
 
@@ -17,11 +17,10 @@ const mailAuth = { //객체에 함수를 담음.
 
 
         const mailOptions = {  //메일 옵션설정을 해주어야된다. 
-            from : `${process.env.EMAIL_USER}@naver.com`, //누가보내는 것인가.. 이건 자신의 연결한 메일주소를 입력하면된다.
+            from : `${process.env.EMAIL_USER}@naver.com`, // 자신의 연결 메일 주소
             to : email,  //사용자가 입력한 이메일 즉 도착할 주소
             subject : '인증코드 발급 관련 메일입니다.', //메일의 제목  
-            //메일의 내용
-            html : '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + `<h3>${number}</h3>` //text를 전달할려면 key값을 html을 text로 바꿔주면된다. 
+            html : '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + `<h3>${number}</h3>` // 메일의 내용
         }
 
         // 인증번호 service
@@ -36,7 +35,6 @@ const mailAuth = { //객체에 함수를 담음.
             smtpTransport.sendMail(mailOptions , (err , response)=>{ //emil.js에서 가져온 smtpTransport의 sendMail함수를 실행
                 console.log(mailOptions);
                 
-                console.log("response : " + response) //info를 출력해보자. 
                 //첫번째 인자로는 mailOptions이 들어가야된다. 위에서 메일의 옵션은 만들었다. 다음인자로는 콜백함수.
                 if(err){ //에러시
                     res.json({success : false , message : '메일전송에 실패하였습니다'})

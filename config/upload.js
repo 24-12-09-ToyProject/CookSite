@@ -16,7 +16,7 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        // 파일 타입 필터링 (예: 이미지 파일만)
+        // 파일 타입 필터링
         const filetypes = /jpeg|jpg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);

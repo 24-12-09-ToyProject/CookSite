@@ -1,5 +1,4 @@
 input{
-	/* outline: none; */
 	padding-left: 10px;
 	transition: all 300ms;
 }
@@ -13,7 +12,6 @@ input{
 }
 
 #page-subject{
-	/* font-size: 22px; */
 	text-align: center;
 	margin: 50px 0;
 	margin-top: 100px;
@@ -267,7 +265,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 #check-duplicate-btn, #send-code-btn, #email-verify-btn{
 	display: inline-block;
 	border-radius: 5px;
-	/* background-color: rgb(144, 144, 144); */
 	background-color: #a33e57;
 	opacity: 0.5;
 	padding: 10px 5px;
@@ -280,7 +277,6 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 
 
 #check-duplicate-btn:not(.disabled), #email-verify-btn:not(.disabled), #send-code-btn:not(.disabled) {
-	/* background-color: rgb(120, 120, 120); */
 	background-color: 	#a33e57;
 	opacity: 1;
 	cursor: pointer; /* 활성화 상태에서 클릭 가능 */
@@ -290,6 +286,12 @@ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-o
 	background-color: #800020;
 	color: #dcbe5d;
 	opacity: 1;
+}
+
+#check-duplicate-btn.disabled:hover, #email-verify-btn.disabled:hover, #send-code-btn.disabled:hover{
+	background-color: #a33e57;
+	opacity: 0.5;
+	color: white;
 }
 
 #basic-info #email{

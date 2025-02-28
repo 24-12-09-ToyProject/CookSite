@@ -6,6 +6,9 @@ const elEmailCodeBtn = document.querySelector('#email-verify-btn');
 
 // 이메일 코드 전송
 async	function sendEmailCode(requestPage){
+	// 인증코드 인증상태 초기화
+	elEmailCodeBtn.setAttribute('data-emailVerifed', 'false'); // data속성 false로 셋팅
+
 	if(requestPage === 'register'){
 		// 이메일 중복 체크
 		const emailDuplicate = await fetch('/member/api/check-duplicate-email', {
@@ -27,7 +30,8 @@ async	function sendEmailCode(requestPage){
 			});
 			return;
 		}
-	}else{
+	}
+	
 		// 이메일 인증
 		const response = await fetch('/member/api/send-email', {
 			method: 'POST',
@@ -58,9 +62,7 @@ async	function sendEmailCode(requestPage){
 
 		}else{
 			console.log("실패");
-			
 		}
-	}
 
 }
 
@@ -86,7 +88,7 @@ async	function verifyEmailCode(){
 					text: '이메일 인증이 성공적으로 완료되었습니다.',
 					confirmButtonColor: '#800020'
 		});
-		elEmailCodeBtn.setAttribute('data-emailVerified', 'true');
+		elEmailCodeBtn.setAttribute('data-emailVerified', 'true'); // data속성 true로 셋팅
 		clearInterval(timer);
 		document.querySelector("#timer").style.display='none';
 		deactivateButton('verifyEmail'); // 이메일 인증 버튼 비활성화
@@ -99,7 +101,7 @@ async	function verifyEmailCode(){
 					html: '인증 코드가 올바르지 않습니다.<br>다시 입력하거나 새로운 인증 코드를 요청해주세요.',
 					confirmButtonColor: '#555'
 		});
-		elEmailCodeBtn.setAttribute('data-emailVerifed', 'false');
+		elEmailCodeBtn.setAttribute('data-emailVerifed', 'false'); // data속성 false로 셋팅
 	}
 
 }

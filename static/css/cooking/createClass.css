@@ -80,8 +80,7 @@ main{
 
 /* 선택된 옵션 스타일 */
 .option.active ,.classFrequency.active{
-    border-color: #007bff;
-    background-color: #e9f4ff;
+    border-color: #800020;
 }
 
 /* 버튼 영역 스타일 */
@@ -265,7 +264,7 @@ span {
 }
 #photo-upload-preview{
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 .preview-image{
     width:100%;
@@ -374,7 +373,7 @@ span {
     gap: 10px;
 }
 
-.difficulty-btn {
+.difficulty-btn,.weekend-btn {
     padding: 8px 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -382,10 +381,10 @@ span {
     cursor: pointer;
     transition: background-color 0.2s;
 }
-.difficulty-btn.active{
+.difficulty-btn.active,.weekend-btn.active{
     background-color:blanchedalmond;
 }
-.difficulty-btn:hover {
+.difficulty-btn:hover,.weekend-btn:hover {
     background-color: #e9e9e9;
 }
 

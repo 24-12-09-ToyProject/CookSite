@@ -2,14 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../../config/upload')
 const { checkLogin } = require('../member/checkLogin');
-const { 
-    getRecipeList, 
-    getRecipeDetail, 
-    getOneRecipeInfo, 
-    registerRecipe, 
-    updateRecipe, 
-    deleteRecipe 
-} = require('../../controllers/recipe/recipeController');
+const { getRecipeList, getRecipeDetail, getOneRecipeInfo, registerRecipe, updateRecipe, deleteRecipe } = require('../../controllers/recipe/recipeController');
 
 // 레시피 목록 화면을 출력하는 라우트
 router.get('/list', getRecipeList);
@@ -31,13 +24,13 @@ router.get('/update/:recipeNo', checkLogin, getOneRecipeInfo);
 // 레시피 등록하는 라우트
 router.post('/register', checkLogin, upload.fields([
     { name: 'thumbnail', maxCount: 1 },
-    { name: 'recipe_image_path[]', maxCount: 20 }
+    { name: 'recipe_image_path[]', maxCount: 30 }
 ]), registerRecipe);
 
-// 레시피를 수정하는 라우트
+// 레시피 수정하는 라우트
 router.post('/update/:recipeNo', checkLogin, upload.fields([
     { name: 'thumbnail', maxCount: 1 },
-    { name: 'recipe_image_path[]', maxCount: 20 }
+    { name: 'recipe_image_path[]', maxCount: 30 }
 ]), updateRecipe);
 
 // 레시피 삭제하는 라우트

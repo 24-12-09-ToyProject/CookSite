@@ -25,8 +25,7 @@ const dropdownContent2 = document.querySelector('.dropdown-content2');
 const arrow2 = document.querySelector('.arrow2');
 
 // 인원 나열
-const visitors =[
-    '1명','2명','3명','4명','5명','6명','7명','8명','9명','10명이상','20명이상']
+const visitors =['1명','2명','3명','4명','5명','6명','7명','8명','9명','10이상','20이상']
 // 인원 드롭다운 변수 생성
 const visitorSpan = document.querySelector('.visitor');
 const dropdownHeader3 = document.querySelector('.dropdown-header3');
@@ -88,34 +87,48 @@ const Days = [
 // 유형 옵션 색깔 변경
 function createChangeColortoForm(item) {
     item.addEventListener('click', () => {
+        // 현재 클릭한 버튼이 이미 선택된 상태인지 확인
+        const isSelected = item.classList.contains('selected');
+
         // 모든 버튼의 배경색 초기화
         classDayForm.forEach(button => {
             button.style.backgroundColor = "";
+            button.style.color = "";
             button.classList.remove('selected');
         });
-        // 클릭된 버튼의 배경색 변경
-        item.style.backgroundColor = "#800020";
-        item.style.color="white";
-        // item.className ='selected';
-        item.classList.add('selected');
+
+        // 만약 현재 버튼이 선택되지 않은 상태라면 selected 클래스 추가
+        if (!isSelected) {
+            item.classList.add('selected');
+            item.style.backgroundColor = "#800020";
+            item.style.color = "white";
+        }
     });
 }
+
 
 // 날짜 옵션 색깔 변경
 function createChangeColortoDay(item) {
-item.addEventListener("click", () => {
+    item.addEventListener("click", () => {
+        // 현재 클릭한 버튼이 이미 선택된 상태인지 확인
+        const isSelected = item.classList.contains("selected");
+
+        // 모든 버튼 초기화
         Days.forEach(button => {
-            button.style.backgroundColor = ""; // 이전 버튼 색상 초기화
-            button.style.color = "";          // 텍스트 색상 초기화
+            button.style.backgroundColor = ""; // 기본 배경색 복원
+            button.style.color = "";           // 기본 텍스트 색상 복원
             button.classList.remove("selected"); // selected 클래스 제거
         });
 
-        // 현재 클릭된 버튼에 스타일 및 클래스 추가
-        item.classList.add("selected");
-        item.style.backgroundColor = "#800020";
-        item.style.color = "white";
+        // 현재 클릭한 버튼이 선택되지 않은 상태라면 selected 클래스 추가
+        if (!isSelected) {
+            item.classList.add("selected");
+            item.style.backgroundColor = "#800020";
+            item.style.color = "white";
+        }
     });
 }
+
 
 classDayForm.forEach(button => createChangeColortoForm(button));
 Days.forEach(button => createChangeColortoDay(button));
@@ -217,19 +230,25 @@ const level =[
 // 난이도 선택 시 색깔 변경
 function createChangeColortoLevel(item) {
     item.addEventListener('click', () => {
-      // 모든 span의 selected 클래스 제거 및 원래 배경색 복원
-    level.forEach(button => {
-        button.classList.remove('selected');
-        button.style.backgroundColor = ""; // 기본 배경색
-    });
-    // 현재 클릭한 span에만 selected 클래스 추가 및 색상 변경
-    item.classList.add('selected');
-    // item.className="selected";
-    
-    item.style.backgroundColor = "#800020";
-    item.style.color="white";
+        // 현재 클릭한 버튼이 이미 선택된 상태인지 확인
+        const isSelected = item.classList.contains('selected');
+
+        // 모든 버튼의 selected 클래스 제거 및 기본 스타일 복원
+        level.forEach(button => {
+            button.classList.remove('selected');
+            button.style.backgroundColor = ""; // 기본 배경색
+            button.style.color = ""; // 기본 텍스트 색상
+        });
+
+        // 현재 클릭한 버튼이 선택되지 않은 상태라면 selected 클래스 추가
+        if (!isSelected) {
+            item.classList.add('selected');
+            item.style.backgroundColor = "#800020";
+            item.style.color = "white";
+        }
     });
 }
+
 // 함수 실행
 level.forEach(button => createChangeColortoLevel(button));
 
@@ -242,67 +261,28 @@ const classType = [
 // 클래스 클릭 시 색깔 변경
 function createChangeColortoClass(item) {
     item.addEventListener("click", () => {
+        // 현재 클릭한 버튼이 이미 선택된 상태인지 확인
+        const isSelected = item.classList.contains("selected");
+
+        // 모든 버튼 초기화
         classType.forEach(button => {
-            button.style.backgroundColor = ""; // 이전 버튼 색상 초기화
-            button.style.color = "";          // 텍스트 색상 초기화
+            button.style.backgroundColor = ""; // 기본 배경색 복원
+            button.style.color = "";           // 기본 텍스트 색상 복원
             button.classList.remove("selected"); // selected 클래스 제거
         });
 
-        // 현재 클릭된 버튼에 스타일 및 클래스 추가
-        item.classList.add("selected");
-        item.style.backgroundColor = "#800020";
-        item.style.color = "white";
+        // 현재 클릭한 버튼이 선택되지 않은 상태라면 selected 클래스 추가
+        if (!isSelected) {
+            item.classList.add("selected");
+            item.style.backgroundColor = "#800020";
+            item.style.color = "white";
+        }
     });
 }
+
 // 함수 실행
 classType.forEach(button => createChangeColortoClass(button));
 
-// 카드 데이터를 로드하는 함수
-async function loadCards() {
-    try {
-        // API에서 JSON 데이터 가져오기
-        const response = await fetch("/api/cooking");
-        const cardData = await response.json();
-
-        // DOM에 카드 추가
-        const container = document.getElementById("card-container");
-        const template = document.getElementById("card-template");
-
-        //카드 개수 슬라이스
-        const show_count = 12;
-        let currentCount = 0;
-
-        function renderdefaultCards(count){ // createClass js 에서 쓰기 위해 windows 로 전역 함수로 변경
-            const cardsToShow = cardData.slice(currentCount, currentCount + count);
-            cardsToShow.forEach((data) => {
-                const card = template.content.cloneNode(true); 
-                card.querySelector(".class-img").src = data.img;
-                card.querySelector(".class-Tag").textContent = data.category;
-                card.querySelector(".class-Name").textContent= data.title;
-                
-                 // a 태그 설정
-                const cardLink = card.querySelector("a"); // 템플릿 내 a 태그를 선택
-                cardLink.href = `/class/${data.classNo}`;
-                container.appendChild(card);
-            });
-            currentCount += count;
-            // 모든 카드가 표시되면 "더보기" 버튼 숨김
-    if (currentCount >= cardData.length) {
-        document.getElementById("load-more").style.display = "none";
-    }
-    }
-
-    // 초기 카드 렌더링
-    renderdefaultCards(show_count);
-
-    // 더보기 버튼 클릭 이벤트
-    document.getElementById("load-more").addEventListener("click", () => {
-      renderCards(show_count); // 추가로 카드 렌더링
-    });
-    } catch (error) {
-        console.error("카드 데이터를 불러오는 중 오류 발생:", error);
-    }
-}
 
 // 페이지 로드 시 카드 데이터를 불러옴
 document.addEventListener("DOMContentLoaded", loadCards);
@@ -320,11 +300,11 @@ function getSearchFilters() {
     const classFrequency = document.querySelector(".class .selected")?.textContent.trim() || null;
 
     // 카테고리
-    const category = document.querySelector(".category.selected")?.textContent.trim() || null;
+    const category = document.querySelector(".category .selected")?.textContent.trim() || null;
 
     // 방문자 수
-    const visitor = document.querySelector(".visitor.selected")?.textContent.trim() || null;
-
+    const visitorText = document.querySelector(".visitor .selected")?.textContent.trim() || null;
+    const visitor = visitorText ? visitorText.replace(/[^0-9]/g, '') : null;
     // 요일 선택 (평일, 토요일, 일요일)
     const weekdays = document.querySelector(".day .selected")?.textContent.trim() || null;
 
@@ -407,6 +387,7 @@ document.querySelectorAll(".keywordType").forEach((element) => {
 });
 
 // 필터 API 호출 함수
+// 필터 API 호출 함수 (검색 실행)
 async function fetchFilteredCards(filters = {}) {
     try {
         const response = await fetch("/api/cooking/filter", {
@@ -423,12 +404,23 @@ async function fetchFilteredCards(filters = {}) {
 
         const data = await response.json();
         console.log("디버깅 - 서버 응답 데이터:", data);
+
+        // 검색 결과가 없을 경우 "더보기" 버튼 숨김
+        if (data.length === 0) {
+            document.getElementById("card-container").innerHTML = "<p>검색 결과가 없습니다.</p>";
+            document.getElementById("load-more").style.display = "none"; // "더보기" 버튼 숨김
+        } else {
+            document.getElementById("load-more").style.display = (data.length < allData.length) ? "none" : "block"; // 검색 결과가 전체 데이터보다 적으면 숨김
+        }
+
         return data || [];
     } catch (error) {
         console.error("필터 API 호출 오류:", error);
+        document.getElementById("load-more").style.display = "none"; // 오류 발생 시 "더보기" 숨김
         return [];
     }
 }
+
 
 
 
@@ -468,22 +460,52 @@ function renderCards(filteredCards) {
 window.renderCards = renderCards;
 
 
+//아이디 정보 가져오기
+async function fetchUserId() {
+    try {
+        const response = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include' // 세션 쿠키 포함
+        });
 
-
-// 등록버튼 div 활성화
-document.querySelector('.goRegisterClass').addEventListener('click', function () {
-    const userId = sessionStorage.getItem("userid"); // 세션에서 아이디 가져오기
-    if (!userId) {
-        alert("로그인이 필요합니다.");
-        window.location.href = "/member/login"; // 로그인 페이지로 이동
-        return;
-    }else{
-        const link = this.querySelector('a');
-        if (link) {
-          link.click(); // a 태그 실행
+        if (response.redirected) {
+            window.location.href = response.url; // 로그인 페이지로 리디렉션
+            return null;
         }
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            console.log("로그인된 사용자 ID:", data.userId);
+            return data.userId;
+        } else {
+            console.log("로그인이 필요합니다.");
+            return null;
+        }
+    } catch (error) {
+        console.error("유저 정보를 가져오는 중 오류 발생:", error);
+        return null;
+    }
+}
+
+// 등록하러가기 버튼 활성화
+document.querySelector('.goRegisterClass').addEventListener('click', async function (event) {
+    const userId = await fetchUserId();
+    // if (!userId) {
+    //     event.preventDefault(); // 기본 이벤트 차단
+    //     alert("로그인이 필요합니다.");
+    //     event.stopPropagation(); // 이벤트 버블링 차단
+    //     window.location.replace("/member/login"); // 로그인 페이지로 이동
+    //     return false; // 이벤트 중단
+    // }
+
+    // userId가 있는 경우 a 태그 클릭 실행
+    const link = this.querySelector('a');
+    if (link) {
+        link.click();
     }
 });
+
 
 async function fetchTotalClassCards() {
     try {
@@ -520,9 +542,22 @@ let allData = []; // 서버에서 가져온 전체 데이터
 
 // 초기 데이터 로드
 document.addEventListener("DOMContentLoaded", async () => {
-    await fetchTotalClassCards(); // 데이터를 가져옴
+    await loadCards(); // 데이터를 가져옴
     renderPageData(); // 첫 번째 페이지 데이터를 렌더링
 });
+
+// 카드 데이터를 API에서 가져오는 함수
+async function loadCards() {
+    try {
+        const response = await fetch("/api/cooking");
+        allData = await response.json(); // 전체 데이터 저장
+        console.log("📌 불러온 데이터 개수:", allData.length);
+    } catch (error) {
+        console.error("카드 데이터를 불러오는 중 오류 발생:", error);
+    }
+}
+
+// 페이지 데이터를 렌더링하는 함수
 function renderPageData() {
     const container = document.getElementById("card-container");
     const template = document.getElementById("card-template");
@@ -532,6 +567,8 @@ function renderPageData() {
     const end = currentPage * itemsPerPage;
     const pageData = allData.slice(start, end);
 
+    console.log(`🔍 현재 페이지: ${currentPage}, 표시할 데이터 개수: ${pageData.length}, 전체 데이터 개수: ${allData.length}`);
+
     // 새 카드 추가
     pageData.forEach((data) => {
         const card = template.content.cloneNode(true);
@@ -539,7 +576,7 @@ function renderPageData() {
         card.querySelector(".class-Tag").textContent = data.CLASS_CATEGORY;
         card.querySelector(".class-Name").textContent = data.CLASS_TITLE;
         card.querySelector(".class-instructor").textContent = data.CLASS_INSTRUCTOR_NICKNAME;
-        card.querySelector(".class-instructor-photo").innerHTML=`<img src="${data.CLASS_INSTRUCTOR_IMG}" alt="Instructor Photo" />`;
+        card.querySelector(".class-instructor-photo").innerHTML = `<img src="${data.CLASS_INSTRUCTOR_IMG}" alt="Instructor Photo" />`;
         const cardLink = card.querySelector("a");
         cardLink.href = `/class/${data.CLASS_NO}`;
         cardLink.dataset.classNo = `${data.CLASS_NO}`;
@@ -550,6 +587,8 @@ function renderPageData() {
     // "더보기" 버튼 처리
     if (end >= allData.length) {
         document.getElementById("load-more").style.display = "none"; // 데이터가 더 이상 없으면 버튼 숨김
+    } else {
+        document.getElementById("load-more").style.display = "block"; // 데이터가 남아있으면 버튼 표시
     }
 }
 
