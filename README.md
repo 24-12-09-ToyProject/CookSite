@@ -115,8 +115,11 @@ TOYPROJECT/
 
   ![내가 작성한 레시피 화면](https://github.com/user-attachments/assets/e0bb4796-eab2-45d4-b6c0-f533bbab790a)
 ### [스토어]
-  - ![스토어1](https://github.com/user-attachments/assets/5140a78a-e9c4-4d5a-8403-cf0a02fe89e2)
-  - 기능2
+  - ![스토어1 최종](https://github.com/user-attachments/assets/a16ac763-ec4c-468f-a2ca-d5acd751c0e9)
+  - ![스토어2 최종](https://github.com/user-attachments/assets/2441ef02-3982-4e50-9350-07848587aafc)
+  - ![스토어 3최종](https://github.com/user-attachments/assets/c4bf0693-d9d1-43bb-9518-9287c4acaab0)
+  - ![스토어 4최종](https://github.com/user-attachments/assets/4c810055-ff4b-4f7a-926d-0ad8771f217c)
+
 ### [쿠킹 클래스]
   #### [클래스 검색]
   - 상단에 검색 조건들을 통해서 등록된 클래스들을 검색 할 수 있습니다.
