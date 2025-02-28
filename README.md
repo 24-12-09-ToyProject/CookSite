@@ -93,6 +93,7 @@ TOYPROJECT/
   - 헤더 기능 작성 
 ### [레시피]
   #### [레시피 리스트]
+  - 레시피 웹사이트에서 크롤링하여 DB에 데이터를 저장하였습니다.
   - 상단의 카테고리 선택 버튼을 통해 일치하는 레시피를 조회할 수 있습니다.
   - 레시피는 20개씩 페이징 처리되어 더보기 버튼을 통해 추가적인 확인이 가능합니다.
   - 썸네일 이미지를 클릭하여 레시피 상세 정보 페이지로 이동할 수 있습니다.
@@ -114,9 +115,7 @@ TOYPROJECT/
 
   ![내가 작성한 레시피 화면](https://github.com/user-attachments/assets/e0bb4796-eab2-45d4-b6c0-f533bbab790a)
 ### [스토어]
-  - ![레시피1-2](https://github.com/user-attachments/assets/f63887b2-421a-4186-9334-0ec763e8b08f)
-
-
+  - ![스토어1](https://github.com/user-attachments/assets/5140a78a-e9c4-4d5a-8403-cf0a02fe89e2)
   - 기능2
 ### [쿠킹 클래스]
   #### [클래스 검색]
