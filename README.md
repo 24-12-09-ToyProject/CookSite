@@ -26,7 +26,7 @@
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) <br>
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css&logoColor=white"><br>
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=for-the-badge&logo=JavaScript&logoColor=000000"><br>
-### - Frontend & Backend
+### - Backend
 <img src="https://img.shields.io/badge/node-5FA04E?style=for-the-badge&logo=node.js&logoColor=white"><br>
 ### - API
 <img src="https://img.shields.io/badge/kakaoMap-ffcd00.svg?style=for-the-badge&logo=kakaoMap&logoColor=000000"><br>
@@ -99,8 +99,7 @@ TOYPROJECT/
   - 원활한 개발을 위해 공통 스프레드시트를 만들어 주간목표를 설정하고 진행률을 공유했습니다.
 
 ## :computer: 페이지별 기능
-### [공통]
-  - 헤더 기능 작성 
+
 ### [레시피]
   #### [레시피 리스트]
   - 레시피 웹사이트에서 크롤링하여 DB에 데이터를 저장하였습니다.
@@ -218,8 +217,11 @@ TOYPROJECT/
     - 중복되는 코드에 의한 반복되는 요청 제거
     - 사용하지 않는 코드 및 기능 제거
     - 서로 분리된 하위 프로젝트로 구성
-  - 규칙 생성
+  - 규칙 생성 및 일관된 UI
     - 개인이 아닌 팀 프로젝트로써 확인하기 쉽게 규칙 생성
+    - FE 구현 시 UI 통일
+  - 배포
+     - 배포 사전 협의X 로 인한 웹 제작만으로 프로젝트 마무리 
   
 
     
