@@ -1,4 +1,4 @@
-#쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
+# 쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
 <img width="676" alt="image" src="https://github.com/user-attachments/assets/3977cf8e-6e9c-4020-98a3-8ff528a3eb01" />
 
 ## 프로젝트 소개
