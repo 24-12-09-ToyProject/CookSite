@@ -1,4 +1,4 @@
-![식탁의비밀 - 소셜회원 정보수정 및 탈퇴](https://github.com/user-attachments/assets/b4c708ef-68ae-40b6-81ae-4b6dc6f1e64a)#  :cookie: 쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
+쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
 <img width="827" alt="KakaoTalk_20250210_140306723" src="https://github.com/user-attachments/assets/aa02f350-0709-4700-8255-1de748b41f36" />
 
 ## 프로젝트 소개
@@ -114,7 +114,8 @@ TOYPROJECT/
 
   ![내가 작성한 레시피 화면](https://github.com/user-attachments/assets/e0bb4796-eab2-45d4-b6c0-f533bbab790a)
 ### [스토어]
-  - 기능1
+  - ![레시피1-1](https://github.com/user-attachments/assets/cbea6bd9-1d6e-451f-9f93-19075a3fb6e2)
+
   - 기능2
 ### [쿠킹 클래스]
   #### [클래스 검색]
