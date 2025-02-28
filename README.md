@@ -1,5 +1,5 @@
 # 쿠킹 정보 & 상품 구매 & 배움을 제공하는 종합 서비스
-<img width="676" alt="image" src="https://github.com/user-attachments/assets/3977cf8e-6e9c-4020-98a3-8ff528a3eb01" />
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/3977cf8e-6e9c-4020-98a3-8ff528a3eb01" />
 
 ## 프로젝트 소개
 - 식탁의 비밀은 요리를 좋아하는 사람들이 자신의 레시피를 공유하고, 음식이나 도구를 구매 하며 요리 수업까지 배울 수 있는 올인원 서비스입니다.
