@@ -114,7 +114,8 @@ TOYPROJECT/
 
   ![내가 작성한 레시피 화면](https://github.com/user-attachments/assets/e0bb4796-eab2-45d4-b6c0-f533bbab790a)
 ### [스토어]
-  - ![레시피1-1](https://github.com/user-attachments/assets/cbea6bd9-1d6e-451f-9f93-19075a3fb6e2)
+  - ![레시피1-2](https://github.com/user-attachments/assets/f63887b2-421a-4186-9334-0ec763e8b08f)
+
 
   - 기능2
 ### [쿠킹 클래스]
